@@ -17,26 +17,38 @@ const data = fromJS({
                 ]
             }
         }
-    },
-    layers: [
-        {
-            id: 'my-layer',
-            type: 'circle',
-            source: 'points',
-            paint: {
-                'circle-color': '#f00',
-                'circle-radius': 4
-            }
-        }
-    ]
+    }
 });
+
+const layers = fromJS({
+  layers: [
+      {
+          id: 'my-layer',
+          type: 'circle',
+          source: 'points',
+          paint: {
+              'circle-color': '#f00',
+              'circle-radius': 4
+          }
+      },
+      {
+        id: 'trails',
+        type: 'line',
+        source: 'trailmap',
+        paint: {
+          'line-color': '#877b59',
+          'line-width': 1
+        }
+      }
+  ]
+})
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 const mapStyleWithData = defaultMapStyle
   // Add geojson source to map
-  .setIn(['sources', 'points'], data.getIn(['sources', 'points']))
+  .setIn(['sources', 'trailmap'], data.getIn(['sources', 'points']))
   // Add point layer to map
-  .set('layers', defaultMapStyle.get('layers').push(data.get('layers').first()));
+  .set('layers', defaultMapStyle.get('layers').push(layers.get('layers').get(1)));
 
 // fetch my GeoJSON
 // curl "https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities%20LIMIT%2030"
@@ -54,6 +66,15 @@ export default class Map extends Component {
       zoom: 10
     }
   };
+
+  componentDidMount() {
+    requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities%20LIMIT%2030', (error, response) => {
+      if (!error) {
+        // JSON.parse(response.rows[0].the_geom)
+        // debugger;
+      }
+    });
+  }
 
   render() {
     return (
