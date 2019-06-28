@@ -2,7 +2,9 @@
   "name": "trailmap3",
   "private": true,
   "dependencies": {
+    "d3-request": "^1.0.6",
     "dotenv": "^8.0.0",
+    "immutable": "^4.0.0-rc.12",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
