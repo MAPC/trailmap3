@@ -46,11 +46,12 @@ const layers = fromJS({
         source: 'trailmap',
         layout: {
           'line-join': 'round',
-          'line-cap': 'round'
+          'line-cap': 'round',
+          'visibility': 'visible'
         },
         paint: {
           'line-color': '#f00',
-          'line-width': 4
+          'line-width': 4,
         }
       }
   ]
@@ -62,12 +63,6 @@ const mapStyleWithData = defaultMapStyle
   .setIn(['sources', 'trailmap'], data.getIn(['sources', 'trailmap']))
   // Add point layer to map
   .set('layers', defaultMapStyle.get('layers').push(layers.get('layers').get(1)));
-
-// debugger;
-
-// fetch my GeoJSON
-// curl "https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities%20LIMIT%2030"
-// display geoJson on top of map.
 
 export default class Map extends Component {
 
@@ -82,12 +77,38 @@ export default class Map extends Component {
     }
   };
 
+
+  newVisibleStatus(layerVisible, mapStyle) {
+    if (layerVisible === 'visible') {
+      return mapStyle.setIn(['layers', layerIndex, 'layout', 'visibility'], 'none')
+    } else {
+      return mapStyle.setIn(['layers', layerIndex, 'layout', 'visibility'], 'visible')
+    }
+  }
+
+  toggleVisibility(layer, mapStyle) {
+    const layerVisible = mapStyle.get('layers').find(layer => layer.get('id') === layer).getIn(['layout', 'visibility']);
+    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layer)
+    const updatedMapStyle = newVisibleStatus(layerVisible, mapStyle);
+
+    this.setState({
+      mapStyle: updatedMapStyle
+    })
+  }
+
   componentDidMount() {
-    requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities%20LIMIT%2030', (error, response) => {
+    requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities', (error, response) => {
       if (!error) {
 
-        // let parsed_response = JSON.parse(response)
-        // debugger;
+        const trails = response.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom)}));
+        const trailLayer = this.state.mapStyle.get('layers').find(layer => layer.get('id') === 'trails');
+        const mapStyleWithTrails = mapStyleWithData.setIn(['sources', 'trailmap', 'data', 'features'], trails)
+        // const trailLayerIndex = this.state.mapStyle.get('layers').findIndex(layer => layer.get('id') === 'trails')
+        // const mapStyleWithInvisibleTrails = mapStyleWithTrails.setIn(['layers', trailLayerIndex, 'layout', 'visibility'], 'none')
+
+        this.setState({
+          mapStyle: mapStyleWithTrails
+        })
       }
     });
   }
