@@ -8,15 +8,6 @@ import MAP_STYLE from './map-style-basic-v8.json';
 const data = fromJS({
     version: 8,
     sources: {
-        points: {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: [
-              {type: 'Feature', geometry: {type: 'Point', coordinates: [-71.0589, 42.3601]}}
-            ]
-          }
-        },
         trailmap: {
             type: 'geojson',
             data: {
@@ -30,17 +21,7 @@ const data = fromJS({
 });
 
 const layers = fromJS({
-  layers: [
-      {
-          id: 'my-layer',
-          type: 'circle',
-          source: 'points',
-          paint: {
-              'circle-color': '#f00',
-              'circle-radius': 4
-          }
-      },
-      {
+  layers: [{
         id: 'trails',
         type: 'line',
         source: 'trailmap',
@@ -53,8 +34,7 @@ const layers = fromJS({
           'line-color': '#f00',
           'line-width': 4,
         }
-      }
-  ]
+      }]
 })
 
 const defaultMapStyle = fromJS(MAP_STYLE);
@@ -62,7 +42,7 @@ const mapStyleWithData = defaultMapStyle
   // Add geojson source to map
   .setIn(['sources', 'trailmap'], data.getIn(['sources', 'trailmap']))
   // Add point layer to map
-  .set('layers', defaultMapStyle.get('layers').push(layers.get('layers').get(1)));
+  .set('layers', defaultMapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('id') === 'trails')));
 
 export default class Map extends Component {
 
@@ -89,10 +69,10 @@ export default class Map extends Component {
     }
   }
 
-  toggleVisibility(layerToChange, event) {
+  toggleVisibility(layerId, event) {
     const mapStyle = this.state.mapStyle;
-    const layerVisible = mapStyle.get('layers').filter(layer => layer.get('id') === layerToChange).first().getIn(['layout', 'visibility']);
-    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layerToChange)
+    const layerVisible = mapStyle.get('layers').filter(layer => layer.get('id') === layerId).first().getIn(['layout', 'visibility']);
+    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layerId)
     const updatedMapStyle = this.newVisibleStatus(layerVisible, mapStyle, layerIndex);
 
     this.setState({
@@ -118,7 +98,7 @@ export default class Map extends Component {
   }
 
   renderLayerControl(name) {
-    const {visibility, color} = this.state;
+    const {visibility} = this.state;
 
     return (
       <div key={name} className="input">
@@ -134,6 +114,8 @@ export default class Map extends Component {
 
 
   render() {
+    const displayedLayers = this.state.mapStyle.get('layers')
+
     return (
       <div>
         <ReactMapGL
@@ -142,7 +124,7 @@ export default class Map extends Component {
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
           mapStyle={this.state.mapStyle}
         />
-        { this.state.mapStyle.get('layers').filter(layer => layer.get('id') === 'trails').map(layer => this.renderLayerControl(layer.get('id'))) }
+        { layers.get('layers').map(layer => this.renderLayerControl(layer.get('id'))) }
        </div>
     );
   }
