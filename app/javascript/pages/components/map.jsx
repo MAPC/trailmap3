@@ -60,6 +60,14 @@ export default class Map extends Component {
     },
   };
 
+  isVisible(visibility) {
+    if(visibility === 'none') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 
   newVisibleStatus(layerVisible, mapStyle, layerIndex) {
     if (layerVisible === 'visible') {
@@ -98,14 +106,14 @@ export default class Map extends Component {
   }
 
   renderLayerControl(name) {
-    const {visibility} = this.state;
+    const visibility = this.state.mapStyle.get('layers').filter(layer => layer.get('id') === name).first().getIn(['layout', 'visibility']);
 
     return (
       <div key={name} className="input">
         <label>{name}</label>
         <input
           type="checkbox"
-          checked={visibility[name]}
+          checked={this.isVisible(visibility)}
           onChange={this.toggleVisibility.bind(this, name)}
         />
       </div>
