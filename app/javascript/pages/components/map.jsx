@@ -70,15 +70,18 @@ export default class Map extends Component {
     mapStyle: mapStyleWithData,
     viewport: {
       width: window.innerWidth,
-      height: window.innerHeight,
+      height: window.innerHeight - 100,
       latitude: 42.3601,
       longitude: -71.0589,
       zoom: 10
-    }
+    },
+    visibility: {
+      trails: true,
+    },
   };
 
 
-  newVisibleStatus(layerVisible, mapStyle) {
+  newVisibleStatus(layerVisible, mapStyle, layerIndex) {
     if (layerVisible === 'visible') {
       return mapStyle.setIn(['layers', layerIndex, 'layout', 'visibility'], 'none')
     } else {
@@ -86,10 +89,11 @@ export default class Map extends Component {
     }
   }
 
-  toggleVisibility(layer, mapStyle) {
-    const layerVisible = mapStyle.get('layers').find(layer => layer.get('id') === layer).getIn(['layout', 'visibility']);
-    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layer)
-    const updatedMapStyle = newVisibleStatus(layerVisible, mapStyle);
+  toggleVisibility(layerToChange, event) {
+    const mapStyle = this.state.mapStyle;
+    const layerVisible = mapStyle.get('layers').filter(layer => layer.get('id') === layerToChange).first().getIn(['layout', 'visibility']);
+    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layerToChange)
+    const updatedMapStyle = this.newVisibleStatus(layerVisible, mapStyle, layerIndex);
 
     this.setState({
       mapStyle: updatedMapStyle
@@ -101,7 +105,7 @@ export default class Map extends Component {
       if (!error) {
 
         const trails = response.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom)}));
-        const trailLayer = this.state.mapStyle.get('layers').find(layer => layer.get('id') === 'trails');
+        const trailLayer = this.state.mapStyle.get('layers').filter(layer => layer.get('id') === 'trails');
         const mapStyleWithTrails = mapStyleWithData.setIn(['sources', 'trailmap', 'data', 'features'], trails)
         // const trailLayerIndex = this.state.mapStyle.get('layers').findIndex(layer => layer.get('id') === 'trails')
         // const mapStyleWithInvisibleTrails = mapStyleWithTrails.setIn(['layers', trailLayerIndex, 'layout', 'visibility'], 'none')
@@ -113,16 +117,36 @@ export default class Map extends Component {
     });
   }
 
+  renderLayerControl(name) {
+    const {visibility, color} = this.state;
+
+    return (
+      <div key={name} className="input">
+        <label>{name}</label>
+        <input
+          type="checkbox"
+          checked={visibility[name]}
+          onChange={this.toggleVisibility.bind(this, name)}
+        />
+      </div>
+    );
+  }
+
+
   render() {
     return (
-      <ReactMapGL
-        {...this.state.viewport}
-        onViewportChange={(viewport) => this.setState({viewport})}
-        mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-        mapStyle={this.state.mapStyle}
-      />
+      <div>
+        <ReactMapGL
+          {...this.state.viewport}
+          onViewportChange={(viewport) => this.setState({viewport})}
+          mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
+          mapStyle={this.state.mapStyle}
+        />
+        { this.state.mapStyle.get('layers').filter(layer => layer.get('id') === 'trails').map(layer => this.renderLayerControl(layer.get('id'))) }
+       </div>
     );
   }
 }
+
 
 
