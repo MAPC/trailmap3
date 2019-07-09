@@ -4,6 +4,7 @@ import ReactMapGL from 'react-map-gl';
 import {json as requestJson} from 'd3-request';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
+import '../../styles/map'
 
 const data = fromJS({
     version: 8,
@@ -49,8 +50,8 @@ export default class Map extends Component {
   state = {
     mapStyle: mapStyleWithData,
     viewport: {
-      width: window.innerWidth,
-      height: window.innerHeight - 100,
+      width: "100vw",
+      height: "100vh",
       latitude: 42.3601,
       longitude: -71.0589,
       zoom: 10
@@ -67,7 +68,6 @@ export default class Map extends Component {
       return true;
     }
   }
-
 
   newVisibleStatus(layerVisible, mapStyle, layerIndex) {
     if (layerVisible === 'visible') {
@@ -125,14 +125,16 @@ export default class Map extends Component {
     const displayedLayers = this.state.mapStyle.get('layers')
 
     return (
-      <div>
+      <div className="test">
         <ReactMapGL
           {...this.state.viewport}
           onViewportChange={(viewport) => this.setState({viewport})}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
           mapStyle={this.state.mapStyle}
         />
-        { layers.get('layers').map(layer => this.renderLayerControl(layer.get('id'))) }
+        <div className="control-panel">
+          { layers.get('layers').map(layer => this.renderLayerControl(layer.get('id'))) }
+        </div>
        </div>
     );
   }
