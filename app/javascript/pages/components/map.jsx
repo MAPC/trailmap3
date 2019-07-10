@@ -31,11 +31,26 @@ const layers = fromJS({
           'visibility': 'none'
         },
         paint: {
-          'line-color': '#db813f',
+          'line-color': ['get', 'color'],
           'line-width': 2,
+          // 'line-dasharray': [2, 2]
         }
       }]
 })
+
+const colors = {
+  'bike_facilities': {
+    1: "#0874b9",
+    2: "#7f3193",
+    5: "#275f68",
+    9: "#82C5EC",
+  },
+  'walking_trails': {
+    1: "#db813f",
+    2: "#db813f",
+    5: "#275f68",
+  }
+}
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
@@ -80,7 +95,7 @@ export default class Map extends Component {
   }
 
   addLayer(newData, source) {
-    const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat }}));
+    const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat, color: colors[source][rows.fac_type] }}));
     const mapStyleWithNewSource = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
                                                      .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
                                                      .setIn(['sources', source, 'data', 'features'], geoJson)
@@ -93,9 +108,9 @@ export default class Map extends Component {
 
   componentDidMount() {
     Promise.all([
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20bike_facilities'),
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20walking_trails'),
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,ST_AsGeoJSON(the_geom)%20as%20the_geom%20FROM%20landline_regional_greenways')
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20walking_trails'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20landline_regional_greenways')
       ]).then((map) => {
         this.addLayer(map[0], 'bike_facilities');
         this.addLayer(map[1], 'walking_trails');
