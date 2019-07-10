@@ -28,7 +28,7 @@ const layers = fromJS({
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
-          'visibility': 'visible'
+          'visibility': 'none'
         },
         paint: {
           'line-color': '#0000ff',
@@ -80,10 +80,10 @@ export default class Map extends Component {
   }
 
   addLayer(newData, source) {
-    const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom)}));
-    const mapStyleWithGeoJsonType = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
-    const mapStyleWithDataType = mapStyleWithGeoJsonType.setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
-    const mapStyleWithNewSource = mapStyleWithDataType.setIn(['sources', source, 'data', 'features'], geoJson)
+    const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat }}));
+    const mapStyleWithNewSource = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
+                                                     .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
+                                                     .setIn(['sources', source, 'data', 'features'], geoJson)
     const mapStyleWithNewLayer = mapStyleWithNewSource.set('layers', this.state.mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)))
 
     this.setState({
@@ -134,7 +134,9 @@ export default class Map extends Component {
           mapStyle={this.state.mapStyle}
         />
         <div className="control-panel">
-          { this.state.mapStyle.get('layers').map(layer => this.renderLayerControl(layer.get('id'))) }
+          { this.state.mapStyle.get('layers')
+                               .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
+                               .map(layer => this.renderLayerControl(layer.get('id'))) }
         </div>
        </div>
     );
