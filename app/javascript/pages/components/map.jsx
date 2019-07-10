@@ -17,8 +17,8 @@ const layers = fromJS({
           'visibility': 'visible'
         },
         paint: {
-          'line-color': '#f00',
-          'line-width': 4,
+          'line-color': '#0874b9',
+          'line-width': 2,
         }
       },
       {
@@ -31,8 +31,8 @@ const layers = fromJS({
           'visibility': 'none'
         },
         paint: {
-          'line-color': '#0000ff',
-          'line-width': 4,
+          'line-color': '#db813f',
+          'line-width': 2,
         }
       }]
 })
@@ -134,6 +134,7 @@ export default class Map extends Component {
           mapStyle={this.state.mapStyle}
         />
         <div className="control-panel">
+          <h2>Trailmap</h2>
           { this.state.mapStyle.get('layers')
                                .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
                                .map(layer => this.renderLayerControl(layer.get('id'))) }
