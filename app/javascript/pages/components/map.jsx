@@ -35,6 +35,21 @@ const layers = fromJS({
           'line-width': 2,
           // 'line-dasharray': [2, 2]
         }
+      },
+      {
+        id: 'Proposed Trails',
+        type: 'line',
+        source: 'proposed_trails',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+          'visibility': 'none'
+        },
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 2,
+          'line-dasharray': [2, 2]
+        }
       }]
 })
 
@@ -42,14 +57,26 @@ const colors = {
   'bike_facilities': {
     1: "#0874b9",
     2: "#7f3193",
+    3: "#0874b9",
+    4: '#ffa500',
     5: "#275f68",
+    7: "#0874b9",
     9: "#82C5EC",
   },
   'walking_trails': {
     1: "#db813f",
     2: "#db813f",
     5: "#275f68",
-  }
+  },
+  'proposed_trails': {
+    1: "#0874b9",
+    2: "#7f3193",
+    3: "#0874b9",
+    4: '#ffa500',
+    5: "#275f68",
+    7: "#0874b9",
+    9: "#82C5EC",
+  },
 }
 
 const defaultMapStyle = fromJS(MAP_STYLE);
@@ -108,18 +135,14 @@ export default class Map extends Component {
 
   componentDidMount() {
     Promise.all([
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%3D1'),
         requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20walking_trails'),
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20landline_regional_greenways')
+        // requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20landline_regional_greenways'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%20IN%20(2,3)')
       ]).then((map) => {
         this.addLayer(map[0], 'bike_facilities');
         this.addLayer(map[1], 'walking_trails');
-        // SELECT * FROM bike_facilities WHERE fac_type=2 AND fac_stat IN (2,3)
-        // SELECT * FROM bike_facilities WHERE fac_type=9 AND fac_stat IN (2,3)
-        // SELECT * FROM bike_facilities WHERE fac_type=1 AND fac_stat IN (2,3)
-        // SELECT * FROM walking_trails WHERE fac_stat IN (2,3)
-        // SELECT * FROM bike_facilities WHERE fac_type=5 AND fac_stat IN (2,3)
-        // select * from landline_regional_greenways WHERE fac_stat IN (2,3)
+        this.addLayer(map[2], 'proposed_trails');
     });
   }
 
