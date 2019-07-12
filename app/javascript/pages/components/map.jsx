@@ -1,6 +1,6 @@
 import React from 'react';
 import {Component} from 'react';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, {GeolocateControl} from 'react-map-gl';
 import {json as requestJson} from 'd3-fetch';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
@@ -86,8 +86,6 @@ export default class Map extends Component {
   state = {
     mapStyle: defaultMapStyle,
     viewport: {
-      width: "100vw",
-      height: "100vh",
       latitude: 42.3601,
       longitude: -71.0589,
       zoom: 10
@@ -166,11 +164,18 @@ export default class Map extends Component {
     return (
       <div className="test">
         <ReactMapGL
+          width='100vw'
+          height='100vh'
           {...this.state.viewport}
-          onViewportChange={(viewport) => this.setState({viewport})}
+          onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
+                                            this.setState({viewport: etc}); }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-          mapStyle={this.state.mapStyle}
-        />
+          mapStyle={this.state.mapStyle}>
+          <GeolocateControl
+            positionOptions={{enableHighAccuracy: true}}
+            trackUserLocation={true}
+            />
+          </ReactMapGL>
         <div className="control-panel">
           <h2>Trailmap</h2>
           { this.state.mapStyle.get('layers')
