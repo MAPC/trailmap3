@@ -5,6 +5,8 @@ import {json as requestJson} from 'd3-fetch';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
 import '../../styles/map'
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
+import Geocoder from 'react-map-gl-geocoder'
 
 const layers = fromJS({
   layers: [{
@@ -82,6 +84,11 @@ const colors = {
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 export default class Map extends Component {
+
+  constructor(props) {
+    super(props);
+    this.mapRef = React.createRef();
+  }
 
   state = {
     mapStyle: defaultMapStyle,
@@ -164,6 +171,7 @@ export default class Map extends Component {
     return (
       <div className="test">
         <ReactMapGL
+          ref={this.mapRef}
           width='100vw'
           height='100vh'
           {...this.state.viewport}
@@ -174,6 +182,13 @@ export default class Map extends Component {
           <GeolocateControl
             positionOptions={{enableHighAccuracy: true}}
             trackUserLocation={true}
+            />
+            <Geocoder
+              mapRef={this.mapRef}
+              onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
+                                                this.setState({viewport: etc}); }}
+              mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
+              position="top-right"
             />
           </ReactMapGL>
         <div className="control-panel">
