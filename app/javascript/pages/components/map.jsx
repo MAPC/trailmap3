@@ -35,7 +35,6 @@ const layers = fromJS({
         paint: {
           'line-color': ['get', 'color'],
           'line-width': 2,
-          // 'line-dasharray': [2, 2]
         }
       },
       {
@@ -131,10 +130,9 @@ export default class Map extends Component {
     const mapStyleWithNewSource = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
                                                      .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
                                                      .setIn(['sources', source, 'data', 'features'], geoJson)
-    const mapStyleWithNewLayer = mapStyleWithNewSource.set('layers', this.state.mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)))
-
+                                                     .set('layers', this.state.mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)))
     this.setState({
-      mapStyle: mapStyleWithNewLayer
+      mapStyle: mapStyleWithNewSource
     })
   }
 
@@ -165,7 +163,6 @@ export default class Map extends Component {
       </div>
     );
   }
-
 
   render() {
     return (
