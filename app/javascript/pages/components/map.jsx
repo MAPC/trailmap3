@@ -133,10 +133,10 @@ export default class Map extends Component {
 
   componentDidMount() {
     Promise.all([
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%3D1'),
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20walking_trails'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(ST_Simplify(the_geom,0.6),6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%3D1'),
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_type,fac_stat,ST_AsGeoJSON(ST_Simplify(the_geom,0.8),6)%20as%20the_geom%20FROM%20walking_trails'),
         // requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20landline_regional_greenways'),
-        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%20IN%20(2,3)')
+        requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(ST_Simplify(the_geom,0.8),6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%20IN%20(2,3)')
       ]).then((map) => {
         this.addLayer(map[0], 'bike_facilities');
         this.addLayer(map[1], 'walking_trails');
