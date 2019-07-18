@@ -179,21 +179,23 @@ export default class Map extends Component {
           <GeolocateControl
             positionOptions={{enableHighAccuracy: true}}
             trackUserLocation={true}
+            className="control-panel__geolocate"
             />
             <Geocoder
               mapRef={this.mapRef}
               onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
                                                 this.setState({viewport: etc}); }}
               mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-              position="top-right"
+              position="top-left"
             />
+            <div className="control-panel">
+              <h2>Trailmap</h2>
+              { this.state.mapStyle.get('layers')
+                                   .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
+                                   .map(layer => this.renderLayerControl(layer.get('id'))) }
+            </div>
           </ReactMapGL>
-        <div className="control-panel">
-          <h2>Trailmap</h2>
-          { this.state.mapStyle.get('layers')
-                               .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
-                               .map(layer => this.renderLayerControl(layer.get('id'))) }
-        </div>
+
        </div>
     );
   }

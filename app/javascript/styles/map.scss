@@ -4,7 +4,6 @@ body {
 
 .control-panel {
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
   color: #6b6b76;
   font-size: 13px;
   left: 0;
@@ -13,6 +12,12 @@ body {
   max-width: 320px;
   outline: none;
   padding: 12px 24px;
-  position: absolute;
-  top: 0;
+
+  &__geolocate {
+    display: inline-block;
+  }
+}
+
+.mapboxgl-ctrl-top-left .mapboxgl-ctrl {
+  margin: 0 2rem;
 }
