@@ -14,10 +14,18 @@ body {
   padding: 12px 24px;
 
   &__geolocate {
+    border: .5px solid #0070CD;
+    border-radius: 10px;
     display: inline-block;
+    margin: 1rem;
   }
 }
 
 .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
-  margin: 0 2rem;
+  margin: 1.2rem 4rem;
+}
+
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate {
+  background: center no-repeat url('~images/geolocate-button.svg');
+  padding: 1.25rem;
 }
