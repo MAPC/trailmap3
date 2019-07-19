@@ -80,6 +80,12 @@ const colors = {
   },
 }
 
+const image = {
+  'Bicycle Trails': 'bike-lane',
+  'Walking Trails': 'multi-use',
+  'Proposed Trails': 'shared',
+}
+
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 export default class Map extends Component {
@@ -97,14 +103,6 @@ export default class Map extends Component {
       zoom: 10
     }
   };
-
-  isVisible(visibility) {
-    if(visibility === 'none') {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
   newVisibleStatus(layerVisible, mapStyle, layerIndex) {
     if (layerVisible === 'visible') {
@@ -136,6 +134,16 @@ export default class Map extends Component {
     })
   }
 
+  hideFilters(event) {
+    const controlPanel = document.getElementsByClassName("control-panel")[0];
+    controlPanel.className = 'control-panel control-panel--hidden';
+  }
+
+  showFilters(event) {
+    const controlPanel = document.getElementsByClassName("control-panel")[0];
+    controlPanel.className = 'control-panel';
+  }
+
   componentDidMount() {
     Promise.all([
         requestJson('https://mapc-admin.carto.com/api/v2/sql?q=SELECT%20fac_stat,fac_type,ST_AsGeoJSON(the_geom,6)%20as%20the_geom%20FROM%20bike_facilities%20WHERE%20fac_stat%3D1'),
@@ -153,14 +161,16 @@ export default class Map extends Component {
     const visibility = this.state.mapStyle.get('layers').filter(layer => layer.get('id') === name).first().getIn(['layout', 'visibility']);
 
     return (
-      <div key={name} className="input">
-        <label>{name}</label>
-        <input
-          type="checkbox"
-          checked={this.isVisible(visibility)}
-          onChange={this.toggleVisibility.bind(this, name)}
-        />
-      </div>
+      <button id={name}
+              key={name}
+              className="filter-button"
+              type="button"
+              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}.png`)})` }}
+              onClick={this.toggleVisibility.bind(this, name)}>
+        <div className="filler"></div>
+        {name}
+        <div className='filter-button__overlay'></div>
+      </button>
     );
   }
 
@@ -181,15 +191,26 @@ export default class Map extends Component {
             trackUserLocation={true}
             className="control-panel__geolocate"
             />
+            <div className="control-panel__filter-toggle">
+              <button className="control-panel__filter-toggle-button"
+                      aria-label="Show Filters"
+                      onClick={this.showFilters.bind(this)} />
+            </div>
             <Geocoder
               mapRef={this.mapRef}
               onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
                                                 this.setState({viewport: etc}); }}
               mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
               position="top-left"
+              placeholder="Search by city or address"
             />
             <div className="control-panel">
-              <h2>Trailmap</h2>
+              <h2 className="control-panel__title">Trailmap Filters</h2>
+              <button className="control-panel__close"
+                      onClick={this.hideFilters.bind(this)}
+                      type="button">
+                        Close
+              </button>
               { this.state.mapStyle.get('layers')
                                    .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
                                    .map(layer => this.renderLayerControl(layer.get('id'))) }
