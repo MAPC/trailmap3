@@ -36,12 +36,17 @@ body {
     color: #707070;
   }
 
+  &__filter-toggle {
+    pointer-events: auto;
+    z-index: 1;
+  }
+
   &__filter-toggle-button {
     background: center / contain no-repeat url('~images/filter-button.svg') #0070CD;
     border: .5px solid #0070CD;
     border-radius: 10px;
     height: 2.5rem;
-    margin-left: 1rem;
+    margin: 0 1rem;
     width: 2.5rem;
   }
 
@@ -83,8 +88,13 @@ body {
   }
 }
 
+.mapboxgl-ctrl-top-left {
+  display: flex;
+  margin: 1rem 0 0 3rem;
+}
+
 .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
-  margin: 1rem 4rem;
+  margin: 0;
 }
 
 .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate {
