@@ -8,6 +8,7 @@ import '../../styles/map'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import Geocoder from 'react-map-gl-geocoder'
 import ControlPanel from './control-panel'
+import ControlPanelToggleButton from './control-panel-toggle-button'
 
 const layers = fromJS({
   layers: [{
@@ -117,11 +118,6 @@ export default class Map extends Component {
     })
   }
 
-  showFilters(event) {
-    const controlPanel = document.getElementsByClassName("control-panel")[0];
-    controlPanel.className = 'control-panel';
-  }
-
   componentDidMount() {
     Promise.all([
         requestJson('https://prql.mapc.org/?query=SELECT%20fac_stat,%20fac_type,%20public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),%27%2Bproj%3Dlcc%20%2Blat_1%3D42.68333333333333%20%2Blat_2%3D41.71666666666667%20%2Blat_0%3D41%20%2Blon_0%3D-71.5%20%2Bx_0%3D200000%20%2By_0%3D750000%20%2Bellps%3DGRS80%20%2Bdatum%3DNAD83%20%2Bunits%3Dm%20%2Bno_defs%20%27,%27%2Bproj%3Dlonglat%20%2Bellps%3DWGS84%20%2Bdatum%3DWGS84%20%2Bno_defs%20%27),6)%20AS%20the_geom%20FROM%20mapc.trans_bike_facilities%20WHERE%20fac_stat%3D1%3B&token=e2e3101e16208f04f7415e36052ce59b'),
@@ -151,11 +147,7 @@ export default class Map extends Component {
             trackUserLocation={true}
             className="control-panel__geolocate"
           />
-          <div className="control-panel__filter-toggle">
-            <button className="control-panel__filter-toggle-button"
-                    aria-label="Show Filters"
-                    onClick={this.showFilters.bind(this)} />
-          </div>
+          <ControlPanelToggleButton />
           <Geocoder
             mapRef={this.mapRef}
             onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
