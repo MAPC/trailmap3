@@ -7,6 +7,7 @@ import MAP_STYLE from './map-style-basic-v8.json';
 import '../../styles/map'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import Geocoder from 'react-map-gl-geocoder'
+import ControlPanel from './control-panel'
 
 const layers = fromJS({
   layers: [{
@@ -80,12 +81,6 @@ const colors = {
   },
 }
 
-const image = {
-  'Bicycle Trails': 'bike-lane',
-  'Walking Trails': 'multi-use',
-  'Proposed Trails': 'shared',
-}
-
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 export default class Map extends Component {
@@ -93,6 +88,7 @@ export default class Map extends Component {
   constructor(props) {
     super(props);
     this.mapRef = React.createRef();
+    this.updateStateWith = this.updateStateWith.bind(this);
   }
 
   state = {
@@ -104,23 +100,10 @@ export default class Map extends Component {
     }
   };
 
-  newVisibleStatus(layerVisible, mapStyle, layerIndex) {
-    if (layerVisible === 'visible') {
-      return mapStyle.setIn(['layers', layerIndex, 'layout', 'visibility'], 'none')
-    } else {
-      return mapStyle.setIn(['layers', layerIndex, 'layout', 'visibility'], 'visible')
-    }
-  }
-
-  toggleVisibility(layerId, event) {
-    const mapStyle = this.state.mapStyle;
-    const layerVisible = mapStyle.get('layers').filter(layer => layer.get('id') === layerId).first().getIn(['layout', 'visibility']);
-    const layerIndex = mapStyle.get('layers').findIndex(layer => layer.get('id') === layerId)
-    const updatedMapStyle = this.newVisibleStatus(layerVisible, mapStyle, layerIndex);
-
+  updateStateWith(updatedMapStyle) {
     this.setState({
-      mapStyle: updatedMapStyle
-    })
+        mapStyle: updatedMapStyle,
+    });
   }
 
   addLayer(newData, source) {
@@ -134,11 +117,6 @@ export default class Map extends Component {
     })
   }
 
-  hideFilters(event) {
-    const controlPanel = document.getElementsByClassName("control-panel")[0];
-    controlPanel.className = 'control-panel control-panel--hidden';
-  }
-
   showFilters(event) {
     const controlPanel = document.getElementsByClassName("control-panel")[0];
     controlPanel.className = 'control-panel';
@@ -147,30 +125,13 @@ export default class Map extends Component {
   componentDidMount() {
     Promise.all([
         requestJson('https://prql.mapc.org/?query=SELECT%20fac_stat,%20fac_type,%20public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),%27%2Bproj%3Dlcc%20%2Blat_1%3D42.68333333333333%20%2Blat_2%3D41.71666666666667%20%2Blat_0%3D41%20%2Blon_0%3D-71.5%20%2Bx_0%3D200000%20%2By_0%3D750000%20%2Bellps%3DGRS80%20%2Bdatum%3DNAD83%20%2Bunits%3Dm%20%2Bno_defs%20%27,%27%2Bproj%3Dlonglat%20%2Bellps%3DWGS84%20%2Bdatum%3DWGS84%20%2Bno_defs%20%27),6)%20AS%20the_geom%20FROM%20mapc.trans_bike_facilities%20WHERE%20fac_stat%3D1%3B&token=e2e3101e16208f04f7415e36052ce59b'),
-        requestJson('https://prql.mapc.org/?query=SELECT%20fac_stat,%20fac_type,%20public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),%27%2Bproj%3Dlcc%20%2Blat_1%3D42.68333333333333%20%2Blat_2%3D41.71666666666667%20%2Blat_0%3D41%20%2Blon_0%3D-71.5%20%2Bx_0%3D200000%20%2By_0%3D750000%20%2Bellps%3DGRS80%20%2Bdatum%3DNAD83%20%2Bunits%3Dm%20%2Bno_defs%20%27,%27%2Bproj%3Dlonglat%20%2Bellps%3DWGS84%20%2Bdatum%3DWGS84%20%2Bno_defs%20%27),6)%20AS%20the_geom%20FROM%20mapc.trans_walking_trails%3B&token=e2e3101e16208f04f7415e36052ce59b'),
+        // requestJson('https://prql.mapc.org/?query=SELECT%20fac_stat,%20fac_type,%20public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),%27%2Bproj%3Dlcc%20%2Blat_1%3D42.68333333333333%20%2Blat_2%3D41.71666666666667%20%2Blat_0%3D41%20%2Blon_0%3D-71.5%20%2Bx_0%3D200000%20%2By_0%3D750000%20%2Bellps%3DGRS80%20%2Bdatum%3DNAD83%20%2Bunits%3Dm%20%2Bno_defs%20%27,%27%2Bproj%3Dlonglat%20%2Bellps%3DWGS84%20%2Bdatum%3DWGS84%20%2Bno_defs%20%27),6)%20AS%20the_geom%20FROM%20mapc.trans_walking_trails%3B&token=e2e3101e16208f04f7415e36052ce59b'),
         requestJson('https://prql.mapc.org/?query=SELECT%20fac_stat,%20fac_type,%20public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),%27%2Bproj%3Dlcc%20%2Blat_1%3D42.68333333333333%20%2Blat_2%3D41.71666666666667%20%2Blat_0%3D41%20%2Blon_0%3D-71.5%20%2Bx_0%3D200000%20%2By_0%3D750000%20%2Bellps%3DGRS80%20%2Bdatum%3DNAD83%20%2Bunits%3Dm%20%2Bno_defs%20%27,%27%2Bproj%3Dlonglat%20%2Bellps%3DWGS84%20%2Bdatum%3DWGS84%20%2Bno_defs%20%27),6)%20AS%20the_geom%20FROM%20mapc.trans_bike_facilities%20WHERE%20fac_stat%20IN%20(2,3)%3B&token=e2e3101e16208f04f7415e36052ce59b')
       ]).then((map) => {
         this.addLayer(map[0], 'bike_facilities');
-        this.addLayer(map[1], 'walking_trails');
-        this.addLayer(map[2], 'proposed_trails');
+        this.addLayer(map[1], 'proposed_trails');
+        // this.addLayer(map[2], 'walking_trails');
     });
-  }
-
-  renderLayerControl(name) {
-    const visibility = this.state.mapStyle.get('layers').filter(layer => layer.get('id') === name).first().getIn(['layout', 'visibility']);
-
-    return (
-      <button id={name}
-              key={name}
-              className="filter-button"
-              type="button"
-              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}.png`)})` }}
-              onClick={this.toggleVisibility.bind(this, name)}>
-        <div className="filler"></div>
-        {name}
-        <div className='filter-button__overlay'></div>
-      </button>
-    );
   }
 
   render() {
@@ -189,34 +150,27 @@ export default class Map extends Component {
             positionOptions={{enableHighAccuracy: true}}
             trackUserLocation={true}
             className="control-panel__geolocate"
-            />
-            <div className="control-panel__filter-toggle">
-              <button className="control-panel__filter-toggle-button"
-                      aria-label="Show Filters"
-                      onClick={this.showFilters.bind(this)} />
-            </div>
-            <Geocoder
-              mapRef={this.mapRef}
-              onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
-                                                this.setState({viewport: etc}); }}
-              mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-              position="top-left"
-              placeholder="Search by city or address"
-            />
-            <div className="control-panel">
-              <h2 className="control-panel__title">Trailmap Filters</h2>
-              <button className="control-panel__close"
-                      onClick={this.hideFilters.bind(this)}
-                      type="button">
-                        Close
-              </button>
-              { this.state.mapStyle.get('layers')
-                                   .filterNot(layer => defaultMapStyle.get('layers').map(layer => layer.get('id')).includes(layer.get('id')))
-                                   .map(layer => this.renderLayerControl(layer.get('id'))) }
-            </div>
-          </ReactMapGL>
-
-       </div>
+          />
+          <div className="control-panel__filter-toggle">
+            <button className="control-panel__filter-toggle-button"
+                    aria-label="Show Filters"
+                    onClick={this.showFilters.bind(this)} />
+          </div>
+          <Geocoder
+            mapRef={this.mapRef}
+            onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
+                                              this.setState({viewport: etc}); }}
+            mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
+            position="top-left"
+            placeholder="Search by city or address"
+          />
+          <ControlPanel
+            mapStyle={this.state.mapStyle}
+            layers={this.state.mapStyle.get('layers')}
+            updateStateWith={this.updateStateWith}
+          />
+        </ReactMapGL>
+      </div>
     );
   }
 }
