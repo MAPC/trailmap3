@@ -108,3 +108,13 @@ body {
   height: 2.5rem;
   width: 22.5rem;
 }
+
+.about-button {
+  background: center / contain no-repeat url('~images/about-button.svg') #ffffff;
+  border: .5px solid #0070CD;
+  border-radius: 10px;
+  height: 2.5rem;
+  margin: 1rem .5rem;
+  pointer-events: auto;
+  width: 2.5rem;
+}

@@ -5,9 +5,9 @@ import { Portal } from 'react-portal';
 
 export default class ControlPanelToggleButton extends Component {
   constructor(props) {
-      super(props);
-      this.el = document.createElement('div');
-    }
+    super(props);
+    this.el = document.createElement('div');
+  }
 
   showFilters(event) {
     const controlPanel = document.getElementsByClassName('control-panel')[0];
