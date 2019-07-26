@@ -10,6 +10,7 @@ import Geocoder from 'react-map-gl-geocoder'
 import ControlPanel from './control-panel'
 import ControlPanelToggleButton from './control-panel-toggle-button'
 import AboutButton from './about-button'
+import AboutPanel from './about-panel'
 
 const layers = fromJS({
   layers: [{
@@ -163,6 +164,7 @@ export default class Map extends Component {
             updateStateWith={this.updateStateWith}
           />
           <AboutButton />
+          <AboutPanel />
         </ReactMapGL>
       </div>
     );

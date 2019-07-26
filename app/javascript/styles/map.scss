@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   margin: 0;
 }
 
@@ -109,12 +109,57 @@ body {
   width: 22.5rem;
 }
 
+.mapboxgl-ctrl-top-right {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .about-button {
   background: center / contain no-repeat url('~images/about-button.svg') #ffffff;
   border: .5px solid #0070CD;
   border-radius: 10px;
   height: 2.5rem;
-  margin: 1rem .5rem;
+  margin: 1.5rem .5rem 0 auto;
   pointer-events: auto;
   width: 2.5rem;
+}
+
+.about-panel {
+  background: #fff;
+  border-radius: 10px;
+  font-size: 16px;
+  margin: 20px;
+  max-width: 19rem;
+  outline: none;
+  right: 0;
+
+  &--hidden {
+    display: none;
+  }
+
+  &__heading {
+    background: #0070CD;
+    border-radius: 10px 10px 0 0;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 24px;
+  }
+
+  &__text {
+    margin: 1rem;
+  }
+
+  &__arrow {
+    display: inline-block;
+    height: 1rem;
+    margin: 0 1rem 0 0;
+    width: 1rem;
+
+    &--right {
+      background: center / contain no-repeat url('~images/arrow-right.svg');
+    }
+    &--down {
+      background: center / contain no-repeat url('~images/arrow-down.svg');
+    }
+  }
 }
