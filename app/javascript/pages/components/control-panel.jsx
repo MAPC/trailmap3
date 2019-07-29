@@ -6,9 +6,9 @@ import MAP_STYLE from './map-style-basic-v8.json';
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 const image = {
-  'Protected Pathways': 'bike-lane',
-  'Walking Trails': 'multi-use',
-  'Proposed Trails': 'shared',
+  'Protected Pathways': 'protected-pathways',
+  'Separate Lane': 'separate-lane',
+  'Shared Roadway': 'shared-roadway',
 }
 
 export default class ControlPanel extends Component {
@@ -41,7 +41,7 @@ export default class ControlPanel extends Component {
               key={name}
               className="filter-button"
               type="button"
-              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}.png`)})` }}
+              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}
               onClick={this.toggleVisibility.bind(this, name)}>
         <div className="filler"></div>
         {name}
