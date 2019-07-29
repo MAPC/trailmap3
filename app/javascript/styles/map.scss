@@ -125,13 +125,14 @@ body {
 }
 
 .about-panel {
-  background: #fff;
+  background: #0070CD;
   border-radius: 10px;
   font-size: 16px;
   margin: 20px;
   max-width: 19rem;
   outline: none;
   right: 0;
+  z-index: 9;
 
   &--hidden {
     display: none;
@@ -139,14 +140,33 @@ body {
 
   &__heading {
     background: #0070CD;
-    border-radius: 10px 10px 0 0;
+    border: 0 none;
     color: #ffffff;
+    font-size: 16px;
     font-weight: 600;
-    padding: 12px 24px;
+    margin-bottom: 0;
+    padding: 1rem 1.25rem;
+    pointer-events: auto;
+    text-align: left;
+    width: 19rem;
+
+    &--first {
+      margin-top: .4rem;
+    }
   }
 
   &__text {
-    margin: 1rem;
+    background: #fff;
+    padding: 1rem;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    &--hidden {
+      height: 0;
+      margin: 0;
+      padding: 0;
+      visibility: hidden;
+    }
   }
 
   &__arrow {
