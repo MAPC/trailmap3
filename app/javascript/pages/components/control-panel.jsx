@@ -6,7 +6,7 @@ import MAP_STYLE from './map-style-basic-v8.json';
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 const image = {
-  'Bicycle Trails': 'bike-lane',
+  'Protected Pathways': 'bike-lane',
   'Walking Trails': 'multi-use',
   'Proposed Trails': 'shared',
 }
