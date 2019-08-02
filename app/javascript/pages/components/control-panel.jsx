@@ -65,6 +65,14 @@ export default class ControlPanel extends Component {
     }
   };
 
+  isProposedVisible() {
+    if (this.state.overlay.fac_stat.includes('Proposed')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   requestUrl(facStat, facType, surfaceType) {
     const selectString = "SELECT fac_type, fac_stat, surf_type, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
     let conditions = [];
@@ -170,15 +178,21 @@ export default class ControlPanel extends Component {
     );
   }
 
-  renderFacStatControl(name) {
+  renderFacStatControl() {
     return (
-      <button id={name}
-              key={name}
-              className="filter-button"
-              type="button"
-              onClick={this.updateFacStat.bind(this, name)}>
-        {name}
-      </button>
+      <div className="toggle-switch">
+        <label className="toggle-switch__label">
+          <input id="Proposed"
+                  key="Proposed"
+                  className="toggle-switch__input"
+                  type="checkbox"
+                  checked={this.isProposedVisible()}
+                  onChange={this.updateFacStat.bind(this, "Proposed")}>
+          </input>
+          <span className="toggle-switch__slider"></span>
+        </label>
+        <span className="toggle-switch__label">Proposed</span>
+      </div>
     );
   }
 
@@ -192,8 +206,8 @@ export default class ControlPanel extends Component {
           type="button">
                   Close
         </button>
+        { this.renderFacStatControl() }
         { trailTypes.map(trailType => this.renderFacTypeControl(trailType)) }
-        { trailStatus.map(trailStatus => this.renderFacStatControl(trailStatus)) }
       </div>
     );
   }
