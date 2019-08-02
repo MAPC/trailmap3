@@ -10,6 +10,8 @@ const image = {
   'Protected Pathways': 'protected-pathways',
   'Separate Lane': 'separate-lane',
   'Shared Roadway': 'shared-roadway',
+  'Improved Paths': 'improved-paths',
+  'Unimproved Paths': 'unimproved-paths'
 };
 
 const trailStatus = [
@@ -23,7 +25,7 @@ const trailTypes = [
   'Shared Roadway',
 ];
 
-const surfaceType = [
+const surfaceTypes = [
   'Improved Paths',
   'Unimproved Paths',
 ];
@@ -37,6 +39,11 @@ const enumsFromFacTypeValue = {
 const enumsFromFacStatValue = {
   'Existing': [1],
   'Proposed': [2]
+}
+
+const enumsFromSurfTypeValue = {
+  'Unimproved Paths': [1],
+  'Improved Paths': [2,3,4,5,6,7,8,9,10,11]
 }
 
 const layers = fromJS({
@@ -61,7 +68,7 @@ export default class ControlPanel extends Component {
     overlay: {
       fac_stat: ['Existing'],
       fac_type: [],
-      surface_type: [1,2,3,4,5,6,7,8,9,10,11],
+      surface_type: ['Improved Paths'],
     }
   };
 
@@ -113,13 +120,17 @@ export default class ControlPanel extends Component {
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
-  updateFacStat(layerId, event) {
-    let updatedMapStyle = this.props.mapStyle
-    let updatedFacStat = [];
+  withoutPreviousLayer() {
+    let updatedMapStyle = this.props.mapStyle;
     const layerToDeleteIndex = this.props.mapStyle.get('layers').findIndex(layer => layer.get('source') === 'path_overlay');
     if (layerToDeleteIndex > 0) {
       updatedMapStyle = this.props.mapStyle.deleteIn(['layers', layerToDeleteIndex]);
     }
+    return updatedMapStyle;
+  }
+
+  updateFacStat(layerId, event) {
+    let updatedFacStat = [];
 
     if(this.state.overlay['fac_stat'].includes(layerId)) {
       updatedFacStat = this.state.overlay['fac_stat'].filter(id => id !== layerId)
@@ -133,18 +144,13 @@ export default class ControlPanel extends Component {
 
     requestJson(this.requestUrl(updatedFacStat.map(value => enumsFromFacStatValue[value]),
                                 this.state.overlay.fac_type.map(value => enumsFromFacTypeValue[value]),
-                                this.state.overlay.surface_type)).then((map) => {
-      this.addLayer(map, 'path_overlay', updatedMapStyle);
+                                this.state.overlay.surface_type.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
+      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
     });
   }
 
   updateFacType(layerId, event) {
-    let updatedMapStyle = this.props.mapStyle
     let updatedFacType = [];
-    const layerToDeleteIndex = this.props.mapStyle.get('layers').findIndex(layer => layer.get('source') === 'path_overlay');
-    if (layerToDeleteIndex > 0) {
-      updatedMapStyle = this.props.mapStyle.deleteIn(['layers', layerToDeleteIndex]);
-    }
 
     if(this.state.overlay['fac_type'].includes(layerId)) {
       updatedFacType = this.state.overlay['fac_type'].filter(id => id !== layerId)
@@ -158,8 +164,28 @@ export default class ControlPanel extends Component {
 
     requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumsFromFacStatValue[value]),
                                 updatedFacType.map(value => enumsFromFacTypeValue[value]),
-                                this.state.overlay.surface_type)).then((map) => {
-      this.addLayer(map, 'path_overlay', updatedMapStyle);
+                                this.state.overlay.surface_type.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
+      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
+    });
+  }
+
+  updateSurfaceType(layerId, event) {
+    let updatedSurfType = [];
+
+    if(this.state.overlay['surface_type'].includes(layerId)) {
+      updatedSurfType = this.state.overlay['surface_type'].filter(id => id !== layerId)
+    } else {
+      updatedSurfType = this.state.overlay['surface_type'].concat([layerId])
+    }
+
+    this.setState({
+      overlay: { ...this.state.overlay, surface_type: updatedSurfType }
+    })
+
+    requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumsFromFacStatValue[value]),
+                                this.state.overlay.fac_type.map(value => enumsFromFacTypeValue[value]),
+                                updatedSurfType.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
+      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
     });
   }
 
@@ -196,6 +222,22 @@ export default class ControlPanel extends Component {
     );
   }
 
+  renderSurfaceTypeControl(name) {
+    return (
+      <button id={name}
+              key={name}
+              className="sub-filter-button"
+              type="button"
+              onClick={this.updateSurfaceType.bind(this, name)}>
+        <div className="sub-filter-button__image"
+             style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}>
+        </div>
+        {name}
+        <div className='filter-button__overlay'></div>
+      </button>
+    );
+  }
+
   render() {
     return (
       <div className="control-panel">
@@ -208,6 +250,7 @@ export default class ControlPanel extends Component {
         </button>
         { this.renderFacStatControl() }
         { trailTypes.map(trailType => this.renderFacTypeControl(trailType)) }
+        { surfaceTypes.map(surfaceType => this.renderSurfaceTypeControl(surfaceType)) }
       </div>
     );
   }
