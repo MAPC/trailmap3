@@ -28,15 +28,15 @@ const surfaceType = [
   'Unimproved Paths',
 ];
 
-const enumFromFacTypeValue = {
-  'Protected Pathways': 2,
-  'Separate Lane': 1,
-  'Shared Roadway': 9
+const enumsFromFacTypeValue = {
+  'Protected Pathways': [2,5],
+  'Separate Lane': [1,4],
+  'Shared Roadway': [3,7,9]
 }
 
-const enumFromFacStatValue = {
-  'Existing': 1,
-  'Proposed': 2
+const enumsFromFacStatValue = {
+  'Existing': [1],
+  'Proposed': [2]
 }
 
 const layers = fromJS({
@@ -131,8 +131,8 @@ export default class ControlPanel extends Component {
       overlay: { ...this.state.overlay, fac_stat: updatedFacStat }
     })
 
-    requestJson(this.requestUrl(updatedFacStat.map(value => enumFromFacStatValue[value]),
-                                this.state.overlay.fac_type.map(value => enumFromFacTypeValue[value]),
+    requestJson(this.requestUrl(updatedFacStat.map(value => enumsFromFacStatValue[value]),
+                                this.state.overlay.fac_type.map(value => enumsFromFacTypeValue[value]),
                                 this.state.overlay.surface_type)).then((map) => {
       this.addLayer(map, 'path_overlay', updatedMapStyle);
     });
@@ -156,8 +156,8 @@ export default class ControlPanel extends Component {
       overlay: { ...this.state.overlay, fac_type: updatedFacType }
     })
 
-    requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumFromFacStatValue[value]),
-                                updatedFacType.map(value => enumFromFacTypeValue[value]),
+    requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumsFromFacStatValue[value]),
+                                updatedFacType.map(value => enumsFromFacTypeValue[value]),
                                 this.state.overlay.surface_type)).then((map) => {
       this.addLayer(map, 'path_overlay', updatedMapStyle);
     });
