@@ -41,7 +41,7 @@ const enumsFromFacStatValue = {
   'Proposed': [2]
 }
 
-const enumsFromSurfTypeValue = {
+const enumsFromSurfaceTypeValue = {
   'Unimproved Paths': [1],
   'Improved Paths': [2,3,4,5,6,7,8,9,10,11]
 }
@@ -66,36 +66,39 @@ const layers = fromJS({
 export default class ControlPanel extends Component {
   state = {
     overlay: {
-      fac_stat: ['Existing'],
-      fac_type: [],
-      surface_type: ['Improved Paths'],
+      facStat: ['Existing'],
+      facType: [],
+      surfaceType: ['Improved Paths'],
     }
   };
 
   isProposedVisible() {
-    if (this.state.overlay.fac_stat.includes('Proposed')) {
+    if (this.state.overlay.facStat.includes('Proposed')) {
       return true;
     } else {
       return false;
     }
   }
 
-  requestUrl(facStat, facType, surfaceType) {
+  requestUrl({facStat, facType, surfaceType}) {
     const selectString = "SELECT fac_type, fac_stat, surf_type, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
+    const facStatEnums = facStat ? facStat.map(value => enumsFromFacStatValue[value]) : this.state.overlay.facStat.map(value => enumsFromFacStatValue[value])
+    const facTypeEnums = facType ? facType.map(value => enumsFromFacTypeValue[value]) : this.state.overlay.facType.map(value => enumsFromFacTypeValue[value])
+    const surfaceTypeEnums = surfaceType ? surfaceType.map(value => enumsFromSurfaceTypeValue[value]) : this.state.overlay.surfaceType.map(value => enumsFromSurfaceTypeValue[value])
     let conditions = [];
 
-    if (facStat.length !== 0) {
-      conditions.push(`fac_stat IN (${facStat.join(',')})`)
+    if (facStatEnums.length !== 0) {
+      conditions.push(`fac_stat IN (${facStatEnums.join(',')})`)
     } else {
       conditions.push(`fac_stat IN (null)`)
     }
-    if (facType.length !== 0) {
-      conditions.push(`fac_type IN (${facType.join(',')})`)
+    if (facTypeEnums.length !== 0) {
+      conditions.push(`fac_type IN (${facTypeEnums.join(',')})`)
     } else {
       conditions.push(`fac_type IN (null)`)
     }
-    if (surfaceType.length !== 0) {
-      conditions.push(`surf_type IN (${surfaceType.join(',')})`)
+    if (surfaceTypeEnums.length !== 0) {
+      conditions.push(`surf_type IN (${surfaceTypeEnums.join(',')})`)
     } else {
       conditions.push(`surf_type IN (null)`)
     }
@@ -129,82 +132,25 @@ export default class ControlPanel extends Component {
     return updatedMapStyle;
   }
 
-  updateFacStat(layerId, event) {
-    let updatedFacStat = [];
+  updateOverlay(property, value, event) {
+    let updatedProperty = [];
 
-    if(this.state.overlay['fac_stat'].includes(layerId)) {
-      updatedFacStat = this.state.overlay['fac_stat'].filter(id => id !== layerId)
+    if(this.state.overlay[property].includes(value)) {
+      updatedProperty = this.state.overlay[property].filter(id => id !== value)
     } else {
-      updatedFacStat = this.state.overlay['fac_stat'].concat([layerId])
+      updatedProperty = this.state.overlay[property].concat([value])
     }
 
     this.setState({
-      overlay: { ...this.state.overlay, fac_stat: updatedFacStat }
+      overlay: { ...this.state.overlay, [property]: updatedProperty }
     })
 
-    requestJson(this.requestUrl(updatedFacStat.map(value => enumsFromFacStatValue[value]),
-                                this.state.overlay.fac_type.map(value => enumsFromFacTypeValue[value]),
-                                this.state.overlay.surface_type.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
+    requestJson(this.requestUrl({ [property]: updatedProperty })).then((map) => {
       this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
     });
   }
 
-  updateFacType(layerId, event) {
-    let updatedFacType = [];
-
-    if(this.state.overlay['fac_type'].includes(layerId)) {
-      updatedFacType = this.state.overlay['fac_type'].filter(id => id !== layerId)
-    } else {
-      updatedFacType = this.state.overlay['fac_type'].concat([layerId])
-    }
-
-    this.setState({
-      overlay: { ...this.state.overlay, fac_type: updatedFacType }
-    })
-
-    requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumsFromFacStatValue[value]),
-                                updatedFacType.map(value => enumsFromFacTypeValue[value]),
-                                this.state.overlay.surface_type.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
-      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
-    });
-  }
-
-  updateSurfaceType(layerId, event) {
-    let updatedSurfType = [];
-
-    if(this.state.overlay['surface_type'].includes(layerId)) {
-      updatedSurfType = this.state.overlay['surface_type'].filter(id => id !== layerId)
-    } else {
-      updatedSurfType = this.state.overlay['surface_type'].concat([layerId])
-    }
-
-    this.setState({
-      overlay: { ...this.state.overlay, surface_type: updatedSurfType }
-    })
-
-    requestJson(this.requestUrl(this.state.overlay.fac_stat.map(value => enumsFromFacStatValue[value]),
-                                this.state.overlay.fac_type.map(value => enumsFromFacTypeValue[value]),
-                                updatedSurfType.map(value => enumsFromSurfTypeValue[value]))).then((map) => {
-      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
-    });
-  }
-
-  renderFacTypeControl(name) {
-    return (
-      <button id={name}
-              key={name}
-              className="filter-button"
-              type="button"
-              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}
-              onClick={this.updateFacType.bind(this, name)}>
-        <div className="filler"></div>
-        {name}
-        <div className='filter-button__overlay'></div>
-      </button>
-    );
-  }
-
-  renderFacStatControl() {
+  renderProposedControl() {
     return (
       <div className="toggle-switch">
         <label className="toggle-switch__label">
@@ -213,7 +159,7 @@ export default class ControlPanel extends Component {
                   className="toggle-switch__input"
                   type="checkbox"
                   checked={this.isProposedVisible()}
-                  onChange={this.updateFacStat.bind(this, "Proposed")}>
+                  onChange={this.updateOverlay.bind(this, 'facStat', 'Proposed')}>
           </input>
           <span className="toggle-switch__slider"></span>
         </label>
@@ -222,13 +168,28 @@ export default class ControlPanel extends Component {
     );
   }
 
-  renderSurfaceTypeControl(name) {
+  renderParentControl(name) {
+    return (
+      <button id={name}
+              key={name}
+              className="filter-button"
+              type="button"
+              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}
+              onClick={this.updateOverlay.bind(this, 'facType', name)}>
+        <div className="filler"></div>
+        {name}
+        <div className='filter-button__overlay'></div>
+      </button>
+    );
+  }
+
+  renderChildControl(name) {
     return (
       <button id={name}
               key={name}
               className="sub-filter-button"
               type="button"
-              onClick={this.updateSurfaceType.bind(this, name)}>
+              onClick={this.updateOverlay.bind(this, 'surfaceType', name)}>
         <div className="sub-filter-button__image"
              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}>
         </div>
@@ -248,9 +209,9 @@ export default class ControlPanel extends Component {
           type="button">
                   Close
         </button>
-        { this.renderFacStatControl() }
-        { trailTypes.map(trailType => this.renderFacTypeControl(trailType)) }
-        { surfaceTypes.map(surfaceType => this.renderSurfaceTypeControl(surfaceType)) }
+        { this.renderProposedControl() }
+        { trailTypes.map(trailType => this.renderParentControl(trailType)) }
+        { surfaceTypes.map(surfaceType => this.renderChildControl(surfaceType)) }
       </div>
     );
   }
