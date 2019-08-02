@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
+$toggle-switch-height: 20px;
 
 body {
   font-family: 'Source Sans Pro', sans-serif;
@@ -181,5 +182,64 @@ body {
     &--down {
       background: center / contain no-repeat url('~images/arrow-down.svg');
     }
+  }
+}
+
+.toggle-switch {
+  line-height: 1.6;
+
+  &__label {
+    display: inline-block;
+    height: $toggle-switch-height;
+    position: relative;
+    width: 45px;
+  }
+
+  &__input {
+    height: 0;
+    opacity: 0;
+    width: 0;
+  }
+
+  &__label {
+    color: #707070;
+    font-weight: 600;
+    margin-left: .5rem;
+  }
+
+  &__slider {
+    background-color: #ccc;
+    border-radius: $toggle-switch-height;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+
+    &:before {
+      background-color: white;
+      border-radius: 50%;
+      bottom: 2px;
+      content: "";
+      height: calc(#{$toggle-switch-height} * .7647);
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: calc(#{$toggle-switch-height} * .7647);
+    }
+  }
+
+  input:checked + &__slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + &__slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + &__slider:before {
+    transform: translateX(22px);
   }
 }
