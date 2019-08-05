@@ -122,8 +122,13 @@ export default class ControlPanel extends Component {
     }
   };
 
+  allValuesIn(a, b) {
+    const booleans = b.map(value => a.includes(value))
+    return !booleans.includes(false)
+  }
+
   isProposedVisible() {
-    if (this.state.overlay.facStat.includes('Proposed')) {
+    if (this.allValuesIn(this.state.overlay.facStat, [2,3])) {
       return true;
     } else {
       return false;
@@ -188,8 +193,6 @@ export default class ControlPanel extends Component {
     values.map(value => {
       if(this.state.overlay[property].includes(value)) {
         updatedProperty = updatedProperty.filter(id => id !== value)
-        console.log('Removed value:', value)
-        console.log('Updated property with removed value:', updatedProperty)
       } else {
         updatedProperty = updatedProperty.concat([value])
       }
@@ -240,11 +243,6 @@ export default class ControlPanel extends Component {
         <div className={className}></div>
       </button>
     );
-  }
-
-  allValuesIn(a, b) {
-    const booleans = b.map(value => a.includes(value))
-    return !booleans.includes(false)
   }
 
   renderChildControl(name, overlayType) {
