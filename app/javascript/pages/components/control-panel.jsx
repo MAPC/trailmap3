@@ -14,12 +14,6 @@ const image = {
   'Unimproved Paths': 'unimproved-paths'
 };
 
-const trailTypes = [
-  'Protected Pathways',
-  'Separate Lane',
-  'Shared Roadway',
-];
-
 const surfaceTypes = [
   'Improved Paths',
   'Unimproved Paths',
