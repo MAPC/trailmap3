@@ -135,6 +135,14 @@ export default class ControlPanel extends Component {
   updateOverlay(property, value, event) {
     let updatedProperty = [];
 
+    for (let i = 0; i < event.currentTarget.childNodes.length; i++) {
+      if (event.currentTarget.childNodes[i].className === 'filter-button__overlay filter-button__overlay--selected') {
+        event.currentTarget.childNodes[i].className = 'filter-button__overlay'
+      } else if (event.currentTarget.childNodes[i].className === 'filter-button__overlay') {
+        event.currentTarget.childNodes[i].className = 'filter-button__overlay filter-button__overlay--selected'
+      }
+    }
+
     if(this.state.overlay[property].includes(value)) {
       updatedProperty = this.state.overlay[property].filter(id => id !== value)
     } else {
@@ -168,7 +176,12 @@ export default class ControlPanel extends Component {
     );
   }
 
-  renderParentControl(name) {
+  renderParentControl(name, overlayType) {
+    let className = 'filter-button__overlay';
+    if (this.state.overlay[overlayType].includes(name)) {
+      className += ' filter-button__overlay--selected';
+    }
+
     return (
       <button id={name}
               key={name}
@@ -178,12 +191,17 @@ export default class ControlPanel extends Component {
               onClick={this.updateOverlay.bind(this, 'facType', name)}>
         <div className="filler"></div>
         {name}
-        <div className='filter-button__overlay'></div>
+        <div className={className}></div>
       </button>
     );
   }
 
-  renderChildControl(name) {
+  renderChildControl(name, overlayType) {
+    let className = 'filter-button__overlay';
+    if (this.state.overlay[overlayType].includes(name)) {
+      className += ' filter-button__overlay--selected';
+    }
+
     return (
       <button id={name}
               key={name}
@@ -194,7 +212,7 @@ export default class ControlPanel extends Component {
              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}>
         </div>
         {name}
-        <div className='filter-button__overlay'></div>
+        <div className={className}></div>
       </button>
     );
   }
@@ -210,8 +228,8 @@ export default class ControlPanel extends Component {
                   Close
         </button>
         { this.renderProposedControl() }
-        { trailTypes.map(trailType => this.renderParentControl(trailType)) }
-        { surfaceTypes.map(surfaceType => this.renderChildControl(surfaceType)) }
+        { trailTypes.map(trailType => this.renderParentControl(trailType, 'facType')) }
+        { surfaceTypes.map(surfaceType => this.renderChildControl(surfaceType, 'surfaceType')) }
       </div>
     );
   }

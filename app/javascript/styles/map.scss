@@ -76,6 +76,7 @@ body {
   width: 8.75rem;
 
   &__overlay {
+    border-radius: 10px;
     height: 100%;
     left: 0;
     position: absolute;
@@ -84,7 +85,7 @@ body {
 
     &--selected {
       background: #0070CD;
-      opacity: .75;
+      opacity: .3;
     }
   }
 }
