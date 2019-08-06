@@ -12,6 +12,24 @@ const enumsFromFacTypeValue = {
   'Shared Roadway': [3,7,9]
 }
 
+const colors = {
+  1: '#0874b9',
+  2: '#7f3193',
+  3: '#FF0000',
+  4: '#FF0000',
+  5: '#275f68',
+  6: '#FF0000',
+  7: '#FF0000',
+  8: '#FF0000',
+  9: '#FF0000',
+}
+
+const opacity = {
+  1: 1,
+  2: 0.75,
+  3: 0.5
+}
+
 const controlPanelOptions = [
   { name: 'Protected Pathways',
     description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
@@ -83,8 +101,9 @@ const layers = fromJS({
           'visibility': 'visible'
         },
         paint: {
-          'line-color': '#0874b9',
-          'line-width': 2,
+          'line-color': ['get', 'color'],
+          'line-width': 3,
+          'line-opacity': ['get', 'opacity']
         }
       }]
 })
@@ -141,7 +160,7 @@ export default class ControlPanel extends Component {
   addLayer(newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source])
     if (newData.rows !== null) {
-      const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat }}));
+      const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat, color: colors[rows.fac_type], opacity: opacity[rows.fac_stat] }}));
       mapStyleWithNewSource = mapStyle.setIn(['sources', source], { type: 'geojson' })
                                       .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
                                       .setIn(['sources', source, 'data', 'features'], geoJson)
