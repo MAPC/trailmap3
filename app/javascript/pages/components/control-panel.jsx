@@ -6,33 +6,10 @@ import {json as requestJson} from 'd3-fetch';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
-const image = {
-  'Protected Pathways': 'protected-pathways',
-  'Separate Lane': 'separate-lane',
-  'Shared Roadway': 'shared-roadway',
-  'Improved Paths': 'improved-paths',
-  'Unimproved Paths': 'unimproved-paths'
-};
-
-const surfaceTypes = [
-  'Improved Paths',
-  'Unimproved Paths',
-];
-
 const enumsFromFacTypeValue = {
   'Protected Pathways': [2,5],
   'Separate Lane': [1,4],
   'Shared Roadway': [3,7,9]
-}
-
-const enumsFromFacStatValue = {
-  'Existing': [1],
-  'Proposed': [2]
-}
-
-const enumsFromSurfaceTypeValue = {
-  'Unimproved Paths': [1],
-  'Improved Paths': [2,3,4,5,6,7,8,9,10,11]
 }
 
 const controlPanelOptions = [
@@ -46,11 +23,11 @@ const controlPanelOptions = [
     },
     children: [
       { name: 'Improved Paths',
-        overlayType: 'surfType',
+        overlayType: 'surfaceType',
         overlayValues: [2,3,4,5,6,7,8,9,10,11],
       },
       { name: 'Unimproved Paths',
-        overlayType: 'surfType',
+        overlayType: 'surfaceType',
         overlayValues: [1]
         },
       { name: 'Protected Bike Lane',
@@ -117,14 +94,14 @@ export default class ControlPanel extends Component {
     overlay: {
       facStat: [1],
       facType: [],
-      surfaceType: [1,2,3,4,5,6,7,8,9,10,11],
+      surfaceType: [],
       facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
-    }
+    },
+    selectedParent: controlPanelOptions[0],
   };
 
   allValuesIn(a, b) {
-    const booleans = b.map(value => a.includes(value))
-    return !booleans.includes(false)
+    return !b.map(value => a.includes(value)).includes(false)
   }
 
   isProposedVisible() {
@@ -140,6 +117,7 @@ export default class ControlPanel extends Component {
     const facStatEnums = facStat ? facStat : this.state.overlay.facStat
     const facTypeEnums = facType ? facType : this.state.overlay.facType
     const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType
+    const facDetailEnums = facDetail ? facDetail : this.state.overlay.facDetail
     let conditions = [];
 
     if (facStatEnums.length !== 0) {
@@ -187,6 +165,17 @@ export default class ControlPanel extends Component {
     return updatedMapStyle;
   }
 
+  setOverlay(option) {
+    this.setState({
+      overlay: option.defaultState,
+      selectedParent: option
+    })
+
+    requestJson(this.requestUrl(option.defaultState)).then((map) => {
+      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
+    });
+  }
+
   updateOverlay(property, values, event) {
     let updatedProperty = this.state.overlay[property];
 
@@ -225,42 +214,42 @@ export default class ControlPanel extends Component {
     );
   }
 
-  renderParentControl(name, overlayType) {
+  renderParentControl(trailType) {
     let className = 'filter-button__overlay';
-    if (this.allValuesIn(this.state.overlay[overlayType], enumsFromFacTypeValue[name])) {
+    if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
       className += ' filter-button__overlay--selected';
     }
-
     return (
-      <button id={name}
-              key={name}
+      <button id={trailType.name}
+              key={trailType.name}
               className="filter-button"
               type="button"
-              style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}
-              onClick={this.updateOverlay.bind(this, 'facType', enumsFromFacTypeValue[name])}>
+              style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
+              onClick={this.setOverlay.bind(this, trailType)}>
         <div className="filler"></div>
-        {name}
+        {trailType.name}
         <div className={className}></div>
       </button>
     );
   }
 
-  renderChildControl(name, overlayType) {
+  renderChildControl(child) {
     let className = 'filter-button__overlay';
-    if (this.allValuesIn(this.state.overlay[overlayType], enumsFromSurfaceTypeValue[name])) {
+    if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
       className += ' filter-button__overlay--selected';
     }
 
     return (
-      <button id={name}
-              key={name}
+      <button id={child.name}
+              key={child.name}
               className="sub-filter-button"
               type="button"
-              onClick={this.updateOverlay.bind(this, 'surfaceType', enumsFromSurfaceTypeValue[name])}>
+              onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues)}>
         <div className="sub-filter-button__image"
-             style={{ backgroundImage: `url(${require(`../../../assets/images/${image[name]}@2x.png`)})` }}>
+             style={{ backgroundImage: `url(${require(`../../../assets/images/${child.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
+        >
         </div>
-        {name}
+        {child.name}
         <div className={className}></div>
       </button>
     );
@@ -277,8 +266,8 @@ export default class ControlPanel extends Component {
                   Close
         </button>
         { this.renderProposedControl() }
-        { controlPanelOptions.map(trailType => this.renderParentControl(trailType.name, 'facType')) }
-        { surfaceTypes.map(surfaceType => this.renderChildControl(surfaceType, 'surfaceType')) }
+        { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
+        { this.state.selectedParent.children.map(child => this.renderChildControl(child)) }
       </div>
     );
   }
