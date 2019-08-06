@@ -51,6 +51,10 @@ body {
     width: 2.5rem;
   }
 
+  &__children {
+    display: block;
+  }
+
   &--hidden {
     visibility: hidden;
   }

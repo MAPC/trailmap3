@@ -117,7 +117,6 @@ export default class ControlPanel extends Component {
     const facStatEnums = facStat ? facStat : this.state.overlay.facStat
     const facTypeEnums = facType ? facType : this.state.overlay.facType
     const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType
-    const facDetailEnums = facDetail ? facDetail : this.state.overlay.facDetail
     let conditions = [];
 
     if (facStatEnums.length !== 0) {
@@ -267,7 +266,9 @@ export default class ControlPanel extends Component {
         </button>
         { this.renderProposedControl() }
         { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
-        { this.state.selectedParent.children.map(child => this.renderChildControl(child)) }
+        <div className="control-panel__children">
+          { this.state.selectedParent.children.map(child => this.renderChildControl(child)) }
+        </div>
       </div>
     );
   }
