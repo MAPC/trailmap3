@@ -33,6 +33,8 @@ const opacity = {
 const controlPanelOptions = [
   { name: 'Protected Pathways',
     description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
+    overlayType: 'facType',
+    overlayValues: [2,5],
     defaultState: {
       facStat: [1],
       facType: [2,5],
@@ -56,6 +58,8 @@ const controlPanelOptions = [
   },
   { name: 'Separate Lane',
     description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
+    overlayType: 'facType',
+    overlayValues: [1,4],
     defaultState: {
       facStat: [1],
       facType: [1,4],
@@ -71,6 +75,8 @@ const controlPanelOptions = [
   },
   { name: 'Shared Roadway',
     description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
+    overlayType: 'facType',
+    overlayValues: [3,7,9],
     defaultState: {
       facStat: [1],
       facType: [3,7,9],
@@ -183,17 +189,6 @@ export default class ControlPanel extends Component {
     return updatedMapStyle;
   }
 
-  setOverlay(option) {
-    this.setState({
-      overlay: option.defaultState,
-      selectedParent: option
-    })
-
-    requestJson(this.requestUrl(option.defaultState)).then((map) => {
-      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
-    });
-  }
-
   updateOverlay(property, values, event) {
     let updatedProperty = this.state.overlay[property];
 
@@ -243,7 +238,7 @@ export default class ControlPanel extends Component {
               className="filter-button"
               type="button"
               style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-              onClick={this.setOverlay.bind(this, trailType)}>
+              onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues)}>
         <div className="filler"></div>
         {trailType.name}
         <div className={className}></div>
