@@ -15,13 +15,11 @@ const enumsFromFacTypeValue = {
 const colors = {
   1: '#0874b9',
   2: '#7f3193',
-  3: '#FF0000',
-  4: '#FF0000',
-  5: '#275f68',
-  6: '#FF0000',
-  7: '#FF0000',
-  8: '#FF0000',
-  9: '#FF0000',
+  3: '#ADD8E6',
+  4: '#0874b9',
+  5: '#7f3193',
+  7: '#ADD8E6',
+  9: '#ADD8E6',
 }
 
 const opacity = {
