@@ -33,12 +33,6 @@ const controlPanelOptions = [
     description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
     overlayType: 'facType',
     overlayValues: [2,5],
-    defaultState: {
-      facStat: [1],
-      facType: [2,5],
-      surfaceType: [1,2,3,4,5,6,7,8,9,10,11],
-      facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94]
-    },
     children: [
       { name: 'Improved Paths',
         overlayType: 'surfaceType',
@@ -58,12 +52,6 @@ const controlPanelOptions = [
     description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
     overlayType: 'facType',
     overlayValues: [1,4],
-    defaultState: {
-      facStat: [1],
-      facType: [1,4],
-      surfaceType: [1,2,3,4,5,6,7,8,9,10,11],
-      facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94]
-    },
     children: [
       { name: 'Bike Lane',
         overlayType: 'facType',
@@ -75,12 +63,6 @@ const controlPanelOptions = [
     description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
     overlayType: 'facType',
     overlayValues: [3,7,9],
-    defaultState: {
-      facStat: [1],
-      facType: [3,7,9],
-      surfaceType: [1,2,3,4,5,6,7,8,9,10,11],
-      facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94]
-    },
     children: [
       { name: 'Advisory Shoulders',
         overlayType: 'facDetail',
@@ -117,10 +99,9 @@ export default class ControlPanel extends Component {
     overlay: {
       facStat: [1],
       facType: [],
-      surfaceType: [],
+      surfaceType: [2,3,4,5,6,7,8,9,10,11],
       facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
     },
-    selectedParent: controlPanelOptions[0],
   };
 
   allValuesIn(a, b) {
@@ -226,40 +207,43 @@ export default class ControlPanel extends Component {
   }
 
   renderParentControl(trailType) {
-    let className = 'filter-button__overlay';
+    let className = 'filter-buttons__overlay';
     if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
-      className += ' filter-button__overlay--selected';
+      className += ' filter-buttons__overlay--selected';
     }
     return (
-      <button id={trailType.name}
-              key={trailType.name}
-              className="filter-button"
-              type="button"
-              style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-              onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues)}>
-        <div className="filler"></div>
-        {trailType.name}
-        <div className={className}></div>
-      </button>
+      <div className="filter-buttons__container" key={trailType.name}>
+        <div className="filter-buttons__container">
+          <button id={trailType.name}
+                  className="filter-buttons__button"
+                  type="button"
+                  style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
+                  onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues)}>
+            <div className={className}></div>
+          </button>
+          <label htmlFor={trailType.name} className="filter-buttons__label">
+            {trailType.name}
+          </label>
+        </div>
+        <div className="filter-buttons__description">
+          {trailType.description}
+        </div>
+      </div>
     );
   }
 
   renderChildControl(child) {
-    let className = 'filter-button__overlay';
+    let className = 'filter-buttons__overlay';
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
-      className += ' filter-button__overlay--selected';
+      className += ' filter-buttons__overlay--selected';
     }
 
     return (
       <button id={child.name}
               key={child.name}
-              className="sub-filter-button"
+              className="small-filter-button"
               type="button"
               onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues)}>
-        <div className="sub-filter-button__image"
-             style={{ backgroundImage: `url(${require(`../../../assets/images/${child.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-        >
-        </div>
         {child.name}
         <div className={className}></div>
       </button>
@@ -277,9 +261,9 @@ export default class ControlPanel extends Component {
                   Close
         </button>
         { this.renderProposedControl() }
-        { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
-        <div className="control-panel__children">
-          { this.state.selectedParent.children.map(child => this.renderChildControl(child)) }
+        <div className="filter-buttons">
+          { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
+          { controlPanelOptions.map(trailType => trailType.children.map(child => this.renderChildControl(child))) }
         </div>
       </div>
     );
