@@ -75,7 +75,12 @@ body {
   }
 
   &__container {
-    align-items: start;
+    display: grid;
+    grid-template-rows: 12rem 13rem 1fr;
+    text-align: center;
+  }
+
+  &__button-container {
     display: grid;
     text-align: center;
   }
@@ -117,8 +122,8 @@ body {
   }
 
   &__label {
-    line-height: normal;
     font-weight: 600;
+    line-height: normal;
   }
 }
 

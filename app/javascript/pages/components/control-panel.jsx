@@ -238,7 +238,7 @@ export default class ControlPanel extends Component {
     }
     return (
       <div className="filter-buttons__container" key={trailType.name}>
-        <div className="filter-buttons__container">
+        <div className="filter-buttons__button-container">
           <button id={trailType.name}
                   className="filter-buttons__button"
                   type="button"
@@ -252,6 +252,9 @@ export default class ControlPanel extends Component {
         </div>
         <div className="filter-buttons__description">
           {trailType.description}
+        </div>
+        <div className="filter-buttons__children">
+          {trailType.children.map(child => this.renderChildControl(child))}
         </div>
       </div>
     );
@@ -288,7 +291,6 @@ export default class ControlPanel extends Component {
         { this.renderProposedControl() }
         <div className="filter-buttons">
           { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
-          { controlPanelOptions.map(trailType => trailType.children.map(child => this.renderChildControl(child))) }
         </div>
       </div>
     );
