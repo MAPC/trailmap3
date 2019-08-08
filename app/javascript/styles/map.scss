@@ -99,6 +99,21 @@ body {
       background: #0070CD;
       opacity: .3;
     }
+
+    &--selected-protected-pathways {
+      background: #7f3193;
+      opacity: .3;
+    }
+
+    &--selected-separate-lane {
+      background: #0874b9;
+      opacity: .3;
+    }
+
+    &--selected-shared-roadway {
+      background: #ADD8E6;
+      opacity: .3;
+    }
   }
 
   &__label {
