@@ -51,18 +51,18 @@ const controlPanelOptions = [
   { name: 'Separate Lane',
     description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
     overlayType: 'facType',
-    overlayValues: [1,4],
+    overlayValues: [1],
     children: [
       { name: 'Bike Lane',
         overlayType: 'facType',
-        overlayValues: [2],
+        overlayValues: [1],
       },
     ]
   },
   { name: 'Shared Roadway',
     description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
     overlayType: 'facType',
-    overlayValues: [3,7,9],
+    overlayValues: [9],
     children: [
       { name: 'Advisory Shoulders',
         overlayType: 'facDetail',
