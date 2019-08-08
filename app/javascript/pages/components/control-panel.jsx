@@ -24,8 +24,8 @@ const colors = {
 
 const opacity = {
   1: 1,
-  2: 0.75,
-  3: 0.5
+  2: 0,
+  3: 0
 }
 
 const controlPanelOptions = [
@@ -78,7 +78,7 @@ const controlPanelOptions = [
 
 const layers = fromJS({
   layers: [{
-        id: 'Protected Pathways',
+        id: 'Existing Trails',
         type: 'line',
         source: 'path_overlay',
         layout: {
@@ -88,8 +88,23 @@ const layers = fromJS({
         },
         paint: {
           'line-color': ['get', 'color'],
-          'line-width': 3,
+          'line-width': 2,
           'line-opacity': ['get', 'opacity']
+        }
+      },
+      {
+        id: 'Proposed Trails',
+        type: 'line',
+        source: 'proposed_overlay',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+          'visibility': 'visible'
+        },
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 2,
+          'line-dasharray': [2, 2],
         }
       }]
 })
@@ -116,12 +131,16 @@ export default class ControlPanel extends Component {
     }
   }
 
-  requestUrl({facStat, facType, surfaceType}) {
+  requestUrl({facStat, facType, surfaceType, source}) {
     const selectString = "SELECT fac_type, fac_stat, surf_type, fac_detail, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
-    const facStatEnums = facStat ? facStat : this.state.overlay.facStat
+    let facStatEnums = facStat ? facStat : this.state.overlay.facStat
     const facTypeEnums = facType ? facType : this.state.overlay.facType
     const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType
     let conditions = [];
+
+    if(source === 'proposed_overlay') {
+      facStatEnums = [2,3]
+    }
 
     if (facStatEnums.length !== 0) {
       conditions.push(`fac_stat IN (${facStatEnums.join(',')})`)
@@ -159,16 +178,16 @@ export default class ControlPanel extends Component {
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
-  withoutPreviousLayer() {
+  withoutPreviousLayer(source) {
     let updatedMapStyle = this.props.mapStyle;
-    const layerToDeleteIndex = this.props.mapStyle.get('layers').findIndex(layer => layer.get('source') === 'path_overlay');
+    const layerToDeleteIndex = this.props.mapStyle.get('layers').findIndex(layer => layer.get('source') === source);
     if (layerToDeleteIndex > 0) {
       updatedMapStyle = this.props.mapStyle.deleteIn(['layers', layerToDeleteIndex]);
     }
     return updatedMapStyle;
   }
 
-  updateOverlay(property, values, event) {
+  updateOverlay(property, values, source, event) {
     let updatedProperty = this.state.overlay[property];
 
     values.map(value => {
@@ -183,9 +202,15 @@ export default class ControlPanel extends Component {
       overlay: { ...this.state.overlay, [property]: updatedProperty }
     })
 
-    requestJson(this.requestUrl({ [property]: updatedProperty })).then((map) => {
-      this.addLayer(map, 'path_overlay', this.withoutPreviousLayer());
+    requestJson(this.requestUrl({ [property]: updatedProperty, source: 'path_overlay' })).then((map) => {
+      this.addLayer(map, source, this.withoutPreviousLayer(source));
     });
+
+    if(this.isProposedVisible() && property !== 'facStat') {
+      requestJson(this.requestUrl({ [property]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
+        this.addLayer(map, 'proposed_overlay', this.withoutPreviousLayer('proposed_overlay'));
+      });
+    }
   }
 
   renderProposedControl() {
@@ -197,7 +222,7 @@ export default class ControlPanel extends Component {
                   className="toggle-switch__input"
                   type="checkbox"
                   checked={this.isProposedVisible()}
-                  onChange={this.updateOverlay.bind(this, 'facStat', [2,3])}>
+                  onChange={this.updateOverlay.bind(this, 'facStat', [2,3], 'proposed_overlay')}>
           </input>
           <span className="toggle-switch__slider"></span>
         </label>
@@ -218,7 +243,7 @@ export default class ControlPanel extends Component {
                   className="filter-buttons__button"
                   type="button"
                   style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-                  onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues)}>
+                  onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues, 'path_overlay')}>
             <div className={className}></div>
           </button>
           <label htmlFor={trailType.name} className="filter-buttons__label">
@@ -243,7 +268,7 @@ export default class ControlPanel extends Component {
               key={child.name}
               className="small-filter-button"
               type="button"
-              onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues)}>
+              onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues, 'path_overlay')}>
         {child.name}
         <div className={className}></div>
       </button>
