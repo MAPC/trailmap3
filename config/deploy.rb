@@ -2,7 +2,7 @@
 lock "~> 3.11.0"
 
 set :application, "trailmap"
-set :repo_url, "git@example.com:me/trailmap3.git"
+set :repo_url, "git@github.com:mapc/trailmap3.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
