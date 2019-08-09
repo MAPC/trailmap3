@@ -21,7 +21,7 @@ set :repo_url, "git@github.com:mapc/trailmap3.git"
 # set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/master.key"
+append :linked_files, "config/master.key", ".env"
 
 # Default value for linked_dirs is []
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
