@@ -114,7 +114,7 @@ export default class ControlPanel extends Component {
     overlay: {
       facStat: [1],
       facType: [],
-      surfaceType: [],
+      surfaceType: [2,3,4,5,6,7,8,9,10,11],
       facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
     },
   };
