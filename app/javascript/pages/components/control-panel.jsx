@@ -236,8 +236,6 @@ export default class ControlPanel extends Component {
 
   renderParentControl(trailType) {
     let className = 'filter-buttons__overlay';
-    console.log("overlay", this.state.overlay['facType'])
-    console.log("enums", enumsFromFacTypeValue[trailType.name])
     if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
       className += ` filter-buttons__overlay--selected-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
     }
