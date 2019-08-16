@@ -7,8 +7,13 @@ body {
 }
 
 .control-panel {
+  @media only screen and (min-width: 375px) and (max-width: 812px) {
+    font-size: 12px;
+  }
+
   background: #fff;
   border-radius: 10px;
+  cursor: grab;
   left: 0;
   line-height: 2;
   margin: 20px;
@@ -24,6 +29,9 @@ body {
   }
 
   &__title {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      width: 90%;
+    }
     border-bottom: .5px solid #E0D9D9;
     display: inline-block;
     font-size: 20px;
@@ -133,6 +141,10 @@ body {
 }
 
 .small-filter-button {
+  @media only screen and (min-width: 375px) and (max-width: 812px) {
+    font-size: 12px;
+  }
+
   background-color: #FFFFFF;
   border: 1px solid #707070;
   border-radius: 2rem;
