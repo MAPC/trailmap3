@@ -8,8 +8,8 @@ const defaultMapStyle = fromJS(MAP_STYLE);
 
 const enumsFromFacTypeValue = {
   'Protected Pathways': [2,5],
-  'Separate Lane': [1,4],
-  'Shared Roadway': [3,7,9]
+  'Separate Lane': [1],
+  'Shared Roadway': [9]
 }
 
 const colors = {
@@ -64,9 +64,9 @@ const controlPanelOptions = [
     overlayType: 'facType',
     overlayValues: [9],
     children: [
-      { name: 'Advisory Shoulders',
+      { name: 'Bike/Ped Priority Roadway',
         overlayType: 'facDetail',
-        overlayValues: [14],
+        overlayValues: [7],
       },
       { name: 'Shared Lane Marking',
         overlayType: 'facType',
@@ -114,7 +114,7 @@ export default class ControlPanel extends Component {
     overlay: {
       facStat: [1],
       facType: [],
-      surfaceType: [2,3,4,5,6,7,8,9,10,11],
+      surfaceType: [],
       facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
     },
   };
@@ -136,29 +136,33 @@ export default class ControlPanel extends Component {
     let facStatEnums = facStat ? facStat : this.state.overlay.facStat
     const facTypeEnums = facType ? facType : this.state.overlay.facType
     const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType
-    let conditions = [];
+    let andConditions = [];
 
     if(source === 'proposed_overlay') {
       facStatEnums = [2,3]
     }
 
     if (facStatEnums.length !== 0) {
-      conditions.push(`fac_stat IN (${facStatEnums.join(',')})`)
+      andConditions.push(`fac_stat IN (${facStatEnums.join(',')})`)
     } else {
-      conditions.push(`fac_stat IN (null)`)
+      andConditions.push(`fac_stat IN (null)`)
     }
     if (facTypeEnums.length !== 0) {
-      conditions.push(`fac_type IN (${facTypeEnums.join(',')})`)
+      andConditions.push(`fac_type IN (${facTypeEnums.join(',')})`)
     } else {
-      conditions.push(`fac_type IN (null)`)
+      andConditions.push(`fac_type IN (null)`)
     }
     if (surfaceTypeEnums.length !== 0) {
-      conditions.push(`surf_type IN (${surfaceTypeEnums.join(',')})`)
+      if (!surfaceTypeEnums.includes(1)) {
+        andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`)
+      } else {
+        andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`)
+      }
     } else {
-      conditions.push(`surf_type IN (null)`)
+      andConditions.push(`surf_type IN (null)`)
     }
 
-    return encodeURI('https://prql.mapc.org/?query= ' + selectString + ' FROM mapc.trans_bike_facilities WHERE ' + conditions.join(' AND ') + ' &token=e2e3101e16208f04f7415e36052ce59b')
+    return encodeURI('https://prql.mapc.org/?query= ' + selectString + ' FROM mapc.trans_bike_facilities WHERE ' + andConditions.join(' AND ') + ' &token=e2e3101e16208f04f7415e36052ce59b')
   }
 
   addLayer(newData, source, mapStyle) {
@@ -216,6 +220,7 @@ export default class ControlPanel extends Component {
   renderProposedControl() {
     return (
       <div className="toggle-switch">
+        <span className="toggle-switch__label">Proposed</span>
         <label className="toggle-switch__label">
           <input id="Proposed"
                   key="Proposed"
@@ -224,15 +229,15 @@ export default class ControlPanel extends Component {
                   checked={this.isProposedVisible()}
                   onChange={this.updateOverlay.bind(this, 'facStat', [2,3], 'proposed_overlay')}>
           </input>
-          <span className="toggle-switch__slider"></span>
         </label>
-        <span className="toggle-switch__label">Proposed</span>
       </div>
     );
   }
 
   renderParentControl(trailType) {
     let className = 'filter-buttons__overlay';
+    console.log("overlay", this.state.overlay['facType'])
+    console.log("enums", enumsFromFacTypeValue[trailType.name])
     if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
       className += ` filter-buttons__overlay--selected-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
     }
@@ -252,28 +257,27 @@ export default class ControlPanel extends Component {
         </div>
         <div className="filter-buttons__description">
           {trailType.description}
-        </div>
-        <div className="filter-buttons__children">
-          {trailType.children.map(child => this.renderChildControl(child))}
+          <div className="filter-buttons__children">
+            {trailType.children.map(child => this.renderChildControl(child))}
+          </div>
         </div>
       </div>
     );
   }
 
   renderChildControl(child) {
-    let className = 'filter-buttons__overlay';
+    let className = 'small-filter-button';
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
-      className += ' filter-buttons__overlay--selected';
+      className += ' small-filter-button--selected';
     }
 
     return (
       <button id={child.name}
               key={child.name}
-              className="small-filter-button"
+              className={className}
               type="button"
               onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues, 'path_overlay')}>
         {child.name}
-        <div className={className}></div>
       </button>
     );
   }
@@ -286,7 +290,7 @@ export default class ControlPanel extends Component {
           className="control-panel__close"
           onClick={this.hideFilters.bind(this)}
           type="button">
-                  Close
+                  X
         </button>
         { this.renderProposedControl() }
         <div className="filter-buttons">
