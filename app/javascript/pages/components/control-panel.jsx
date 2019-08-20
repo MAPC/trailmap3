@@ -239,9 +239,11 @@ export default class ControlPanel extends Component {
     if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
       className += ` filter-buttons__overlay--selected-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
     }
+    const buttonContainerName = `filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`
+
     return (
       <div className="filter-buttons__container" key={trailType.name}>
-        <div className="filter-buttons__button-container">
+        <div className={buttonContainerName}>
           <button id={trailType.name}
                   className="filter-buttons__button"
                   type="button"
