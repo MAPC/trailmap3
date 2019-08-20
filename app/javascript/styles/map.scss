@@ -80,8 +80,13 @@ body {
   &__button {
     border: 0;
     border-radius: 1.5rem;
+    grid-column: 1 / 3;
     height: 9.25rem;
     position: relative;
+  }
+
+  &__children {
+    margin-top: 1rem;
   }
 
   &__container {
@@ -95,6 +100,8 @@ body {
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
+    grid-template-columns: 1fr 1.5rem;
+    grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
     text-align: center;
     width: 140px;
@@ -105,8 +112,9 @@ body {
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
+    grid-template-columns: 1fr 1.5rem;
+    grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
-    text-align: center;
     width: 140px;
   }
 
@@ -115,8 +123,9 @@ body {
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
+    grid-template-columns: 1fr 1.5rem;
+    grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
-    text-align: center;
     width: 140px;
   }
 
@@ -124,7 +133,7 @@ body {
     align-self: stretch;
     color: #464646;
     line-height: normal;
-    margin: 1rem .5rem;
+    margin: 1rem .5rem 1rem 1rem;
     text-align: left;
   }
 
@@ -160,7 +169,41 @@ body {
   &__label {
     font-weight: 600;
     line-height: normal;
-    padding: .5rem;
+    padding: .5rem 1.5rem .7rem
+  }
+
+  &__slider-container {
+    position: relative;
+  }
+
+  &__slider {
+    background-color: #464646;
+    border-radius: $toggle-switch-height;
+    bottom: .5rem;
+    cursor: pointer;
+    left: -1rem;
+    position: absolute;
+    right: 1rem;
+    top: .5rem;
+    transition: .4s;
+
+    &:before {
+      background-color: #F4EFEF;
+      border-radius: 50%;
+      bottom: 2px;
+      content: "";
+      height: calc(#{$toggle-switch-height} * .7647);
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: calc(#{$toggle-switch-height} * .7647);
+    }
+
+    &--selected {
+      &:before {
+        bottom: 24px;
+      }
+    }
   }
 }
 
@@ -300,6 +343,7 @@ body {
     display: inline-block;
     font-size: 18px;
     font-weight: 600;
+    letter-spacing: 1px;
     margin-right: 1rem;
     position: relative;
     text-transform: uppercase;
