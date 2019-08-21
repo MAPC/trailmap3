@@ -109,14 +109,19 @@ body {
       grid-template-rows: 5.625rem 3.0625rem;
     }
 
-    background-color: #00B86F;
     border-radius: 1.5rem;
-    color: #ffffff;
+    border: 1px solid #00B86F;
+    color: #00B86F;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 9.25rem 1fr;
+    grid-template-rows: 7.5rem 1fr;
     margin-bottom: 1rem;
     text-align: center;
+
+    &--selected {
+      background-color: #00B86F;
+      color: #ffffff;
+    }
   }
 
   &__button-container-separate-lane {
@@ -125,14 +130,19 @@ body {
       grid-template-rows: 5.625rem 3.0625rem;
     }
 
-    background-color: #0070CD;
+    border: 1px solid #0070CD;
     border-radius: 1.5rem;
-    color: #ffffff;
+    color: #0070CD;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 9.25rem 1fr;
+    grid-template-rows: 7.5rem 1fr;
     margin-bottom: 1rem;
     text-align: center;
+
+    &--selected {
+      background-color: #0070CD;
+      color: #ffffff;
+    }
   }
 
   &__button-container-shared-roadway {
@@ -141,14 +151,19 @@ body {
       grid-template-rows: 5.625rem 1fr;
     }
 
-    background-color: #E89716;
+    border: 1px solid #E89716;
     border-radius: 1.5rem;
-    color: #ffffff;
+    color: #E89716;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 9.25rem 1fr;
+    grid-template-rows: 7.5rem 1fr;
     margin-bottom: 1rem;
     text-align: center;
+
+    &--selected {
+      background-color: #E89716;
+      color: #ffffff;
+    }
   }
 
   &__child-container {
@@ -165,35 +180,6 @@ body {
   &__description {
     @media only screen and (min-width: 375px) and (max-width: 812px) {
       display: none;
-    }
-  }
-
-  &__overlay {
-    border-radius: 1.5rem;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-
-    &--selected {
-      background: #0070CD;
-      opacity: .3;
-    }
-
-    &--selected-protected-pathways {
-      background: #7f3193;
-      opacity: .3;
-    }
-
-    &--selected-separate-lane {
-      background: #0874b9;
-      opacity: .3;
-    }
-
-    &--selected-shared-roadway {
-      background: #ADD8E6;
-      opacity: .3;
     }
   }
 

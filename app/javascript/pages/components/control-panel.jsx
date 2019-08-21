@@ -13,13 +13,13 @@ const enumsFromFacTypeValue = {
 }
 
 const colors = {
-  1: '#0874b9',
-  2: '#7f3193',
-  3: '#ADD8E6',
-  4: '#0874b9',
-  5: '#7f3193',
-  7: '#ADD8E6',
-  9: '#ADD8E6',
+  1: '#0874b9', // separate lane
+  2: '#00B86F', //protected pathways
+  3: '#E89716', // shared roadway
+  4: '#0874b9', // separate lane
+  5: '#00B86F', //protected pathways
+  7: '#E89716', // shared roadway
+  9: '#E89716', // shared roadway
 }
 
 const opacity = {
@@ -235,14 +235,11 @@ export default class ControlPanel extends Component {
   }
 
   renderParentControl(trailType) {
-    let className = 'filter-buttons__overlay';
-    if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
-      className += ` filter-buttons__overlay--selected-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
-    }
-    const buttonContainerName = `filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`
+    let buttonContainerName = `filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`
     let filterButtonsSliderName = 'filter-buttons__slider';
     if (this.allValuesIn(this.state.overlay['facType'], enumsFromFacTypeValue[trailType.name])) {
       filterButtonsSliderName += ' filter-buttons__slider--selected';
+      buttonContainerName += ` filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}--selected`
     }
 
     return (
@@ -253,7 +250,6 @@ export default class ControlPanel extends Component {
                   type="button"
                   style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
                   onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues, 'path_overlay')}>
-            <div className={className}></div>
           </button>
           <label htmlFor={trailType.name} className="filter-buttons__label">
             {trailType.name}
