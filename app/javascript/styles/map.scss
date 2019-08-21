@@ -81,6 +81,7 @@ body {
   &__button {
     border: 0;
     border-radius: 1.5rem;
+    cursor: pointer;
     grid-column: 1 / 3;
     margin: 0;
     padding: 0;
@@ -185,23 +186,22 @@ body {
   }
 
   &__label {
+    cursor: pointer;
     font-weight: 600;
     line-height: normal;
     padding: .5rem 1.5rem .7rem
   }
 
   &__slider-container {
+    cursor: pointer;
     position: relative;
   }
 
   &__slider {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-    }
-
     background-color: #464646;
     border-radius: $toggle-switch-height;
     bottom: .7rem;
-    cursor: pointer;
+    cursor: default;
     left: -.4rem;
     position: absolute;
     right: 1rem;
