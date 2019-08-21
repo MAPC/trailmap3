@@ -71,8 +71,7 @@ export default class AboutPanel extends Component {
                 <div className="about-panel__arrow about-panel__arrow--right"></div>Contribute to this Map
               </button>
             <p className="about-panel__text about-panel__text--hidden">
-              We welcome contributions to this map including adding to and editing the data! We have an online editing tool available for you to use. To found out how to access the editing functions, please contact David Loutzenheiser at
-              <a href="mailto:dloutzenheiser@mapc.org">dloutzenheiser@mapc.org</a>
+              We welcome contributions to this map including adding to and editing the data! We have an online editing tool available for you to use. To found out how to access the editing functions, please contact David Loutzenheiser at <a href="mailto:dloutzenheiser@mapc.org">dloutzenheiser@mapc.org</a>
             </p>
           </div>
         </div>
