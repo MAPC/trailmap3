@@ -81,60 +81,91 @@ body {
     border: 0;
     border-radius: 1.5rem;
     grid-column: 1 / 3;
-    height: 9.25rem;
+    margin: 0;
+    padding: 0;
     position: relative;
   }
 
   &__children {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      margin-top: 0;
+    }
     margin-top: 1rem;
   }
 
   &__container {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      grid-template-columns: 7.5rem 1fr;
+    }
+
     display: grid;
     grid-template-columns: 8.75rem 1fr;
     text-align: center;
   }
 
   &__button-container-protected-pathways {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      grid-template-columns: 5.9375rem 1.5625rem;
+      grid-template-rows: 5.625rem 3.0625rem;
+    }
+
     background-color: #00B86F;
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
-    grid-template-columns: 1fr 1.5rem;
+    grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
     text-align: center;
-    width: 140px;
   }
 
   &__button-container-separate-lane {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      grid-template-columns: 5.9375rem 1.5625rem;
+      grid-template-rows: 5.625rem 3.0625rem;
+    }
+
     background-color: #0070CD;
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
-    grid-template-columns: 1fr 1.5rem;
+    grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
-    width: 140px;
+    text-align: center;
   }
 
   &__button-container-shared-roadway {
+     @media only screen and (min-width: 375px) and (max-width: 812px) {
+      grid-template-columns: 5.9375rem 1.5625rem;
+      grid-template-rows: 5.625rem 1fr;
+    }
+
     background-color: #E89716;
     border-radius: 1.5rem;
     color: #ffffff;
     display: grid;
-    grid-template-columns: 1fr 1.5rem;
+    grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 9.25rem 1fr;
     margin-bottom: 1rem;
-    width: 140px;
+    text-align: center;
   }
 
-  &__description {
+  &__child-container {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      margin: 0 .5rem 1rem 1rem;;
+    }
     align-self: stretch;
     color: #464646;
     line-height: normal;
     margin: 1rem .5rem 1rem 1rem;
     text-align: left;
+  }
+
+  &__description {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      display: none;
+    }
   }
 
   &__overlay {
@@ -177,11 +208,14 @@ body {
   }
 
   &__slider {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+    }
+
     background-color: #464646;
     border-radius: $toggle-switch-height;
     bottom: .7rem;
     cursor: pointer;
-    left: -.5rem;
+    left: -.4rem;
     position: absolute;
     right: 1rem;
     top: .6rem;
@@ -201,6 +235,9 @@ body {
 
     &--selected {
       &:before {
+        @media only screen and (min-width: 375px) and (max-width: 812px) {
+          bottom: 18px;
+        }
         bottom: 24px;
       }
     }
@@ -209,7 +246,7 @@ body {
 
 .small-filter-button {
   @media only screen and (min-width: 375px) and (max-width: 812px) {
-    font-size: 12px;
+    width: 100%;
   }
 
   background-color: #FFFFFF;
@@ -222,14 +259,6 @@ body {
   padding: .5rem;
   position: relative;
   text-align: center;
-
-  &__image {
-    background-size: cover;
-    border-radius: 8px;
-    height: 6rem;
-    margin-bottom: .5rem;
-    width: 100%;
-  }
 
   &--selected {
     background-color: #707070;
@@ -351,5 +380,12 @@ body {
 
   &__input {
     transform: scale(2, 2);
+  }
+}
+
+
+.about-button {
+  @media only screen and (min-width: 375px) and (max-width: 812px) {
+    display: none;
   }
 }

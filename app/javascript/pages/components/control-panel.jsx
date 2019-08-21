@@ -263,8 +263,10 @@ export default class ControlPanel extends Component {
             </div>
           </div>
         </div>
-        <div className="filter-buttons__description">
-          {trailType.description}
+        <div className="filter-buttons__child-container">
+          <div className="filter-buttons__description">
+            {trailType.description}
+          </div>
           <div className="filter-buttons__children">
             {trailType.children.map(child => this.renderChildControl(child))}
           </div>
