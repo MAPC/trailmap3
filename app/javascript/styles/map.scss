@@ -89,6 +89,8 @@ body {
   width: 100%;
 
   &__button {
+    background-position: top;
+    background-size: cover;
     border: 0;
     border-radius: 1.5rem;
     cursor: pointer;
