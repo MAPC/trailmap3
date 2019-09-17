@@ -9,12 +9,21 @@ export default class AboutPanel extends Component {
   }
 
   toggleText(event) {
-    if (event.target.nextSibling.className === 'about-panel__text about-panel__text--hidden') {
-      event.target.nextSibling.className = 'about-panel__text';
-      event.target.querySelector('.about-panel__arrow--right').className = 'about-panel__arrow about-panel__arrow--down';
+    let target;
+
+    if(event.target.className.includes('about-panel__heading')) {
+      target = event.target
     } else {
-      event.target.nextSibling.className = 'about-panel__text about-panel__text--hidden';
-      event.target.querySelector('.about-panel__arrow--down').className = 'about-panel__arrow about-panel__arrow--right';
+      console.log(event.target);
+      target = event.target.parentNode
+    }
+
+    if (target.nextSibling.className === 'about-panel__text about-panel__text--hidden') {
+      target.nextSibling.className = 'about-panel__text';
+      target.querySelector('.about-panel__arrow--right').className = 'about-panel__arrow about-panel__arrow--down';
+    } else {
+      target.nextSibling.className = 'about-panel__text about-panel__text--hidden';
+      target.querySelector('.about-panel__arrow--down').className = 'about-panel__arrow about-panel__arrow--right';
     }
   }
 
