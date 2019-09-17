@@ -17,8 +17,10 @@ body {
   left: 0;
   line-height: 2;
   margin: -.5rem 20px 20px;
+  max-height: 80vh;
   max-width: 30rem;
   outline: none;
+  overflow-y: scroll;
   padding: 0 24px;
 
   &__geolocate {

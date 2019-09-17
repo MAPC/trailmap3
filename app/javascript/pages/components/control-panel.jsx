@@ -3,6 +3,7 @@ import {Component} from 'react';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
 import {json as requestJson} from 'd3-fetch';
+import {BaseControl} from 'react-map-gl';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
@@ -109,7 +110,7 @@ const layers = fromJS({
       }]
 })
 
-export default class ControlPanel extends Component {
+export default class ControlPanel extends BaseControl {
   state = {
     overlay: {
       facStat: [1],
@@ -289,9 +290,13 @@ export default class ControlPanel extends Component {
     );
   }
 
-  render() {
+  componentDidMount() {
+    document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation() });
+  }
+
+  _render() {
     return (
-      <div className="control-panel">
+      <div id="control-panel" className="control-panel">
         <h2 className="control-panel__title">Trailmap Filters</h2>
         <button
           className="control-panel__close"
