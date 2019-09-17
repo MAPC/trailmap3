@@ -196,7 +196,7 @@ body {
   }
 
   &__slider {
-    background-color: #464646;
+    background-color: #e0d9d9;
     border-radius: $toggle-switch-height;
     bottom: .7rem;
     cursor: pointer;
@@ -219,6 +219,7 @@ body {
     }
 
     &--selected {
+      background-color: #464646;
       &:before {
         @media only screen and (min-width: 375px) and (max-width: 812px) {
           bottom: 18px;

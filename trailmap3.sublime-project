@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/mzagaja/Developer/trailmap3",
+      "folder_exclude_patterns": ["public"],
+		}
+	]
+}
