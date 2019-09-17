@@ -192,7 +192,6 @@ body {
   }
 
   &__slider-container {
-    cursor: pointer;
     position: relative;
   }
 
@@ -200,7 +199,7 @@ body {
     background-color: #464646;
     border-radius: $toggle-switch-height;
     bottom: .7rem;
-    cursor: default;
+    cursor: pointer;
     left: -.4rem;
     position: absolute;
     right: 1rem;

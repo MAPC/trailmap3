@@ -255,7 +255,8 @@ export default class ControlPanel extends Component {
             {trailType.name}
           </label>
           <div className="filter-buttons__slider-container">
-            <div className={filterButtonsSliderName}>
+            <div className={filterButtonsSliderName}
+                 onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues, 'path_overlay')}>
             </div>
           </div>
         </div>
