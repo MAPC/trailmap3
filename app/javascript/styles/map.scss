@@ -40,13 +40,24 @@ body {
   }
 
   &__close {
-    background: initial;
-    border-right: 0;
-    border-bottom: .5px solid #E0D9D9;
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      font-size: 16px;
+    }
+
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: inherit;
+
+    background: transparent;
+    border: 0;
     color: #707070;
+    font: inherit;
+    line-height: normal;
     margin-left: 0;
-    padding-bottom: .72rem;
+    overflow: visible;
+    padding-bottom: .55rem;
     padding-left: 0;
+    width: auto;
   }
 
   &__filter-toggle {
