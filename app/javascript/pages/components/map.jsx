@@ -1,6 +1,6 @@
 import React from 'react';
 import {Component} from 'react';
-import ReactMapGL, {GeolocateControl} from 'react-map-gl';
+import ReactMapGL, {NavigationControl, GeolocateControl} from 'react-map-gl';
 import {json as requestJson} from 'd3-fetch';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
@@ -60,6 +60,11 @@ export default class Map extends Component {
                                             this.setState({viewport: etc}); }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
           mapStyle={this.state.mapStyle}>
+
+          <div style={{position: 'absolute', right: 12, bottom: 25}}>
+            <NavigationControl />
+          </div>
+
           <GeolocateControl
             positionOptions={{enableHighAccuracy: true}}
             trackUserLocation={true}
