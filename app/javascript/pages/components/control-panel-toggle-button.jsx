@@ -9,9 +9,14 @@ export default class ControlPanelToggleButton extends Component {
     this.el = document.createElement('div');
   }
 
-  showFilters(event) {
-    const controlPanel = document.getElementsByClassName('control-panel')[0];
-    controlPanel.className = 'control-panel';
+  toggleFilters(event) {
+    if (!!document.getElementsByClassName('control-panel--hidden')[0]) {
+      const controlPanel = document.getElementsByClassName('control-panel--hidden')[0];
+      controlPanel.className = 'control-panel';
+    } else {
+      const controlPanel = document.getElementsByClassName('control-panel')[0];
+      controlPanel.className = 'control-panel--hidden';
+    }
   }
 
   render() {
@@ -20,7 +25,7 @@ export default class ControlPanelToggleButton extends Component {
         <div className="control-panel__filter-toggle">
           <button className="control-panel__filter-toggle-button"
                   aria-label="Show Filters"
-                  onClick={this.showFilters.bind(this)} />
+                  onClick={this.toggleFilters.bind(this)} />
         </div>
       </Portal>
     );
