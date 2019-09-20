@@ -22,6 +22,7 @@ body {
   outline: none;
   overflow-y: scroll;
   padding: 0 24px;
+  position: absolute;
 
   &__geolocate {
     border: .5px solid #0070CD;
