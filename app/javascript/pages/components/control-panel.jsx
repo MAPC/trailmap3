@@ -47,6 +47,11 @@ const controlPanelOptions = [
         overlayType: 'facType',
         overlayValues: [2]
         },
+      {
+        name: 'Foot Trails',
+        overlayType: 'facType',
+        overlayValues: [2]
+      }
     ]
   },
   { name: 'Separate Lane',
