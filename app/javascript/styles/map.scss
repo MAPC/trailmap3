@@ -294,6 +294,24 @@ body {
   flex-wrap: wrap;
 }
 
+.mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-scale {
+  @media (max-width: 640px) {
+    bottom: 30px;
+  }
+  bottom: 15px;
+  position: absolute;
+  right: 40px;
+}
+
+.zoom-wrapper {
+  @media (max-width: 640px) {
+    bottom: 40px;
+  }
+  bottom: 25px;
+  position: absolute;
+  right: 12px;
+}
+
 .about-button {
   background: center / contain no-repeat url('~images/about-button.svg') #ffffff;
   border: .5px solid #0070CD;

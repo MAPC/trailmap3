@@ -2,6 +2,7 @@ import React from 'react';
 import {Component} from 'react';
 import ReactMapGL, {NavigationControl, GeolocateControl} from 'react-map-gl';
 import {json as requestJson} from 'd3-fetch';
+import mapboxgl from 'mapbox-gl';
 import {fromJS} from 'immutable';
 import MAP_STYLE from './map-style-basic-v8.json';
 import '../../styles/map'
@@ -28,7 +29,8 @@ export default class Map extends Component {
       latitude: 42.3601,
       longitude: -71.0589,
       zoom: 10
-    }
+    },
+    map: ''
   };
 
   updateStateWith(updatedMapStyle) {
@@ -48,6 +50,14 @@ export default class Map extends Component {
     })
   }
 
+  componentDidMount(){
+    const mapboxobj = this.mapRef.current.getMap()
+    mapboxobj.addControl(new mapboxgl.ScaleControl({
+      maxWidth: 100,
+      unit: 'imperial'
+    }), 'bottom-right')
+  }
+
   render() {
     return (
       <div className="test">
@@ -61,7 +71,7 @@ export default class Map extends Component {
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
           mapStyle={this.state.mapStyle}>
 
-          <div style={{position: 'absolute', right: 12, bottom: 25}}>
+          <div className="zoom-wrapper">
             <NavigationControl />
           </div>
 
