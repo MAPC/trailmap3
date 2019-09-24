@@ -214,7 +214,7 @@ export default class ControlPanel extends BaseControl {
 
 // line data in last element of this.props.layers
 // control-panel.state.overlay.facType
-  
+
   updateOverlay(property, values, source) {
     let updatedProperty = this.state.overlay[property];
 
@@ -231,7 +231,6 @@ export default class ControlPanel extends BaseControl {
     });
 
     requestJson(this.requestUrl({ [property]: updatedProperty, source: 'path_overlay' })).then((map) => {
-      console.log(source)
       this.addLayer(map, source, this.withoutPreviousLayer(source));
     });
 

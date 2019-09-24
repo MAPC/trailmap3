@@ -37,9 +37,7 @@ export default class Map extends Component {
   }
 
   updateStateWith(updatedMapStyle) {
-    this.setState((prevState) => {
-      return { mapStyle: updatedMapStyle };
-    });
+    this.setState({mapStyle: updatedMapStyle})
   }
 
 
