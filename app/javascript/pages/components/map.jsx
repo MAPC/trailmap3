@@ -36,57 +36,53 @@ export default class Map extends Component {
     }), 'bottom-right');
   }
 
-  addLayer(newData, source) {
-    const geoJson = newData.rows.map(rows => ({ type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat } }));
-    const mapStyleWithNewSource = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
-                                                     .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
-                                                     .setIn(['sources', source, 'data', 'features'], geoJson)
-                                                     .set('layers', this.state.mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)))
-    this.setState({
-      mapStyle: mapStyleWithNewSource
-    })
-  }
-
-
   updateStateWith(updatedMapStyle) {
-    this.setState({ mapStyle: updatedMapStyle });
+    this.setState((prevState) => {
+      return { mapStyle: updatedMapStyle };
+    });
   }
 
 
   render() {
+    const { mapStyle } = this.state;
     return (
       <div className="test">
         <ReactMapGL
           ref={this.mapRef}
-          width='100vw'
-          height='100vh'
+          width="100vw"
+          height="100vh"
           {...this.state.viewport}
-          onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
-                                            this.setState({viewport: etc}); }}
+          onViewportChange={(viewport) => {
+            const { width, height, ...etc } = viewport;
+            this.setState({ viewport: etc });
+          }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-          mapStyle={this.state.mapStyle}>
+          mapStyle={mapStyle}
+        >
 
           <div className="zoom-wrapper">
             <NavigationControl />
           </div>
 
           <GeolocateControl
-            positionOptions={{enableHighAccuracy: true}}
-            trackUserLocation={true}
+            positionOptions={{ enableHighAccuracy: true }}
+            trackUserLocation
             className="control-panel__geolocate"
           />
           <ControlPanelToggleButton />
           <Geocoder
             mapRef={this.mapRef}
-            onViewportChange={(viewport) => { const {width, height, ...etc} = viewport
-                                              this.setState({viewport: etc}); }}
+            onViewportChange={(viewport) => {
+              const { width, height, ...etc } = viewport;
+              this.setState({ viewport: etc });
+            }}
             mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
             position="top-left"
             placeholder="Search by city or address"
           />
           <ControlPanel
-            mapStyle={this.state.mapStyle}
-            //layers={this.state.mapStyle.get('layers')}
+            mapStyle={mapStyle}
+            layers={mapStyle.get('layers')}
             updateStateWith={this.updateStateWith}
           />
           <AboutButton />
