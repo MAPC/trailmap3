@@ -1,17 +1,18 @@
 import React from 'react';
-import {Component} from 'react';
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
+import { json as requestJson } from 'd3-fetch';
+import { BaseControl } from 'react-map-gl';
 import MAP_STYLE from './map-style-basic-v8.json';
-import {json as requestJson} from 'd3-fetch';
-import {BaseControl} from 'react-map-gl';
+import SECOND_MAP_STYLE from './map-style-example.json'
 
 const defaultMapStyle = fromJS(MAP_STYLE);
+const secondMap = fromJS(SECOND_MAP_STYLE)
 
 const enumsFromFacTypeValue = {
-  'Protected Pathways': [2,5],
+  'Protected Pathways': [2, 5],
   'Separate Lane': [1],
-  'Shared Roadway': [9]
-}
+  'Shared Roadway': [9],
+};
 
 const colors = {
   1: '#0874b9', // separate lane
@@ -26,8 +27,8 @@ const colors = {
 const opacity = {
   1: 1,
   2: 0,
-  3: 0
-}
+  3: 0,
+};
 
 const controlPanelOptions = [
   { name: 'Protected Pathways',
@@ -111,14 +112,21 @@ const layers = fromJS({
 })
 
 export default class ControlPanel extends BaseControl {
-  state = {
-    overlay: {
-      facStat: [1],
-      facType: [],
-      surfaceType: [2,3,4,5,6,7,8,9,10,11],
-      facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
-    },
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      overlay: {
+        facStat: [1],
+        facType: [],
+        surfaceType: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        facDetail: [10,11,12,13,14,20,21,22,23,31,32,41,42,51,52,53,54,61,62,63,71,72,73,74,75,76,81,82,83,91,92,93,94],
+      },
+      basemap: defaultMapStyle,
+    };
+    this.changeMap = this.changeMap.bind(this)
+  }
+
+  
 
   allValuesIn(a, b) {
     return !b.map(value => a.includes(value)).includes(false)
@@ -294,19 +302,32 @@ export default class ControlPanel extends BaseControl {
     document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation() });
   }
 
-  _render() {
+  changeMap() {
+    this.setState({ basemap: SECOND_MAP_STYLE });
+  }
+
+  render() {
     return (
       <div id="control-panel" className="control-panel">
         <h2 className="control-panel__title">Trailmap Filters</h2>
         <button
           className="control-panel__close"
           onClick={this.hideFilters.bind(this)}
-          type="button">
-                  X
+          type="button"
+        >
+          X
         </button>
         { this.renderProposedControl() }
         <div className="filter-buttons">
           { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
+        </div>
+        <div>
+          <button
+            onClick={this.props.updateStateWith.bind(this, SECOND_MAP_STYLE)}
+            type="button"
+          >
+            Second Basemap
+          </button>
         </div>
       </div>
     );

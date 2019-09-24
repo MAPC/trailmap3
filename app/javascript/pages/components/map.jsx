@@ -1,46 +1,43 @@
-import React from 'react';
-import {Component} from 'react';
-import ReactMapGL, {NavigationControl, GeolocateControl} from 'react-map-gl';
-import {json as requestJson} from 'd3-fetch';
+import React, { Component } from 'react';
+import ReactMapGL, { NavigationControl, GeolocateControl } from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
+import '../../styles/map.scss';
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Geocoder from 'react-map-gl-geocoder';
+import ControlPanel from './control-panel';
+import ControlPanelToggleButton from './control-panel-toggle-button';
+import AboutButton from './about-button';
+import AboutPanel from './about-panel';
 import MAP_STYLE from './map-style-basic-v8.json';
-import '../../styles/map'
-import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
-import Geocoder from 'react-map-gl-geocoder'
-import ControlPanel from './control-panel'
-import ControlPanelToggleButton from './control-panel-toggle-button'
-import AboutButton from './about-button'
-import AboutPanel from './about-panel'
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
 export default class Map extends Component {
-
   constructor(props) {
     super(props);
+    this.state = {
+      mapStyle: defaultMapStyle,
+      viewport: {
+        latitude: 42.3601,
+        longitude: -71.0589,
+        zoom: 10,
+      },
+    };
     this.mapRef = React.createRef();
     this.updateStateWith = this.updateStateWith.bind(this);
   }
 
-  state = {
-    mapStyle: defaultMapStyle,
-    viewport: {
-      latitude: 42.3601,
-      longitude: -71.0589,
-      zoom: 10
-    },
-    map: ''
-  };
-
-  updateStateWith(updatedMapStyle) {
-    this.setState({
-        mapStyle: updatedMapStyle,
-    });
+  componentDidMount() {
+    const mapboxobj = this.mapRef.current.getMap();
+    mapboxobj.addControl(new mapboxgl.ScaleControl({
+      maxWidth: 100,
+      unit: 'imperial',
+    }), 'bottom-right');
   }
 
   addLayer(newData, source) {
-    const geoJson = newData.rows.map(rows => ({type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat }}));
+    const geoJson = newData.rows.map(rows => ({ type: 'Feature', geometry: JSON.parse(rows.the_geom), properties: { fac_type: rows.fac_type, fac_stat: rows.fac_stat } }));
     const mapStyleWithNewSource = this.state.mapStyle.setIn(['sources', source], { type: 'geojson' })
                                                      .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
                                                      .setIn(['sources', source, 'data', 'features'], geoJson)
@@ -50,13 +47,11 @@ export default class Map extends Component {
     })
   }
 
-  componentDidMount(){
-    const mapboxobj = this.mapRef.current.getMap()
-    mapboxobj.addControl(new mapboxgl.ScaleControl({
-      maxWidth: 100,
-      unit: 'imperial'
-    }), 'bottom-right')
+
+  updateStateWith(updatedMapStyle) {
+    this.setState({ mapStyle: updatedMapStyle });
   }
+
 
   render() {
     return (
@@ -91,7 +86,7 @@ export default class Map extends Component {
           />
           <ControlPanel
             mapStyle={this.state.mapStyle}
-            layers={this.state.mapStyle.get('layers')}
+            //layers={this.state.mapStyle.get('layers')}
             updateStateWith={this.updateStateWith}
           />
           <AboutButton />
