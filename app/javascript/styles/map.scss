@@ -31,7 +31,7 @@ body {
       font-size: 16px;
     }
 
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 425px) {
       font-size: 12px;
       padding: 0 20px 0 0;
     }
@@ -44,17 +44,111 @@ body {
   }
 }
 
+.basemap-panel {
+  @media screen and (max-width: 600px) {
+    position: unset;
+  }
+  background: #fff;
+  border: 1px solid #B7B7B7;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+  cursor: grab;
+  left: 340px;
+  line-height: 2;
+  margin: 0 20px 0 15px;
+  max-height: 80vh;
+  max-width: 10rem;
+  outline: none;
+  padding: 0 24px;
+  position: relative;
+
+  &__filter-toggle-button {
+    @media (max-width: 410px) {
+      left: 270px;
+    }
+    background: center/contain no-repeat url('~images/layers.png') #fff;
+    border: .5px solid #0070CD;
+    border-radius: 10px;
+    height: 2.5rem;
+    left: 311px;
+    padding: 5px;
+    position: absolute;
+    width: 2.5rem;
+  }
+
+  &__filter-toggle {
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  &__title {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      width: 80%;
+    }
+    display: inline-block;
+    font-size: 20px;
+    margin: .5rem auto;
+    width: inherit;
+  }
+
+  &__close {
+    @media only screen and (min-width: 375px) and (max-width: 812px) {
+      font-size: 16px;
+    }
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: inherit;
+
+    background: transparent;
+    border: 0;
+    color: #707070;
+    float: right;
+    font: inherit;
+    line-height: normal;
+    margin: 1rem 0 .55rem;
+    overflow: visible;
+    width: auto;
+  }
+
+  &__options {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+
+    &-cali {
+      background: center / contain no-repeat url('~images/cali-light.png');
+      border-radius: 10px;
+      height: 75px;
+      width: 75px;
+    }
+
+    &-lite {
+      background: center / contain no-repeat url('~images/lite.png');
+      border-radius: 10px;
+      height: 75px;
+      width: 75px;
+    }
+  }
+
+  &--hidden {
+    visibility: hidden;
+  }
+}
+
 .control-panel {
   @media only screen and (min-width: 375px) and (max-width: 812px) {
     font-size: 12px;
   }
 
   background: #fff;
+  border: 1px solid #B7B7B7;
   border-radius: 10px;
+  box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
   cursor: grab;
   left: 0;
   line-height: 2;
-  margin: -.5rem 20px 20px;
+  margin: 0 20px 0 15px;
   max-height: 80vh;
   max-width: 30rem;
   outline: none;
@@ -101,21 +195,22 @@ body {
     width: auto;
   }
 
-  &__filter-toggle {
-    pointer-events: auto;
-    z-index: 1;
-  }
-
   &__filter-toggle-button {
     background: center / contain no-repeat url('~images/filter-button.svg') #0070CD;
     border: .5px solid #0070CD;
     border-radius: 10px;
     height: 2.5rem;
-    margin: 0 1rem;
+    margin: 0 .5rem 0 1rem;
     width: 2.5rem;
   }
 
+  &__filter-toggle {
+    pointer-events: auto;
+    z-index: 1;
+  }
+
   &--hidden {
+    height: 0;
     visibility: hidden;
   }
 }
@@ -324,6 +419,15 @@ body {
 }
 
 .mapboxgl-ctrl-geocoder {
+  @media (max-width: 640px) {
+    min-width: 240px!important;
+    width: 240px!important;
+  }
+
+  @media (max-width: 410px) {
+    min-width: 200px!important;
+    width: 200px!important;
+  }
   border: .5px solid #0070CD;
   border-radius: 10px;
   height: 2.5rem;
@@ -359,7 +463,8 @@ body {
   border: .5px solid #0070CD;
   border-radius: 10px;
   height: 2.5rem;
-  margin: 1.5rem .5rem 0 auto;
+  margin: 0 .5rem 0 auto;
+  padding: 0;
   pointer-events: auto;
   width: 2.5rem;
 }
