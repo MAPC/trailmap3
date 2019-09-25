@@ -165,8 +165,8 @@ body {
     }
 
     border-radius: 1.5rem;
-    border: 1px solid #00B86F;
-    color: #00B86F;
+    border: 1px solid #a000a0;
+    color: #a000a0;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 7.5rem 1fr;
@@ -174,7 +174,7 @@ body {
     text-align: center;
 
     &--selected {
-      background-color: #00B86F;
+      background-color: #a000a0;
       color: #ffffff;
     }
   }
@@ -185,9 +185,9 @@ body {
       grid-template-rows: 5.625rem 3.0625rem;
     }
 
-    border: 1px solid #0070CD;
+    border: 1px solid #60a0e0;
     border-radius: 1.5rem;
-    color: #0070CD;
+    color: #60a0e0;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 7.5rem 1fr;
@@ -195,7 +195,7 @@ body {
     text-align: center;
 
     &--selected {
-      background-color: #0070CD;
+      background-color: #60a0e0;
       color: #ffffff;
     }
   }
@@ -206,9 +206,9 @@ body {
       grid-template-rows: 5.625rem 1fr;
     }
 
-    border: 1px solid #E89716;
+    border: 1px solid #da3e52;
     border-radius: 1.5rem;
-    color: #E89716;
+    color: #da3e52;
     display: grid;
     grid-template-columns: 7.1875rem 1.5625rem;
     grid-template-rows: 7.5rem 1fr;
@@ -216,7 +216,7 @@ body {
     text-align: center;
 
     &--selected {
-      background-color: #E89716;
+      background-color: #da3e52;
       color: #ffffff;
     }
   }

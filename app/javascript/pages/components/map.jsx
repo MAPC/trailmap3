@@ -9,7 +9,7 @@ import ControlPanel from './control-panel';
 import ControlPanelToggleButton from './control-panel-toggle-button';
 import AboutButton from './about-button';
 import AboutPanel from './about-panel';
-import MAP_STYLE from './map-style-basic-v8.json';
+import MAP_STYLE from './light.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { fromJS } from 'immutable';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
-import MAP_STYLE from './map-style-basic-v8.json';
-import SECOND_MAP_STYLE from './satellite-map.json';
+import MAP_STYLE from './light.json';
+import SECOND_MAP_STYLE from './cali.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 const secondMap = fromJS(SECOND_MAP_STYLE);
@@ -15,13 +15,13 @@ const enumsFromFacTypeValue = {
 };
 
 const colors = {
-  1: '#0874b9', // separate lane
-  2: '#00B86F', // protected pathways
-  3: '#E89716', // shared roadway
-  4: '#0874b9', // separate lane
-  5: '#00B86F', // protected pathways
-  7: '#E89716', // shared roadway
-  9: '#E89716', // shared roadway
+  2: '#a000a0', // protected pathways, green
+  5: '#a000a0', // protected pathways, green
+  1: '#60a0e0', // separate lane, blue
+  4: '#60a0e0', // separate lane, blue
+  3: '#da3e52', // shared roadway, red (orange in key)
+  7: '#da3e52', // shared roadway, red (orange in key)
+  9: '#da3e52', // shared roadway, red (orang in key)
 };
 
 const opacity = {
