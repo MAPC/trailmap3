@@ -2,11 +2,6 @@ import React from 'react';
 import { fromJS } from 'immutable';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
-import MAP_STYLE from './light.json';
-import SECOND_MAP_STYLE from './cali.json';
-
-const defaultMapStyle = fromJS(MAP_STYLE);
-const secondMap = fromJS(SECOND_MAP_STYLE);
 
 const enumsFromFacTypeValue = {
   'Protected Pathways': [2, 5],
@@ -125,7 +120,6 @@ export default class ControlPanel extends BaseControl {
           81, 82, 83,
           91, 92, 93, 94],
       },
-      basemap: defaultMapStyle,
     };
   }
 
@@ -332,21 +326,6 @@ export default class ControlPanel extends BaseControl {
         { this.renderProposedControl() }
         <div className="filter-buttons">
           { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
-        </div>
-        <div>
-          <button
-            onClick={this.props.changeBasemap.bind(this, defaultMapStyle)}
-            type="button"
-          >
-            Main Basemap
-          </button>
-          <button
-            onClick={this.props.changeBasemap.bind(this, secondMap)}
-            type="button"
-          >
-            Second Basemap
-          </button>
-
         </div>
       </div>
     );

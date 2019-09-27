@@ -9,6 +9,8 @@ import ControlPanel from './control-panel';
 import ControlPanelToggleButton from './control-panel-toggle-button';
 import AboutButton from './about-button';
 import AboutPanel from './about-panel';
+import BasemapButton from './basemap-button';
+import BasemapPanel from './basemap-panel'
 import MAP_STYLE from './light.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
@@ -96,6 +98,11 @@ export default class Map extends Component {
             className="control-panel__geolocate"
           />
           <ControlPanelToggleButton />
+          <ControlPanel
+            mapStyle={mapStyle}
+            layers={mapStyle.get('layers')}
+            updateStateWith={this.updateStateWith}
+          />
           <Geocoder
             mapRef={this.mapRef}
             onViewportChange={(viewport) => {
@@ -106,10 +113,8 @@ export default class Map extends Component {
             position="top-left"
             placeholder="Search by city or address"
           />
-          <ControlPanel
-            mapStyle={mapStyle}
-            layers={mapStyle.get('layers')}
-            updateStateWith={this.updateStateWith}
+          <BasemapButton />
+          <BasemapPanel 
             changeBasemap={this.changeBasemap}
           />
           <AboutButton />
