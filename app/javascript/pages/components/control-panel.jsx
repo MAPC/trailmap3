@@ -43,10 +43,6 @@ const controlPanelOptions = [
         overlayType: 'surfaceType',
         overlayValues: [1]
         },
-      { name: 'Protected Bike Lane',
-        overlayType: 'facType',
-        overlayValues: [2]
-        },
     ]
   },
   { name: 'Separate Lane',
@@ -54,7 +50,11 @@ const controlPanelOptions = [
     overlayType: 'facType',
     overlayValues: [1],
     children: [
-      { name: 'Bike Lane',
+      { name: 'Protected Bike Lane',
+        overlayType: 'facType',
+        overlayValues: [2]
+        },
+      { name: 'Striped Bike Lane',
         overlayType: 'facType',
         overlayValues: [1],
       },
@@ -65,11 +65,11 @@ const controlPanelOptions = [
     overlayType: 'facType',
     overlayValues: [9],
     children: [
-      { name: 'Bike/Ped Priority Roadway',
+      { name: 'Foot Paths',
         overlayType: 'facDetail',
         overlayValues: [7],
       },
-      { name: 'Shared Lane Marking',
+      { name: 'Natural Surface Footway',
         overlayType: 'facType',
         overlayValues: [9],
       },
@@ -221,7 +221,6 @@ export default class ControlPanel extends BaseControl {
   renderProposedControl() {
     return (
       <div className="toggle-switch">
-        <span className="toggle-switch__label">Proposed</span>
         <label className="toggle-switch__label">
           <input id="Proposed"
                   key="Proposed"
@@ -231,6 +230,7 @@ export default class ControlPanel extends BaseControl {
                   onChange={this.updateOverlay.bind(this, 'facStat', [2,3], 'proposed_overlay')}>
           </input>
         </label>
+        <span className="toggle-switch__label">Proposed Paths & Trails</span>
       </div>
     );
   }
@@ -274,7 +274,8 @@ export default class ControlPanel extends BaseControl {
   }
 
   renderChildControl(child) {
-    let className = 'small-filter-button';
+    const classModifier = child.name.replace(/[\s\/]+/g, '-');
+    let className = `small-filter-button-${classModifier} small-filter-button`;
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
       className += ' small-filter-button--selected';
     }
