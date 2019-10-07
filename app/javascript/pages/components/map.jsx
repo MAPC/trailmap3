@@ -10,7 +10,7 @@ import ControlPanelToggleButton from './control-panel-toggle-button';
 import AboutButton from './about-button';
 import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
-import BasemapPanel from './basemap-panel'
+import BasemapPanel from './basemap-panel';
 import MAP_STYLE from './light.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
@@ -51,7 +51,6 @@ export default class Map extends Component {
       const proposedTrailSource = prevState.mapStyle.get('sources').get('proposed_overlay');
       const proposedTrailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === 'proposed_overlay');
       let newMapStyle = updatedMapStyle;
-      
       if (trailLayers !== undefined) {
         newMapStyle = updatedMapStyle
           .setIn(['sources', 'path_overlay'], { type: 'geojson' })
@@ -72,20 +71,20 @@ export default class Map extends Component {
   }
 
   render() {
-    const { mapStyle } = this.state;
+    const currentState = this.state;
     return (
       <div className="test">
         <ReactMapGL
           ref={this.mapRef}
           width="100vw"
           height="100vh"
-          {...this.state.viewport}
+          {...currentState.viewport}
           onViewportChange={(viewport) => {
             const { width, height, ...etc } = viewport;
             this.setState({ viewport: etc });
           }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-          mapStyle={mapStyle}
+          mapStyle={currentState.mapStyle}
         >
 
           <div className="zoom-wrapper">
@@ -99,8 +98,8 @@ export default class Map extends Component {
           />
           <ControlPanelToggleButton />
           <ControlPanel
-            mapStyle={mapStyle}
-            layers={mapStyle.get('layers')}
+            mapStyle={currentState.mapStyle}
+            layers={currentState.mapStyle.get('layers')}
             updateStateWith={this.updateStateWith}
           />
           <Geocoder
@@ -114,7 +113,7 @@ export default class Map extends Component {
             placeholder="Search by city or address"
           />
           <BasemapButton />
-          <BasemapPanel 
+          <BasemapPanel
             changeBasemap={this.changeBasemap}
           />
           <AboutButton />

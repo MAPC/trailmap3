@@ -150,7 +150,7 @@ body {
   line-height: 2;
   margin: 0 20px 0 15px;
   max-height: 80vh;
-  max-width: 30rem;
+  max-width: 35rem;
   outline: none;
   overflow-y: scroll;
   padding: 0 24px;
@@ -251,70 +251,28 @@ body {
     }
 
     display: grid;
-    grid-template-columns: 8.75rem 1fr;
+    grid-template-columns: 120px 1fr;
     text-align: center;
   }
 
-  &__button-container-protected-pathways {
+  &__button-container {
     @media only screen and (min-width: 375px) and (max-width: 812px) {
       grid-template-columns: 5.9375rem 1.5625rem;
       grid-template-rows: 5.625rem 3.0625rem;
     }
 
+    background: #F2EDEE;
     border-radius: 1.5rem;
-    border: 1px solid #00B86F;
-    color: #00B86F;
+    color: #636363;
     display: grid;
-    grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 7.5rem 1fr;
+    grid-template-columns: 96px 24px;
+    grid-template-rows: 100px 60px;
     margin-bottom: 1rem;
     text-align: center;
 
     &--selected {
-      background-color: #00B86F;
-      color: #ffffff;
-    }
-  }
-
-  &__button-container-separate-lane {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      grid-template-columns: 5.9375rem 1.5625rem;
-      grid-template-rows: 5.625rem 3.0625rem;
-    }
-
-    border: 1px solid #0070CD;
-    border-radius: 1.5rem;
-    color: #0070CD;
-    display: grid;
-    grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 7.5rem 1fr;
-    margin-bottom: 1rem;
-    text-align: center;
-
-    &--selected {
-      background-color: #0070CD;
-      color: #ffffff;
-    }
-  }
-
-  &__button-container-shared-roadway {
-     @media only screen and (min-width: 375px) and (max-width: 812px) {
-      grid-template-columns: 5.9375rem 1.5625rem;
-      grid-template-rows: 5.625rem 1fr;
-    }
-
-    border: 1px solid #E89716;
-    border-radius: 1.5rem;
-    color: #E89716;
-    display: grid;
-    grid-template-columns: 7.1875rem 1.5625rem;
-    grid-template-rows: 7.5rem 1fr;
-    margin-bottom: 1rem;
-    text-align: center;
-
-    &--selected {
-      background-color: #E89716;
-      color: #ffffff;
+      background: #636363;
+      color: #F2EDEE;
     }
   }
 
@@ -325,7 +283,7 @@ body {
     align-self: stretch;
     color: #464646;
     line-height: normal;
-    margin: 1rem .5rem 1rem 1rem;
+    margin: 0 .5rem 1rem 1rem;
     text-align: left;
   }
 
@@ -336,10 +294,13 @@ body {
   }
 
   &__label {
+    align-self: center;
     cursor: pointer;
+    display: flex;
     font-weight: 600;
+    justify-self: center;
     line-height: normal;
-    padding: .5rem 1.5rem .7rem
+    padding: .5rem;
   }
 
   &__slider-container {
@@ -351,9 +312,9 @@ body {
     border-radius: $toggle-switch-height;
     bottom: .7rem;
     cursor: pointer;
-    left: -.4rem;
+    left: 0;
     position: absolute;
-    right: 1rem;
+    right: .7rem;
     top: .6rem;
     transition: .4s;
 
@@ -361,9 +322,10 @@ body {
       background-color: #F4EFEF;
       border-radius: 50%;
       bottom: 0;
+      box-shadow: 1px 1px 5px #888888;
       content: "";
       height: calc(#{$toggle-switch-height} * .7647);
-      left: 0;
+      left: -.05rem;
       position: absolute;
       transition: .4s;
       width: calc(#{$toggle-switch-height} * .7647);
@@ -389,18 +351,46 @@ body {
   background-color: #FFFFFF;
   border: 1px solid #707070;
   border-radius: 2rem;
-  color: #707070;
+  color: #FFF;
   font-size: .875rem;
   font-weight: 600;
   margin: .28125rem;
   padding: .5rem;
   position: relative;
   text-align: center;
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+  width: 185px;
+
+  &-improved-paths {
+    background: #214A2d;
+  }
+
+  &-unimproved-paths {
+    background: #4BAA40;
+  }
+
+  &-protected-bike-lane {
+    background: #2166AC;
+  }
+
+  &-striped-bike-lane {
+    background: #92C5DE;
+  }
+
+  &-foot-paths {
+    background: #903366;
+  }
+
+  &-natural-surface-footway {
+    background: #A87196;
+  }
 
   &--selected {
-    background-color: #707070;
-    box-shadow: 1px 1px 5px #888888;
-    color: #FFFFFF;
+    box-shadow: 1px 3px 5px #888888;
   }
 }
 
@@ -531,7 +521,7 @@ body {
 
 .toggle-switch {
   line-height: 1.6;
-  text-align: right;
+  margin-bottom: 16px;
 
   &__label {
     color: #464646;
@@ -541,7 +531,6 @@ body {
     letter-spacing: 1px;
     margin-right: 1rem;
     position: relative;
-    text-transform: uppercase;
   }
 
   &__input {

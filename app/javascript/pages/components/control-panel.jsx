@@ -4,9 +4,9 @@ import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
 
 const enumsFromFacTypeValue = {
-  'Protected Pathways': [2, 5],
-  'Separate Lane': [1],
-  'Shared Roadway': [9],
+  'Shared Use Paths': [2, 5],
+  'Bicycle Lanes': [1],
+  'Footways': [9],
 };
 
 const colors = {
@@ -26,7 +26,7 @@ const opacity = {
 };
 
 const controlPanelOptions = [{
-  name: 'Protected Pathways',
+  name: 'Shared Use Paths',
   description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
   overlayType: 'facType',
   overlayValues: [2, 5],
@@ -38,32 +38,32 @@ const controlPanelOptions = [{
     name: 'Unimproved Paths',
     overlayType: 'surfaceType',
     overlayValues: [1],
-  }, {
-    name: 'Protected Bike Lane',
-    overlayType: 'facType',
-    overlayValues: [2],
   }],
 }, {
-  name: 'Separate Lane',
+  name: 'Bicycle Lanes',
   description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
   overlayType: 'facType',
   overlayValues: [1],
   children: [{
-    name: 'Bike Lane',
+    name: 'Protected Bike Lane',
+    overlayType: 'facType',
+    overlayValues: [2],
+  }, {
+    name: 'Striped Bike Lane',
     overlayType: 'facType',
     overlayValues: [1],
   }],
 }, {
-  name: 'Shared Roadway',
+  name: 'Footways',
   description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
   overlayType: 'facType',
   overlayValues: [9],
   children: [{
-    name: 'Bike/Ped Priority Roadway',
+    name: 'Foot Paths',
     overlayType: 'facDetail',
     overlayValues: [7],
   }, {
-    name: 'Shared Lane Marking',
+    name: 'Natural Surface Footway',
     overlayType: 'facType',
     overlayValues: [9],
   }],
@@ -134,9 +134,8 @@ export default class ControlPanel extends BaseControl {
     return false;
   }
 
-  requestUrl({
-    facStat, facType, surfaceType, source,
-  }) {
+  // eslint-disable-next-line object-curly-newline
+  requestUrl({ facStat, facType, surfaceType, source }) {
     const selectString = "SELECT fac_type, fac_stat, surf_type, fac_detail, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
     let facStatEnums = facStat ? facStat : this.state.overlay.facStat;
     const facTypeEnums = facType ? facType : this.state.overlay.facType;
@@ -206,35 +205,33 @@ export default class ControlPanel extends BaseControl {
   }
 
   updateOverlay(property, values, source) {
-    let updatedProperty = this.state.overlay[property];
-
-    values.map((value) => {
-      if (this.state.overlay[property].includes(value)) {
-        updatedProperty = updatedProperty.filter(id => id !== value);
-      } else {
-        updatedProperty = updatedProperty.concat([value]);
-      }
-    });
-
-    this.setState({
-      overlay: { ...this.state.overlay, [property]: updatedProperty },
-    });
-
-    requestJson(this.requestUrl({ [property]: updatedProperty, source: 'path_overlay' })).then((map) => {
-      this.addLayer(map, source, this.withoutPreviousLayer(source));
-    });
-
-    if (this.isProposedVisible() && property !== 'facStat') {
-      requestJson(this.requestUrl({ [property]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
-        this.addLayer(map, 'proposed_overlay', this.withoutPreviousLayer('proposed_overlay'));
+    this.setState((prevState) => {
+      let updatedProperty = prevState.overlay[property];
+      values.map((value) => {
+        if (prevState.overlay[property].includes(value)) {
+          updatedProperty = updatedProperty.filter(id => id !== value);
+        } else {
+          updatedProperty = updatedProperty.concat([value]);
+        }
+        return updatedProperty;
       });
-    }
+
+      requestJson(this.requestUrl({ [property]: updatedProperty, source: 'path_overlay' })).then((map) => {
+        this.addLayer(map, source, this.withoutPreviousLayer(source));
+      });
+      if (this.isProposedVisible() && property !== 'facStat') {
+        requestJson(this.requestUrl({ [property]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
+          this.addLayer(map, 'proposed_overlay', this.withoutPreviousLayer('proposed_overlay'));
+        });
+      }
+
+      return { overlay: { ...prevState.overlay, [property]: updatedProperty } };
+    });
   }
 
   renderProposedControl() {
     return (
       <div className="toggle-switch">
-        <span className="toggle-switch__label">Proposed</span>
         <label className="toggle-switch__label">
           <input
             id="Proposed"
@@ -245,16 +242,17 @@ export default class ControlPanel extends BaseControl {
             onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
           />
         </label>
+        <span className="toggle-switch__label">Proposed Paths & Trails</span>
       </div>
     );
   }
 
   renderParentControl(trailType) {
-    let buttonContainerName = `filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
+    let buttonContainerName = 'filter-buttons__button-container';
     let filterButtonsSliderName = 'filter-buttons__slider';
     if (this.allValuesIn(this.state.overlay.facType, enumsFromFacTypeValue[trailType.name])) {
       filterButtonsSliderName += ' filter-buttons__slider--selected';
-      buttonContainerName += ` filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}--selected`;
+      buttonContainerName += ' filter-buttons__button-container--selected';
     }
 
     return (
@@ -290,7 +288,8 @@ export default class ControlPanel extends BaseControl {
   }
 
   renderChildControl(child) {
-    let className = 'small-filter-button';
+    console.log(child.name)
+    let className = `small-filter-button small-filter-button-${child.name.replace(/\s+/g, '-').toLowerCase()}`;
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
       className += ' small-filter-button--selected';
     }
