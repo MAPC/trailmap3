@@ -2,11 +2,12 @@ import React from 'react';
 import { fromJS } from 'immutable';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
+import FilterButtonContainer from './control-panel/filter-button-container';
 
 const enumsFromFacTypeValue = {
-  'Shared Use Paths': [2, 5],
-  'Bicycle Lanes': [1],
-  'Footways': [9],
+  'Shared Use Paths': [1, 2, 3],
+  'Bicycle Lanes': [1, 2],
+  'Footpaths': [1, 2, 3],
 };
 
 const colors = {
@@ -29,43 +30,43 @@ const controlPanelOptions = [{
   name: 'Shared Use Paths',
   description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
   overlayType: 'facType',
-  overlayValues: [2, 5],
+  overlayValues: [1, 2, 3],
   children: [{
-    name: 'Improved Paths',
+    name: 'Paved Paths',
     overlayType: 'surfaceType',
-    overlayValues: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    overlayValues: [1, 2],
   }, {
     name: 'Unimproved Paths',
     overlayType: 'surfaceType',
-    overlayValues: [1],
+    overlayValues: [3],
   }],
 }, {
   name: 'Bicycle Lanes',
   description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
   overlayType: 'facType',
-  overlayValues: [1],
+  overlayValues: [1, 2],
   children: [{
     name: 'Protected Bike Lane',
     overlayType: 'facType',
     overlayValues: [2],
   }, {
-    name: 'Striped Bike Lane',
+    name: 'Bike Lane',
     overlayType: 'facType',
     overlayValues: [1],
   }],
 }, {
-  name: 'Footways',
+  name: 'Footpaths',
   description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
   overlayType: 'facType',
-  overlayValues: [9],
+  overlayValues: [1, 2, 3],
   children: [{
-    name: 'Foot Paths',
+    name: 'Paved Footway',
     overlayType: 'facDetail',
-    overlayValues: [7],
+    overlayValues: [1],
   }, {
     name: 'Natural Surface Footway',
     overlayType: 'facType',
-    overlayValues: [9],
+    overlayValues: [2, 3],
   }],
 }];
 
@@ -121,6 +122,7 @@ export default class ControlPanel extends BaseControl {
           91, 92, 93, 94],
       },
     };
+    this.updateOverlay = this.updateOverlay.bind(this);
   }
 
   allValuesIn(a, b) {
@@ -135,13 +137,19 @@ export default class ControlPanel extends BaseControl {
   }
 
   // eslint-disable-next-line object-curly-newline
-  requestUrl({ facStat, facType, surfaceType, source }) {
-    const selectString = "SELECT fac_type, fac_stat, surf_type, fac_detail, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
+  requestUrl({ facStat, facType, surfaceType, source, trailType }) {
+    const selectString = "SELECT fac_type, fac_stat, fac_detail, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
+    let table = '';
     let facStatEnums = facStat ? facStat : this.state.overlay.facStat;
     const facTypeEnums = facType ? facType : this.state.overlay.facType;
     const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType;
     const andConditions = [];
 
+    if (trailType === 'Shared Use Paths') {
+      table = 'mapc.trans_shared_use_paths';
+    } else if (trailType === 'Bicycle Paths') {
+      table = 'mapc.trans_bicycle_paths';
+    }
     if (source === 'proposed_overlay') {
       facStatEnums = [2, 3];
     }
@@ -165,7 +173,7 @@ export default class ControlPanel extends BaseControl {
     } else {
       andConditions.push('surf_type IN (null)');
     }
-    return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM mapc.trans_bike_facilities WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
+    return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
   addLayer(newData, source, mapStyle) {
@@ -204,11 +212,11 @@ export default class ControlPanel extends BaseControl {
     return updatedMapStyle;
   }
 
-  updateOverlay(property, values, source) {
+  updateOverlay(trailType, source) {
     this.setState((prevState) => {
-      let updatedProperty = prevState.overlay[property];
-      values.map((value) => {
-        if (prevState.overlay[property].includes(value)) {
+      let updatedProperty = prevState.overlay[trailType.overlayType];
+      trailType.overlayValues.map((value) => {
+        if (prevState.overlay[trailType.overlayType].includes(value)) {
           updatedProperty = updatedProperty.filter(id => id !== value);
         } else {
           updatedProperty = updatedProperty.concat([value]);
@@ -216,79 +224,38 @@ export default class ControlPanel extends BaseControl {
         return updatedProperty;
       });
 
-      requestJson(this.requestUrl({ [property]: updatedProperty, source: 'path_overlay' })).then((map) => {
+      requestJson(this.requestUrl({ [trailType.overlayType]: updatedProperty, source: 'path_overlay', trailType: trailType.name })).then((map) => {
         this.addLayer(map, source, this.withoutPreviousLayer(source));
       });
-      if (this.isProposedVisible() && property !== 'facStat') {
-        requestJson(this.requestUrl({ [property]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
+      if (this.isProposedVisible() && trailType.overlayType !== 'facStat') {
+        requestJson(this.requestUrl({ [trailType.overlayType]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
           this.addLayer(map, 'proposed_overlay', this.withoutPreviousLayer('proposed_overlay'));
         });
       }
 
-      return { overlay: { ...prevState.overlay, [property]: updatedProperty } };
+      return { overlay: { ...prevState.overlay, [trailType.overlayType]: updatedProperty } };
     });
   }
 
-  renderProposedControl() {
-    return (
-      <div className="toggle-switch">
-        <label className="toggle-switch__label">
-          <input
-            id="Proposed"
-            key="Proposed"
-            className="toggle-switch__input"
-            type="checkbox"
-            checked={this.isProposedVisible()}
-            onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
-          />
-        </label>
-        <span className="toggle-switch__label">Proposed Paths & Trails</span>
-      </div>
-    );
-  }
-
-  renderParentControl(trailType) {
-    let buttonContainerName = 'filter-buttons__button-container';
-    let filterButtonsSliderName = 'filter-buttons__slider';
-    if (this.allValuesIn(this.state.overlay.facType, enumsFromFacTypeValue[trailType.name])) {
-      filterButtonsSliderName += ' filter-buttons__slider--selected';
-      buttonContainerName += ' filter-buttons__button-container--selected';
-    }
-
-    return (
-      <div className="filter-buttons__container" key={trailType.name}>
-        <div className={buttonContainerName}>
-          <button
-            id={trailType.name}
-            className="filter-buttons__button"
-            type="button"
-            style={{ backgroundImage: `url(${require(`../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues, 'path_overlay')}
-          />
-          <label htmlFor={trailType.name} className="filter-buttons__label">
-            {trailType.name}
-          </label>
-          <div className="filter-buttons__slider-container">
-            <div
-              className={filterButtonsSliderName}
-              onClick={this.updateOverlay.bind(this, trailType.overlayType, trailType.overlayValues, 'path_overlay')}
-            />
-          </div>
-        </div>
-        <div className="filter-buttons__child-container">
-          <div className="filter-buttons__description">
-            {trailType.description}
-          </div>
-          <div className="filter-buttons__children">
-            {trailType.children.map(child => this.renderChildControl(child))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // renderProposedControl() {
+  //   return (
+  //     <div className="toggle-switch">
+  //       <label className="toggle-switch__label">
+  //         <input
+  //           id="Proposed"
+  //           key="Proposed"
+  //           className="toggle-switch__input"
+  //           type="checkbox"
+  //           checked={this.isProposedVisible()}
+  //           //onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
+  //         />
+  //       </label>
+  //       <span className="toggle-switch__label">Proposed Paths & Trails</span>
+  //     </div>
+  //   );
+  // }
 
   renderChildControl(child) {
-    console.log(child.name)
     let className = `small-filter-button small-filter-button-${child.name.replace(/\s+/g, '-').toLowerCase()}`;
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
       className += ' small-filter-button--selected';
@@ -300,7 +267,7 @@ export default class ControlPanel extends BaseControl {
         key={child.name}
         className={className}
         type="button"
-        onClick={this.updateOverlay.bind(this, child.overlayType, child.overlayValues, 'path_overlay')}
+        onClick={this.updateOverlay(this, child, 'path_overlay')}
       >
         {child.name}
       </button>
@@ -322,9 +289,13 @@ export default class ControlPanel extends BaseControl {
         >
           X
         </button>
-        { this.renderProposedControl() }
         <div className="filter-buttons">
-          { controlPanelOptions.map(trailType => this.renderParentControl(trailType)) }
+          <FilterButtonContainer
+            trailType={controlPanelOptions[1]}
+            enumsFromFacTypeValue={enumsFromFacTypeValue}
+            allValuesIn={this.allValuesIn}
+            facType={this.state.overlay.facType}
+          />
         </div>
       </div>
     );
