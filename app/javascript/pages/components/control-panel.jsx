@@ -7,7 +7,7 @@ import FilterButtonContainer from './control-panel/filter-button-container';
 const enumsFromFacTypeValue = {
   'Shared Use Paths': [1, 2, 3],
   'Bicycle Lanes': [1, 2],
-  'Footpaths': [1, 2, 3],
+  Footpaths: [1, 2, 3],
 };
 
 const colors = {
@@ -139,16 +139,16 @@ export default class ControlPanel extends BaseControl {
   // eslint-disable-next-line object-curly-newline
   requestUrl({ facStat, facType, surfaceType, source, trailType }) {
     const selectString = "SELECT fac_type, fac_stat, fac_detail, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
-    let table = '';
-    let facStatEnums = facStat ? facStat : this.state.overlay.facStat;
-    const facTypeEnums = facType ? facType : this.state.overlay.facType;
-    const surfaceTypeEnums = surfaceType ? surfaceType : this.state.overlay.surfaceType;
+    let facStatEnums = facStat || this.state.overlay.facStat;
+    const facTypeEnums = facType || this.state.overlay.facType;
+    const surfaceTypeEnums = surfaceType || this.state.overlay.surfaceType;
     const andConditions = [];
+    let table = '';
 
     if (trailType === 'Shared Use Paths') {
       table = 'mapc.trans_shared_use_paths';
-    } else if (trailType === 'Bicycle Paths') {
-      table = 'mapc.trans_bicycle_paths';
+    } else if (trailType === 'Bicycle Lanes') {
+      table = 'mapc.trans_bike_facilities';
     }
     if (source === 'proposed_overlay') {
       facStatEnums = [2, 3];
@@ -159,6 +159,7 @@ export default class ControlPanel extends BaseControl {
     } else {
       andConditions.push('fac_stat IN (null)');
     }
+
     if (facTypeEnums.length !== 0) {
       andConditions.push(`fac_type IN (${facTypeEnums.join(',')})`);
     } else {
@@ -173,6 +174,7 @@ export default class ControlPanel extends BaseControl {
     } else {
       andConditions.push('surf_type IN (null)');
     }
+
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
@@ -237,24 +239,6 @@ export default class ControlPanel extends BaseControl {
     });
   }
 
-  // renderProposedControl() {
-  //   return (
-  //     <div className="toggle-switch">
-  //       <label className="toggle-switch__label">
-  //         <input
-  //           id="Proposed"
-  //           key="Proposed"
-  //           className="toggle-switch__input"
-  //           type="checkbox"
-  //           checked={this.isProposedVisible()}
-  //           //onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
-  //         />
-  //       </label>
-  //       <span className="toggle-switch__label">Proposed Paths & Trails</span>
-  //     </div>
-  //   );
-  // }
-
   renderChildControl(child) {
     let className = `small-filter-button small-filter-button-${child.name.replace(/\s+/g, '-').toLowerCase()}`;
     if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
@@ -289,12 +273,30 @@ export default class ControlPanel extends BaseControl {
         >
           X
         </button>
+
+        <div className="toggle-switch">
+          <label
+            className="toggle-switch__label"
+          >
+            <input
+              id="Proposed"
+              key="Proposed"
+              className="toggle-switch__input"
+              type="checkbox"
+              checked={this.isProposedVisible()}
+              // onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
+            />
+          </label>
+          <span className="toggle-switch__label">Proposed Paths & Trails</span>
+        </div>
+
         <div className="filter-buttons">
           <FilterButtonContainer
             trailType={controlPanelOptions[1]}
             enumsFromFacTypeValue={enumsFromFacTypeValue}
             allValuesIn={this.allValuesIn}
             facType={this.state.overlay.facType}
+            updateOverlay={this.updateOverlay}
           />
         </div>
       </div>
