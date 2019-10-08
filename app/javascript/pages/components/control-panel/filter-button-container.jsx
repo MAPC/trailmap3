@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 import SmallFilterButton from './small-filter-button';
 
 // eslint-disable-next-line object-curly-newline, max-len
-function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, facType, updateOverlay }) {
+function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, updateOverlay }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
-  if (allValuesIn(facType, enumsFromFacTypeValue[trailType.name])) {
-    filterButtonsSliderName += ' filter-buttons__slider--selected';
-    buttonContainerName += ' filter-buttons__button-container--selected';
-  }
+  // if (allValuesIn(facType, enumsFromFacTypeValue[trailType.name])) {
+  //   filterButtonsSliderName += ' filter-buttons__slider--selected';
+  //   buttonContainerName += ' filter-buttons__button-container--selected';
+  // }
 
 
   const smallFilterButtons = trailType.children.map(childType => (
     <SmallFilterButton
       key={childType.name}
       childTrailType={childType}
+      // allValuesIn={allValuesIn}
     />
   ));
   return (
@@ -39,6 +40,9 @@ function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, 
             <div
               className={filterButtonsSliderName}
               onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
+              onKeyPress={() => { updateOverlay(trailType, 'path_overlay'); }}
+              role="button"
+              tabIndex={0}
             />
           </div>
         </div>
@@ -56,8 +60,10 @@ function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, 
 }
 
 FilterButtonContainer.propTypes = {
-  allValuesIn: PropTypes.func.isRequired,
-  facType: PropTypes.arrayOf(PropTypes.number).isRequired,
+  // allValuesIn: PropTypes.func.isRequired,
+  // facType: PropTypes.shape({
+  //   'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+  // }).isRequired,
   enumsFromFacTypeValue: PropTypes.shape({
     'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
     'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),

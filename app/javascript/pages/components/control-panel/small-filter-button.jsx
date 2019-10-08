@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 function SmallFilterButton({
   childTrailType,
-  //allValuesIn,
+  // allValuesIn,
   // updateOverlay,
 }) {
-  let className = `small-filter-button small-filter-button-${childTrailType.name.replace(/\s+/g, '-').toLowerCase()}`;
+  const className = `small-filter-button small-filter-button-${childTrailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   // if (allValuesIn(this.state.overlay[child.overlayType], childTrailType.overlayValues)) {
   //   className += ' small-filter-button--selected';
   // }
@@ -17,7 +17,8 @@ function SmallFilterButton({
       key={childTrailType.name}
       className={className}
       type="button"
-      // onClick={this.updateOverlay(this, child, 'path_overlay')}
+      // onClick={() => { updateOverlay(childTrailType, 'path_overlay'); }}
+      onClick={ () => {console.log("click!"); }}
     >
       {childTrailType.name}
     </button>
