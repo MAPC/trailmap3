@@ -248,30 +248,40 @@ export default class ControlPanel extends BaseControl {
     });
   }
 
-  renderChildControl(child) {
-    let className = `small-filter-button small-filter-button-${child.name.replace(/\s+/g, '-').toLowerCase()}`;
-    if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
-      className += ' small-filter-button--selected';
-    }
+  // renderChildControl(child) {
+  //   let className = `small-filter-button small-filter-button-${child.name.replace(/\s+/g, '-').toLowerCase()}`;
+  //   if (this.allValuesIn(this.state.overlay[child.overlayType], child.overlayValues)) {
+  //     className += ' small-filter-button--selected';
+  //   }
 
-    return (
-      <button
-        id={child.name}
-        key={child.name}
-        className={className}
-        type="button"
-        onClick={this.updateOverlay(this, child, 'path_overlay')}
-      >
-        {child.name}
-      </button>
-    );
-  }
+  //   return (
+  //     <button
+  //       id={child.name}
+  //       key={child.name}
+  //       className={className}
+  //       type="button"
+  //       onClick={this.updateOverlay(this, child, 'path_overlay')}
+  //     >
+  //       {child.name}
+  //     </button>
+  //   );
+  // }
 
   componentDidMount(event) {
     document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
   }
 
   render() {
+    const filterButtons = controlPanelOptions.map(trailType => (
+      <FilterButtonContainer
+        key={trailType.name}
+        trailType={trailType}
+        enumsFromFacTypeValue={enumsFromFacTypeValue}
+        allValuesIn={this.allValuesIn}
+        facType={this.state.overlay.facType}
+        updateOverlay={this.updateOverlay}
+      />
+    ));
     return (
       <div id="control-panel" className="control-panel">
         <h2 className="control-panel__title">Trailmap Filters</h2>
@@ -287,28 +297,22 @@ export default class ControlPanel extends BaseControl {
           <label
             className="toggle-switch__label"
           >
-            <input
+            {/* <input
               id="Proposed"
               key="Proposed"
               className="toggle-switch__input"
               type="checkbox"
               checked={this.isProposedVisible()}
               // onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
-            />
+            /> */}
           </label>
           <span className="toggle-switch__label">Proposed Paths & Trails</span>
         </div>
 
         <div className="filter-buttons">
-          <FilterButtonContainer
-            trailType={controlPanelOptions[0]}
-            enumsFromFacTypeValue={enumsFromFacTypeValue}
-            allValuesIn={this.allValuesIn}
-            facType={this.state.overlay.facType}
-            updateOverlay={this.updateOverlay}
-          />
+          { filterButtons }
           {/* <FilterButtonContainer
-            trailType={controlPanelOptions[1]}
+            trailType={controlPanelOptions[0]}
             enumsFromFacTypeValue={enumsFromFacTypeValue}
             allValuesIn={this.allValuesIn}
             facType={this.state.overlay.facType}

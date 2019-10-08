@@ -1,15 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SmallFilterButton from './small-filter-button';
 
-function FilterButtonContainer({
-  trailType, enumsFromFacTypeValue, allValuesIn, facType, updateOverlay,
-}) {
+// eslint-disable-next-line object-curly-newline, max-len
+function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, facType, updateOverlay }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
   if (allValuesIn(facType, enumsFromFacTypeValue[trailType.name])) {
     filterButtonsSliderName += ' filter-buttons__slider--selected';
     buttonContainerName += ' filter-buttons__button-container--selected';
   }
+
+
+  const smallFilterButtons = trailType.children.map(childType => (
+    <SmallFilterButton
+      key={childType.name}
+      childTrailType={childType}
+    />
+  ));
   return (
     <div>
       <div className="filter-buttons__container" key={trailType.name}>
@@ -30,7 +38,7 @@ function FilterButtonContainer({
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              onClick={() => { updateOverlay(trailType,'path_overlay'); }}
+              onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
             />
           </div>
         </div>
@@ -39,7 +47,7 @@ function FilterButtonContainer({
             {trailType.description}
           </div>
           <div className="filter-buttons__children">
-            {/* {trailType.children.map(child => this.renderChildControl(child))} */}
+            { smallFilterButtons }
           </div>
         </div>
       </div>
