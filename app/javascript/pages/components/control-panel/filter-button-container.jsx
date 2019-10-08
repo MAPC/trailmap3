@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import SmallFilterButton from './small-filter-button';
 
 // eslint-disable-next-line object-curly-newline, max-len
-function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, updateOverlay }) {
+function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
-  // if (allValuesIn(facType, enumsFromFacTypeValue[trailType.name])) {
-  //   filterButtonsSliderName += ' filter-buttons__slider--selected';
-  //   buttonContainerName += ' filter-buttons__button-container--selected';
-  // }
+  if (allValuesIn(facType[trailType.name], trailType.overlayValues)) {
+    filterButtonsSliderName += ' filter-buttons__slider--selected';
+    buttonContainerName += ' filter-buttons__button-container--selected';
+  }
 
 
   const smallFilterButtons = trailType.children.map(childType => (
@@ -60,11 +60,8 @@ function FilterButtonContainer({ trailType, enumsFromFacTypeValue, allValuesIn, 
 }
 
 FilterButtonContainer.propTypes = {
-  // allValuesIn: PropTypes.func.isRequired,
-  // facType: PropTypes.shape({
-  //   'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
-  // }).isRequired,
-  enumsFromFacTypeValue: PropTypes.shape({
+  allValuesIn: PropTypes.func.isRequired,
+  facType: PropTypes.shape({
     'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
     'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
     Footpaths: PropTypes.arrayOf(PropTypes.number),
