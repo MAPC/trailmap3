@@ -11,13 +11,20 @@ const enumsFromFacTypeValue = {
 };
 
 const colors = {
-  1: '#0874b9', // separate lane
-  2: '#00B86F', // protected pathways
-  3: '#E89716', // shared roadway
-  4: '#0874b9', // separate lane
-  5: '#00B86F', // protected pathways
-  7: '#E89716', // shared roadway
-  9: '#E89716', // shared roadway
+  'Shared Use Paths': {
+    1: '#214A2D', // Paved Paths
+    2: '#214A2D', // Paved Paths
+    3: '#4BAA40', // Unimproved Roads
+  },
+  'Bicycle Lanes': {
+    2: '#92C5DE', // Protected bike lane
+    1: '#2166AC', // Bike Lane
+  },
+  Footpaths: {
+    1: '#903366', // Paved Footway
+    2: '#A87196', // Natural Surface Footway
+    3: '#A87196', // Natural Surface Footway
+  },
 };
 
 const opacity = {
@@ -165,20 +172,22 @@ export default class ControlPanel extends BaseControl {
     } else {
       andConditions.push('fac_type IN (null)');
     }
-    if (surfaceTypeEnums.length !== 0) {
-      if (!surfaceTypeEnums.includes(1)) {
-        andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
+    if (table !== 'mapc.trans_shared_use_paths') {
+      if (surfaceTypeEnums.length !== 0) {
+        if (!surfaceTypeEnums.includes(1)) {
+          andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
+        } else {
+          andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
+        }
       } else {
-        andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
+        andConditions.push('surf_type IN (null)');
       }
-    } else {
-      andConditions.push('surf_type IN (null)');
     }
 
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
-  addLayer(newData, source, mapStyle) {
+  addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
     if (newData.rows !== null) {
       const geoJson = newData.rows.map(rows => ({
@@ -187,7 +196,7 @@ export default class ControlPanel extends BaseControl {
         properties: {
           fac_type: rows.fac_type,
           fac_stat: rows.fac_stat,
-          color: colors[rows.fac_type],
+          color: colors[trailType][rows.fac_type],
           opacity: opacity[rows.fac_stat],
         },
       }));
@@ -227,7 +236,7 @@ export default class ControlPanel extends BaseControl {
       });
 
       requestJson(this.requestUrl({ [trailType.overlayType]: updatedProperty, source: 'path_overlay', trailType: trailType.name })).then((map) => {
-        this.addLayer(map, source, this.withoutPreviousLayer(source));
+        this.addLayer(trailType.name, map, source, this.withoutPreviousLayer(source));
       });
       if (this.isProposedVisible() && trailType.overlayType !== 'facStat') {
         requestJson(this.requestUrl({ [trailType.overlayType]: updatedProperty, source: 'proposed_overlay' })).then((map) => {
@@ -292,12 +301,19 @@ export default class ControlPanel extends BaseControl {
 
         <div className="filter-buttons">
           <FilterButtonContainer
-            trailType={controlPanelOptions[1]}
+            trailType={controlPanelOptions[0]}
             enumsFromFacTypeValue={enumsFromFacTypeValue}
             allValuesIn={this.allValuesIn}
             facType={this.state.overlay.facType}
             updateOverlay={this.updateOverlay}
           />
+          {/* <FilterButtonContainer
+            trailType={controlPanelOptions[1]}
+            enumsFromFacTypeValue={enumsFromFacTypeValue}
+            allValuesIn={this.allValuesIn}
+            facType={this.state.overlay.facType}
+            updateOverlay={this.updateOverlay}
+          /> */}
         </div>
       </div>
     );

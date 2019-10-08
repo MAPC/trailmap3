@@ -30,7 +30,7 @@ function FilterButtonContainer({
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              // onClick={this.updateOverlay(this, trailType,'path_overlay')}
+              onClick={() => { updateOverlay(trailType,'path_overlay'); }}
             />
           </div>
         </div>
