@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 
 const layers = fromJS({
   layers: [{
-    id: 'Shared Use Paths: Existing Trails',
+    id: 'Shared Use Paths',
     type: 'line',
     source: 'sup_path_overlay',
     layout: {
@@ -16,9 +16,9 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Bicycle Lanes: Existing Trails',
+    id: 'Proposed Shared Use Paths',
     type: 'line',
-    source: 'bl_path_overlay',
+    source: 'sup_proposed_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -28,36 +28,37 @@ const layers = fromJS({
       'line-color': ['get', 'color'],
       'line-width': 2,
       'line-opacity': ['get', 'opacity'],
-    },
-  }, {
-    id: 'Footpaths: Existing Trails',
-    type: 'line',
-    source: 'f_path_overlay',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-      visibility: 'visible',
-    },
-    paint: {
-      'line-color': ['get', 'color'],
-      'line-width': 2,
-      'line-opacity': ['get', 'opacity'],
-    },
-  }, {
-    id: 'Proposed Trails',
-    type: 'line',
-    source: 'proposed_overlay',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-      visibility: 'visible',
-    },
-    paint: {
-      'line-color': ['get', 'color'],
-      'line-width': 2,
-      'line-dasharray': [2, 2],
     },
   }],
 });
+  // }, {
+  //   id: 'Bicycle Lanes: Existing Trails',
+  //   type: 'line',
+  //   source: 'bl_path_overlay',
+  //   layout: {
+  //     'line-join': 'round',
+  //     'line-cap': 'round',
+  //     visibility: 'visible',
+  //   },
+  //   paint: {
+  //     'line-color': ['get', 'color'],
+  //     'line-width': 2,
+  //     'line-opacity': ['get', 'opacity'],
+  //   },
+  // }, {
+  //   id: 'Footpaths: Existing Trails',
+  //   type: 'line',
+  //   source: 'f_path_overlay',
+  //   layout: {
+  //     'line-join': 'round',
+  //     'line-cap': 'round',
+  //     visibility: 'visible',
+  //   },
+  //   paint: {
+  //     'line-color': ['get', 'color'],
+  //     'line-width': 2,
+  //     'line-opacity': ['get', 'opacity'],
+  //   },
+  // }, {
 
 export default layers;

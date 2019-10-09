@@ -3,21 +3,28 @@ import PropTypes from 'prop-types';
 import SmallFilterButton from './small-filter-button';
 
 // eslint-disable-next-line object-curly-newline, max-len
-function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay }) {
-  let buttonContainerName = 'filter-buttons__button-container';
+function addShadow() {
+  document.getElementsByClassName('filter-buttons__button-container')
+}
+function FilterButtonContainer({ trailType, visibleFacType, visisbleFacStat, allValuesIn, updateOverlay, updateOverlayChild }) {
+  let buttonContainerName = `filter-buttons__button-container filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   let filterButtonsSliderName = 'filter-buttons__slider';
-  if (allValuesIn(facType[trailType.name], trailType.overlayValues)) {
+  if (allValuesIn(visibleFacType[trailType.name], trailType.facTypeValues)) {
     filterButtonsSliderName += ' filter-buttons__slider--selected';
     buttonContainerName += ' filter-buttons__button-container--selected';
   }
 
-  const smallFilterButtons = trailType.children.map(childType => (
-    <SmallFilterButton
-      key={childType.name}
-      childTrailType={childType}
-      // allValuesIn={allValuesIn}
-    />
-  ));
+  // const smallFilterButtons = trailType.children.map(childType => (
+  //   <SmallFilterButton
+  //     key={childType.name}
+  //     parentTrailType={trailType}
+  //     childTrailType={childType}
+  //     allValuesIn={allValuesIn}
+  //     visibleFacType={visibleFacType}
+  //     updateOverlay={updateOverlay}
+  //     updateOverlayChild={updateOverlayChild}
+  //   />
+  // ));
   return (
     <div>
       <div className="filter-buttons__container" key={trailType.name}>
@@ -27,7 +34,10 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             className="filter-buttons__button"
             type="button"
             style={{ backgroundImage: `url(${require(`../../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
+            onClick={() => {
+              addShadow();
+              updateOverlay(trailType.facStatValues, trailType.facTypeValues, 'facType', trailType);
+            }}
           />
           <label
             htmlFor={trailType.name}
@@ -38,8 +48,8 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
-              onKeyPress={() => { updateOverlay(trailType, trailType.existingPathName); }}
+              onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
+              // onKeyPress={() => { updateOverlay(trailType, trailType.existingPathName); }}
               role="button"
               tabIndex={0}
             />
@@ -50,7 +60,7 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             {trailType.description}
           </div>
           <div className="filter-buttons__children">
-            { smallFilterButtons }
+            {/* { smallFilterButtons } */}
           </div>
         </div>
       </div>
@@ -60,10 +70,19 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
 
 FilterButtonContainer.propTypes = {
   allValuesIn: PropTypes.func.isRequired,
-  facType: PropTypes.shape({
+  visibleFacType: PropTypes.shape({
     'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
-    'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
-    Footpaths: PropTypes.arrayOf(PropTypes.number),
+    'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
+    // Footpaths: PropTypes.arrayOf(PropTypes.number),
+  }).isRequired,
+  visibleFacStat: PropTypes.shape({
+    'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
+    // Footpaths: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
   trailType: PropTypes.shape({
     name: PropTypes.string,
