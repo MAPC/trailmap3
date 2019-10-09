@@ -11,7 +11,6 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
     buttonContainerName += ' filter-buttons__button-container--selected';
   }
 
-
   const smallFilterButtons = trailType.children.map(childType => (
     <SmallFilterButton
       key={childType.name}
@@ -28,7 +27,7 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             className="filter-buttons__button"
             type="button"
             style={{ backgroundImage: `url(${require(`../../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
+            onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
           />
           <label
             htmlFor={trailType.name}
@@ -39,8 +38,8 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
-              onKeyPress={() => { updateOverlay(trailType, 'path_overlay'); }}
+              onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
+              onKeyPress={() => { updateOverlay(trailType, trailType.existingPathName); }}
               role="button"
               tabIndex={0}
             />
@@ -69,6 +68,8 @@ FilterButtonContainer.propTypes = {
   trailType: PropTypes.shape({
     name: PropTypes.string,
     description: PropTypes.string,
+    existingPathName: PropTypes.string,
+    proposedPathName: PropTypes.string,
     overlayType: PropTypes.string,
     overlayValues: PropTypes.arrayOf(PropTypes.number),
     children: PropTypes.arrayOf(PropTypes.shape({

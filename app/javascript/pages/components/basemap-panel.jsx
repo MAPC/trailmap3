@@ -10,7 +10,7 @@ export default class BasemapPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        basemap: mapboxLite,
+      basemap: mapboxLite,
     };
     this.el = document.createElement('div');
     this.hideFilters = this.hideFilters.bind(this);
@@ -39,7 +39,8 @@ export default class BasemapPanel extends Component {
             className="basemap-panel__options-lite"
           />
           <button
-            onClick={this.props.changeBasemap.bind(this, caliTerrain)}
+            // onClick={this.props.changeBasemap.bind(this, caliTerrain)}
+            onClick={() => this.props.changeBasemap(caliTerrain)}
             type="button"
             className="basemap-panel__options-cali"
           />

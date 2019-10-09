@@ -1,14 +1,9 @@
 import React from 'react';
-import { fromJS } from 'immutable';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
-
-const enumsFromFacTypeValue = {
-  'Shared Use Paths': [1, 2, 3],
-  'Bicycle Lanes': [1, 2],
-  Footpaths: [1, 2, 3],
-};
+import layers from './map-layers';
+import controlPanelOptions from './control-panel/control-panel-options';
 
 const colors = {
   'Shared Use Paths': {
@@ -32,82 +27,6 @@ const opacity = {
   2: 0,
   3: 0,
 };
-
-const controlPanelOptions = [{
-  name: 'Shared Use Paths',
-  description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
-  overlayType: 'facType',
-  overlayValues: [1, 2, 3],
-  children: [{
-    name: 'Paved Paths',
-    overlayType: 'surfaceType',
-    overlayValues: [1, 2],
-  }, {
-    name: 'Unimproved Paths',
-    overlayType: 'surfaceType',
-    overlayValues: [3],
-  }],
-}, {
-  name: 'Bicycle Lanes',
-  description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
-  overlayType: 'facType',
-  overlayValues: [1, 2],
-  children: [{
-    name: 'Protected Bike Lane',
-    overlayType: 'facType',
-    overlayValues: [2],
-  }, {
-    name: 'Bike Lane',
-    overlayType: 'facType',
-    overlayValues: [1],
-  }],
-}, {
-  name: 'Footpaths',
-  description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
-  overlayType: 'facType',
-  overlayValues: [1, 2, 3],
-  children: [{
-    name: 'Paved Footway',
-    overlayType: 'facDetail',
-    overlayValues: [1],
-  }, {
-    name: 'Natural Surface Footway',
-    overlayType: 'facType',
-    overlayValues: [2, 3],
-  }],
-}];
-
-const layers = fromJS({
-  layers: [{
-    id: 'Existing Trails',
-    type: 'line',
-    source: 'path_overlay',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-      visibility: 'visible',
-    },
-    paint: {
-      'line-color': ['get', 'color'],
-      'line-width': 2,
-      'line-opacity': ['get', 'opacity'],
-    },
-  }, {
-    id: 'Proposed Trails',
-    type: 'line',
-    source: 'proposed_overlay',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-      visibility: 'visible',
-    },
-    paint: {
-      'line-color': ['get', 'color'],
-      'line-width': 2,
-      'line-dasharray': [2, 2],
-    },
-  }],
-});
 
 export default class ControlPanel extends BaseControl {
   constructor(props) {
@@ -196,14 +115,14 @@ export default class ControlPanel extends BaseControl {
   addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
     if (newData.rows !== null) {
-      const geoJson = newData.rows.map(rows => ({
+      const geoJson = newData.rows.map(row => ({
         type: 'Feature',
-        geometry: JSON.parse(rows.the_geom),
+        geometry: JSON.parse(row.the_geom),
         properties: {
-          fac_type: rows.fac_type,
-          fac_stat: rows.fac_stat,
-          color: colors[trailType][rows.fac_type],
-          opacity: opacity[rows.fac_stat],
+          fac_type: row.fac_type,
+          fac_stat: row.fac_stat,
+          color: colors[trailType][row.fac_type],
+          opacity: opacity[row.fac_stat],
         },
       }));
       mapStyleWithNewSource = mapStyle
@@ -212,6 +131,7 @@ export default class ControlPanel extends BaseControl {
         .setIn(['sources', source, 'data', 'features'], geoJson)
         .set('layers', mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
     }
+
     this.props.updateStateWith(mapStyleWithNewSource);
   }
 
@@ -241,7 +161,7 @@ export default class ControlPanel extends BaseControl {
         return newOverlay;
       });
 
-      requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, source: 'path_overlay', trailType })).then((map) => {
+      requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, source, trailType })).then((map) => {
         this.addLayer(trailType.name, map, source, this.withoutPreviousLayer(source));
       });
       // if (this.isProposedVisible() && trailType.overlayType !== 'facStat') {
