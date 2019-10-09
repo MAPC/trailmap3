@@ -11,6 +11,13 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
     buttonContainerName += ' filter-buttons__button-container--selected';
   }
 
+  let inputSource;
+    if (trailType.name === 'Shared Use Paths') {
+      inputSource = 'sup_path_overlay'
+    } else {
+      inputSource = 'bl_path_overlay'
+    }
+
 
   const smallFilterButtons = trailType.children.map(childType => (
     <SmallFilterButton
@@ -28,7 +35,7 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             className="filter-buttons__button"
             type="button"
             style={{ backgroundImage: `url(${require(`../../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
+            onClick={() => { updateOverlay(trailType, inputSource); }}
           />
           <label
             htmlFor={trailType.name}
@@ -39,8 +46,8 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              onClick={() => { updateOverlay(trailType, 'path_overlay'); }}
-              onKeyPress={() => { updateOverlay(trailType, 'path_overlay'); }}
+              onClick={() => { updateOverlay(trailType, inputSource); }}
+              onKeyPress={() => { updateOverlay(trailType, inputSource); }}
               role="button"
               tabIndex={0}
             />

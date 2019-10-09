@@ -4,12 +4,6 @@ import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
 
-const enumsFromFacTypeValue = {
-  'Shared Use Paths': [1, 2, 3],
-  'Bicycle Lanes': [1, 2],
-  Footpaths: [1, 2, 3],
-};
-
 const colors = {
   'Shared Use Paths': {
     1: '#214A2D', // Paved Paths
@@ -20,11 +14,11 @@ const colors = {
     2: '#92C5DE', // Protected bike lane
     1: '#2166AC', // Bike Lane
   },
-  Footpaths: {
-    1: '#903366', // Paved Footway
-    2: '#A87196', // Natural Surface Footway
-    3: '#A87196', // Natural Surface Footway
-  },
+  // Footpaths: {
+  //   1: '#903366', // Paved Footway
+  //   2: '#A87196', // Natural Surface Footway
+  //   3: '#A87196', // Natural Surface Footway
+  // },
 };
 
 const opacity = {
@@ -47,7 +41,8 @@ const controlPanelOptions = [{
     overlayType: 'surfaceType',
     overlayValues: [3],
   }],
-}, {
+}, 
+{
   name: 'Bicycle Lanes',
   description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
   overlayType: 'facType',
@@ -61,27 +56,29 @@ const controlPanelOptions = [{
     overlayType: 'facType',
     overlayValues: [1],
   }],
-}, {
-  name: 'Footpaths',
-  description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
-  overlayType: 'facType',
-  overlayValues: [1, 2, 3],
-  children: [{
-    name: 'Paved Footway',
-    overlayType: 'facDetail',
-    overlayValues: [1],
-  }, {
-    name: 'Natural Surface Footway',
-    overlayType: 'facType',
-    overlayValues: [2, 3],
-  }],
-}];
+}, 
+ //{
+//   name: 'Footpaths',
+//   description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
+//   overlayType: 'facType',
+//   overlayValues: [1, 2, 3],
+//   children: [{
+//     name: 'Paved Footway',
+//     overlayType: 'facDetail',
+//     overlayValues: [1],
+//   }, {
+//     name: 'Natural Surface Footway',
+//     overlayType: 'facType',
+//     overlayValues: [2, 3],
+//   }],
+// }
+];
 
 const layers = fromJS({
   layers: [{
-    id: 'Existing Trails',
+    id: 'Shared Use Paths: Existing Trails',
     type: 'line',
-    source: 'path_overlay',
+    source: 'sup_path_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -93,6 +90,22 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
+    id: 'Bicycle Lanes: Existing Trails',
+    type: 'line',
+    source: 'bl_path_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-opacity': ['get', 'opacity'],
+    },
+  },
+  
+  {
     id: 'Proposed Trails',
     type: 'line',
     source: 'proposed_overlay',
@@ -118,7 +131,7 @@ export default class ControlPanel extends BaseControl {
         facType: {
           'Shared Use Paths': [],
           'Bicycle Lanes': [],
-          Footpaths: [],
+          // Footpaths: [],
         },
         surfaceType: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
         facDetail: [
@@ -196,22 +209,75 @@ export default class ControlPanel extends BaseControl {
   addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
     if (newData.rows !== null) {
-      const geoJson = newData.rows.map(rows => ({
-        type: 'Feature',
-        geometry: JSON.parse(rows.the_geom),
-        properties: {
-          fac_type: rows.fac_type,
-          fac_stat: rows.fac_stat,
-          color: colors[trailType][rows.fac_type],
-          opacity: opacity[rows.fac_stat],
-        },
-      }));
+      let geoJson;
+      if (trailType === "Shared Use Paths") {
+        geoJson = newData.rows.map((rows, i) => ({
+          id: i,
+          type: 'Feature',
+          geometry: JSON.parse(rows.the_geom),
+          properties: {
+            fac_type: rows.fac_type,
+            fac_stat: rows.fac_stat,
+            color: colors[trailType][rows.fac_type],
+            opacity: opacity[rows.fac_stat],
+          },
+        }));
+      } 
+      else if (trailType === 'Bicycle Lanes') {
+        geoJson = newData.rows.map((rows, i) => ({
+          id: i,
+          type: 'Feature',
+          geometry: JSON.parse(rows.the_geom),
+          properties: {
+            fac_type: {
+              "Bicycle Lanes": rows.fac_type,
+            },
+            fac_stat: rows.fac_stat,
+            color: colors[trailType][rows.fac_type],
+            opacity: opacity[rows.fac_stat],
+          },
+        }));
+      }
+      //else {
+      //   geoJson = newData.rows.map((rows, i) => ({
+      //     id: i,
+      //     type: 'Feature',
+      //     geometry: JSON.parse(rows.the_geom),
+      //     properties: {
+      //       fac_type: {
+      //         Footpaths: rows.fac_type,
+      //       },
+      //       fac_stat: rows.fac_stat,
+      //       color: colors[trailType][rows.fac_type],
+      //       opacity: opacity[rows.fac_stat],
+      //     },
+      //   }));
+      // }
+  
+      // mapStyleWithNewSource = mapStyle
+      //   .setIn(['sources', source], { type: 'geojson' })
+      //   .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
+      //   .setIn(['sources', source, 'data', 'features'], geoJson)
+      //   .set('layers', mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
+
+      // mapStyleWithNewSource = mapStyle
+      //   .setIn(['sources', 'trailType'], {
+      //     'Shared Use Paths': {},
+      //     'Bicycle Lanes': {},
+      //     Footpaths: {},
+      //   })
+      //   .setIn(['sources', 'trailType', trailType, source], { type: 'geojson'})
+      //   .setIn(['sources', 'trailType', trailType, source, 'data'], { type: 'FeatureCollection' })
+      //   .setIn(['sources', 'trailType', trailType, source, 'data', 'features'], geoJson)
+        // .set('layers', mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
+
       mapStyleWithNewSource = mapStyle
         .setIn(['sources', source], { type: 'geojson' })
         .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
         .setIn(['sources', source, 'data', 'features'], geoJson)
         .set('layers', mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
     }
+
     this.props.updateStateWith(mapStyleWithNewSource);
   }
 
@@ -230,6 +296,12 @@ export default class ControlPanel extends BaseControl {
   }
 
   updateOverlay(trailType, source) {
+    let inputSource;
+    if (trailType.name === 'Shared Use Paths') {
+      inputSource = 'sup_path_overlay'
+    } else {
+      inputSource = 'bl_path_overlay'
+    }
     this.setState((prevState) => {
       const newOverlay = prevState.overlay[trailType.overlayType];
       trailType.overlayValues.map((value) => {
@@ -241,7 +313,7 @@ export default class ControlPanel extends BaseControl {
         return newOverlay;
       });
 
-      requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, source: 'path_overlay', trailType })).then((map) => {
+      requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, inputSource, trailType })).then((map) => {
         this.addLayer(trailType.name, map, source, this.withoutPreviousLayer(source));
       });
       // if (this.isProposedVisible() && trailType.overlayType !== 'facStat') {
