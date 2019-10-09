@@ -6,18 +6,18 @@ import SmallFilterButton from './small-filter-button';
 function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
-  if (allValuesIn(facType[trailType.name], trailType.overlayValues)) {
-    filterButtonsSliderName += ' filter-buttons__slider--selected';
-    buttonContainerName += ' filter-buttons__button-container--selected';
-  }
+  // if (allValuesIn(facType[trailType.name], trailType.overlayValues)) {
+  //   filterButtonsSliderName += ' filter-buttons__slider--selected';
+  //   buttonContainerName += ' filter-buttons__button-container--selected';
+  // }
 
-  const smallFilterButtons = trailType.children.map(childType => (
-    <SmallFilterButton
-      key={childType.name}
-      childTrailType={childType}
-      // allValuesIn={allValuesIn}
-    />
-  ));
+  // const smallFilterButtons = trailType.children.map(childType => (
+  //   <SmallFilterButton
+  //     key={childType.name}
+  //     childTrailType={childType}
+  //     // allValuesIn={allValuesIn}
+  //   />
+  // ));
   return (
     <div>
       <div className="filter-buttons__container" key={trailType.name}>
@@ -27,7 +27,7 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             className="filter-buttons__button"
             type="button"
             style={{ backgroundImage: `url(${require(`../../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
+            onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
           />
           <label
             htmlFor={trailType.name}
@@ -38,8 +38,8 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
           <div className="filter-buttons__slider-container">
             <div
               className={filterButtonsSliderName}
-              onClick={() => { updateOverlay(trailType, trailType.existingPathName); }}
-              onKeyPress={() => { updateOverlay(trailType, trailType.existingPathName); }}
+              onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
+              // onKeyPress={() => { updateOverlay(trailType, trailType.existingPathName); }}
               role="button"
               tabIndex={0}
             />
@@ -50,7 +50,7 @@ function FilterButtonContainer({ trailType, facType, allValuesIn, updateOverlay 
             {trailType.description}
           </div>
           <div className="filter-buttons__children">
-            { smallFilterButtons }
+            {/* { smallFilterButtons } */}
           </div>
         </div>
       </div>
