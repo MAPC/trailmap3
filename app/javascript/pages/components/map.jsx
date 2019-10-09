@@ -12,6 +12,7 @@ import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
 import BasemapPanel from './basemap-panel';
 import MAP_STYLE from './light.json';
+import layers from './map-layers';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
@@ -44,28 +45,20 @@ export default class Map extends Component {
   }
 
   changeBasemap(updatedMapStyle) {
+    const layerNames = ['sup_path_overlay', 'bl_path_overlay', 'f_path_overlay', 'proposed_overlay'];
+    let newMapStyle = updatedMapStyle;
     this.setState((prevState) => {
-      const trailSource = prevState.mapStyle.get('sources').get('path_overlay');
-      const trailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === 'path_overlay');
-
-      const proposedTrailSource = prevState.mapStyle.get('sources').get('proposed_overlay');
-      const proposedTrailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === 'proposed_overlay');
-      let newMapStyle = updatedMapStyle;
-      if (trailLayers !== undefined) {
-        newMapStyle = updatedMapStyle
-          .setIn(['sources', 'path_overlay'], { type: 'geojson' })
-          .setIn(['sources', 'path_overlay', 'data'], { type: 'FeatureCollection' })
-          .setIn(['sources', 'path_overlay', 'data', 'features'], trailSource.data.features)
-          .set('layers', updatedMapStyle.get('layers').push(trailLayers));
-
-        if (proposedTrailLayers !== undefined) {
+      layerNames.forEach((source) => {
+        const trailSource = prevState.mapStyle.get('sources').get(source);
+        const trailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === source);
+        if (trailLayers !== undefined) {
           newMapStyle = newMapStyle
-            .setIn(['sources', 'proposed_overlay'], { type: 'geojson' })
-            .setIn(['sources', 'proposed_overlay', 'data'], { type: 'FeatureCollection' })
-            .setIn(['sources', 'proposed_overlay', 'data', 'features'], proposedTrailSource.data.features)
-            .set('layers', newMapStyle.get('layers').push(proposedTrailLayers));
+            .setIn(['sources', source], { type: 'geojson' })
+            .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
+            .setIn(['sources', source, 'data', 'features'], trailSource.data.features)
+            .set('layers', newMapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
         }
-      }
+      });
       return { mapStyle: newMapStyle };
     });
   }
