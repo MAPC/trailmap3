@@ -2,6 +2,7 @@ import React from 'react';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
+import ProposedToggle from './control-panel/propsed-toggle';
 import layers from './map-layers';
 import controlPanelOptions from './control-panel/control-panel-options';
 
@@ -33,7 +34,9 @@ export default class ControlPanel extends BaseControl {
     super(props);
     this.state = {
       overlay: {
-        facStat: [1],
+        facStat: {
+          'Proposed Shared Use Paths': [],
+        },
         facType: {
           'Shared Use Paths': [],
           'Bicycle Lanes': [],
@@ -57,13 +60,6 @@ export default class ControlPanel extends BaseControl {
 
   allValuesIn(a, b) {
     return !b.map(value => a.includes(value)).includes(false);
-  }
-
-  isProposedVisible() {
-    if (this.allValuesIn(this.state.overlay.facStat, [2, 3])) {
-      return true;
-    }
-    return false;
   }
 
   // eslint-disable-next-line object-curly-newline
@@ -197,7 +193,10 @@ export default class ControlPanel extends BaseControl {
         >
           X
         </button>
-
+        <ProposedToggle
+          allValuesIn={this.allValuesIn}
+          facStat={this.state.overlay.facStat}
+        />
         {/* <div className="toggle-switch">
           <label
             className="toggle-switch__label"

@@ -46,6 +46,11 @@ const controlPanelOptions = [{
     overlayType: 'facType',
     overlayValues: [2, 3],
   }],
+}, {
+  name: 'Proposed Shared Use Paths',
+  proposedPathName: 'sup_proposed_overlay',
+  overlayType: 'facStat',
+  overlayValues: [3],
 }];
 
 export default controlPanelOptions;
