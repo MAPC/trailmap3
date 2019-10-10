@@ -210,10 +210,10 @@ export default class ControlPanel extends BaseControl {
         >
           X
         </button>
-        <ProposedToggle
+        {/* <ProposedToggle
           allValuesIn={this.allValuesIn}
           facStat={this.state.overlay.facStat}
-        />
+        /> */}
         <div className="filter-buttons">
           { filterButtons }
         </div>
