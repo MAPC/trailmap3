@@ -36,10 +36,12 @@ export default class ControlPanel extends BaseControl {
     this.state = {
       overlay: {
         facStat: {
+          'Shared Use Paths': [],
           'Proposed Shared Use Paths': [],
         },
         facType: {
           'Shared Use Paths': [],
+          'Proposed Shared Use Paths': [],
           // 'Bicycle Lanes': [],
           // Footpaths: [],
         },
@@ -68,7 +70,7 @@ export default class ControlPanel extends BaseControl {
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
-  updateOverlay(facStat, facType, trailType='proposed') {
+  updateOverlay(facStat, facType, trailType = 'proposed') {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
       if (trailType !== 'proposed') {
@@ -80,47 +82,40 @@ export default class ControlPanel extends BaseControl {
           }
           return newOverlay;
         });
-        requestJson(this.requestUrl({ facStat, facType, source: trailType.name, trailType })).then((map) => {
-          this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+        facStat.map((value) => {
+          if (newOverlay.facStat[trailType.name].includes(value)) {
+            newOverlay.facStat[trailType.name] = newOverlay.facStat[trailType.name].filter(id => id !== value);
+          } else {
+            newOverlay.facStat[trailType.name] = newOverlay.facStat[trailType.name].concat(value);
+          }
+          return newOverlay;
         });
       }
+      requestJson(this.requestUrl({
+        facStat: newOverlay.facStat[trailType.name],
+        facType: newOverlay.facType[trailType.name],
+        source: trailType.name,
+        trailType,
+      })).then((map) => {
+        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+      });
       return { overlay: newOverlay };
     });
-  // this.setState((prevState) => {
-    // const newOverlay = prevState.overlay[trailType.overlayType];
-    // trailType.overlayValues.map((value) => {
-    //   if (prevState.overlay[trailType.overlayType][trailType.name].includes(value)) {
-    //     newOverlay[trailType.name] = newOverlay[trailType.name].filter(id => id !== value);
-    //   } else {
-    //     newOverlay[trailType.name] = newOverlay[trailType.name].concat(value);
-    //   }
-    //   return newOverlay;
-    // });
-
-    // requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, source, trailType })).then((map) => {
-    //   this.addLayer(trailType.name, map, source, this.withoutPreviousLayer(source));
-    // });
-    // if (this.isProposedVisible() && trailType.overlayType !== 'facStat') {
-    //   requestJson(this.requestUrl({ [trailType.overlayType]: newOverlay, source: 'proposed_overlay' })).then((map) => {
-    //     this.addLayer(map, 'proposed_overlay', this.withoutPreviousLayer('proposed_overlay'));
-    //   });
-    // }
-    // return { overlay: { ...prevState.overlay, facType: newOverlay } };
-  // });
   }
 
   // eslint-disable-next-line object-curly-newline
   requestUrl({ facStat, facType, surfaceType, source, trailType }) {
+    // console.log(facStat)
+    // console.log(facType)
+    // console.log(surfaceType)
+    // console.log(source)
+    // console.log(trailType)
     const selectString = "SELECT fac_type, fac_stat, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
     let facStatEnums = facStat || this.state.overlay.facStat;
     const facTypeEnums = facType || this.state.overlay.facType;
     const surfaceTypeEnums = surfaceType || this.state.overlay.surfaceType;
     const andConditions = [];
     let table = '';
-
-    console.log(facStatEnums)
-    console.log(facTypeEnums)
-
 
     if (trailType.name === 'Shared Use Paths') {
       table = 'mapc.trans_shared_use_paths';
@@ -155,7 +150,6 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
-    console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`)
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
