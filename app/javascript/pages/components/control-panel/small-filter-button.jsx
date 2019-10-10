@@ -6,21 +6,23 @@ function SmallFilterButton({
   parentTrailType,
   allValuesIn,
   updateOverlay,
+  updateOverlayChild,
   visibleFacType
 }) {
   let className = `small-filter-button small-filter-button-${childTrailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   if (allValuesIn(visibleFacType[parentTrailType.name], childTrailType.facTypeValues)) {
     className += ' small-filter-button--selected';
   }
-  
+
   return (
     <button
       id={childTrailType.name}
       key={childTrailType.name}
       className={className}
       type="button"
-      // onClick={() => { updateOverlay(childTrailType, 'path_overlay'); }}
-      onClick={ () => {console.log("click!"); }}
+      onClick={() => { updateOverlayChild(childTrailType.facStatValues, childTrailType.facTypeValues, parentTrailType); }}
+      // onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
+      // updateOverlay(facStat, facType, trailType = 'proposed') {
     >
       {childTrailType.name}
     </button>

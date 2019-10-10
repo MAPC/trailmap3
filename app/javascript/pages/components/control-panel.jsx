@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
@@ -59,10 +60,14 @@ export default class ControlPanel extends BaseControl {
       },
     };
     this.updateOverlay = this.updateOverlay.bind(this);
+    this.updateOverlayChild = this.updateOverlayChild.bind(this);
   }
 
   allValuesIn(a, b) {
-    return !b.map(value => a.includes(value)).includes(false);
+    if (!a || !b) {
+      return false;
+    }
+    return b.map(value => a.includes(value)).includes(true);
   }
 
   hideFilters() {
@@ -70,26 +75,39 @@ export default class ControlPanel extends BaseControl {
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
+  updateOverlayChild(facStat, facType, trailType = 'proposed') {
+    this.setState((prevState) => {
+      const newOverlay = prevState.overlay;
+      if (trailType !== 'proposed') {
+        if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
+          facType.forEach(value => newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].filter(id => id !== value));
+        } else {
+          newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].concat(facType);
+        }
+      }
+      requestJson(this.requestUrl({
+        facStat,
+        facType: newOverlay.facType[trailType.name],
+        source: trailType.name,
+        trailType,
+      })).then((map) => {
+        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+      });
+      return { overlay: newOverlay };
+    });
+  }
+
   updateOverlay(facStat, facType, trailType = 'proposed') {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
       if (trailType !== 'proposed') {
-        facType.map((value) => {
-          if (newOverlay.facType[trailType.name].includes(value)) {
-            newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].filter(id => id !== value);
-          } else {
-            newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].concat(value);
-          }
-          return newOverlay;
-        });
-        facStat.map((value) => {
-          if (newOverlay.facStat[trailType.name].includes(value)) {
-            newOverlay.facStat[trailType.name] = newOverlay.facStat[trailType.name].filter(id => id !== value);
-          } else {
-            newOverlay.facStat[trailType.name] = newOverlay.facStat[trailType.name].concat(value);
-          }
-          return newOverlay;
-        });
+        if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
+          newOverlay.facType[trailType.name] = [];
+          newOverlay.facStat[trailType.name] = [];
+        } else {
+          newOverlay.facType[trailType.name] = facType;
+          newOverlay.facStat[trailType.name] = facStat;
+        }
       }
       requestJson(this.requestUrl({
         facStat: newOverlay.facStat[trailType.name],
@@ -150,6 +168,7 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
+    // console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`)
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
@@ -198,6 +217,7 @@ export default class ControlPanel extends BaseControl {
         visibleFacStat={this.state.overlay.facStat}
         allValuesIn={this.allValuesIn}
         updateOverlay={this.updateOverlay}
+        updateOverlayChild={this.updateOverlayChild}
       />
     ));
     return (

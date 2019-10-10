@@ -8,10 +8,12 @@ const controlPanelOptions = [{
     name: 'Paved Paths',
     // overlayType: 'surfaceType',
     facTypeValues: [1, 2],
+    facStatValues: [1, 2],
   }, {
     name: 'Unimproved Paths',
     // overlayType: 'surfaceType',
     facTypeValues: [3],
+    facStatValues: [1, 2],
   }],
 },
 // , {

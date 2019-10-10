@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import SmallFilterButton from './small-filter-button';
 
 // eslint-disable-next-line object-curly-newline, max-len
-function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateOverlay }) {
-  let buttonContainerName = 'filter-buttons__button-container';
+function addShadow() {
+  document.getElementsByClassName('filter-buttons__button-container')
+}
+function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateOverlay, updateOverlayChild }) {
+  let buttonContainerName = `filter-buttons__button-container filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   let filterButtonsSliderName = 'filter-buttons__slider';
   if (allValuesIn(visibleFacType[trailType.name], trailType.facTypeValues)) {
     filterButtonsSliderName += ' filter-buttons__slider--selected';
@@ -19,6 +22,7 @@ function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateO
       allValuesIn={allValuesIn}
       visibleFacType={visibleFacType}
       updateOverlay={updateOverlay}
+      updateOverlayChild={updateOverlayChild}
     />
   ));
   return (
@@ -30,7 +34,10 @@ function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateO
             className="filter-buttons__button"
             type="button"
             style={{ backgroundImage: `url(${require(`../../../../assets/images/${trailType.name.replace(/\s+/g, '-').toLowerCase()}@2x.png`)})` }}
-            onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
+            onClick={() => {
+              addShadow();
+              updateOverlay(trailType.facStatValues, trailType.facTypeValues, 'facType', trailType);
+            }}
           />
           <label
             htmlFor={trailType.name}
