@@ -1,5 +1,5 @@
 const proposedTrailOptions = [{
-  name: 'Proposed Shared Use Paths',
+  name: 'Shared Use Paths',
   source: 'sup_proposed_overlay',
   facStatValues: [3],
   facTypeValues: [1, 2, 3],

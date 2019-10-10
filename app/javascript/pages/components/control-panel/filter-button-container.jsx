@@ -6,7 +6,7 @@ import SmallFilterButton from './small-filter-button';
 function addShadow() {
   document.getElementsByClassName('filter-buttons__button-container')
 }
-function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateOverlay, updateOverlayChild }) {
+function FilterButtonContainer({ trailType, visibleFacType, visisbleFacStat, allValuesIn, updateOverlay, updateOverlayChild }) {
   let buttonContainerName = `filter-buttons__button-container filter-buttons__button-container-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   let filterButtonsSliderName = 'filter-buttons__slider';
   if (allValuesIn(visibleFacType[trailType.name], trailType.facTypeValues)) {
@@ -14,17 +14,17 @@ function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateO
     buttonContainerName += ' filter-buttons__button-container--selected';
   }
 
-  const smallFilterButtons = trailType.children.map(childType => (
-    <SmallFilterButton
-      key={childType.name}
-      parentTrailType={trailType}
-      childTrailType={childType}
-      allValuesIn={allValuesIn}
-      visibleFacType={visibleFacType}
-      updateOverlay={updateOverlay}
-      updateOverlayChild={updateOverlayChild}
-    />
-  ));
+  // const smallFilterButtons = trailType.children.map(childType => (
+  //   <SmallFilterButton
+  //     key={childType.name}
+  //     parentTrailType={trailType}
+  //     childTrailType={childType}
+  //     allValuesIn={allValuesIn}
+  //     visibleFacType={visibleFacType}
+  //     updateOverlay={updateOverlay}
+  //     updateOverlayChild={updateOverlayChild}
+  //   />
+  // ));
   return (
     <div>
       <div className="filter-buttons__container" key={trailType.name}>
@@ -60,7 +60,7 @@ function FilterButtonContainer({ trailType, visibleFacType, allValuesIn, updateO
             {trailType.description}
           </div>
           <div className="filter-buttons__children">
-            { smallFilterButtons }
+            {/* { smallFilterButtons } */}
           </div>
         </div>
       </div>
@@ -73,6 +73,14 @@ FilterButtonContainer.propTypes = {
   visibleFacType: PropTypes.shape({
     'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
     'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
+    // Footpaths: PropTypes.arrayOf(PropTypes.number),
+  }).isRequired,
+  visibleFacStat: PropTypes.shape({
+    'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
+    // 'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
     // 'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
     // Footpaths: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,

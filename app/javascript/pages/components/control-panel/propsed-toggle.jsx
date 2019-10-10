@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function ProposedToggle({ allValuesIn, facStat }) {
+function ProposedToggle({ updateOverlayProposed }) {
   return (
     <div className="toggle-switch">
       <label
@@ -13,7 +13,7 @@ function ProposedToggle({ allValuesIn, facStat }) {
           key="Proposed"
           className="toggle-switch__input"
           type="checkbox"
-          // onChange={this.updateOverlay.bind(this, 'facStat', [2, 3], 'proposed_overlay')}
+          onChange={() => { updateOverlayProposed(); }}
         />
       </label>
       <span className="toggle-switch__label">Proposed Paths & Trails</span>
@@ -22,11 +22,6 @@ function ProposedToggle({ allValuesIn, facStat }) {
 }
 
 ProposedToggle.propTypes = {
-  allValuesIn: PropTypes.func.isRequired,
-  facStat: PropTypes.shape({
-    'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
-    'Proposed Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
-    'Proposed Footpaths': PropTypes.arrayOf(PropTypes.number),
-  }).isRequired,
+  updateOverlayProposed: PropTypes.func.isRequired,
 };
 export default ProposedToggle;

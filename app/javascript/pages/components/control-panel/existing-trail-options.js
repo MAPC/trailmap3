@@ -15,6 +15,11 @@ const controlPanelOptions = [{
     facTypeValues: [3],
     facStatValues: [1, 2],
   }],
+}, {
+  name: 'Proposed Shared Use Paths',
+  source: 'sup_proposed_overlay',
+  facStatValues: [3],
+  facTypeValues: [1, 2, 3],
 },
 // , {
 //   name: 'Bicycle Lanes',
