@@ -104,17 +104,16 @@ export default class ControlPanel extends BaseControl {
       return { overlay: newOverlay };
     });
     if (document.getElementsByClassName('toggle-switch__input')[0].checked) {
-      console.log("Proposed toggle is checked")
       this.updateOverlayProposed(true);
     }
   }
 
-  updateOverlayProposed(onToggle=false) {
+  updateOverlayProposed(onToggle = false) {
     const visibleLayers = Object.entries(this.state.overlay.facType)
       .filter(item => item[1].length > 0)
       .map(item => item[0])
       .filter(item => !item.includes('Proposed'));
-    console.log(visibleLayers)
+    console.log(visibleLayers);
     trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {
@@ -127,7 +126,7 @@ export default class ControlPanel extends BaseControl {
               newOverlay.facStat[trailType.name] = trailType.facStatValues;
               newOverlay.facType[trailType.name] = trailType.facTypeValues;
             }
-            if (onToggle===true) {
+            if (onToggle === true) {
               if (this.allValuesIn(newOverlay.facStat[`Proposed ${layer}`], trailType.facStatValues)) {
                 newOverlay.facStat[`Proposed ${layer}`] = [];
                 newOverlay.facType[`Proposed ${layer}`] = [];
@@ -146,27 +145,6 @@ export default class ControlPanel extends BaseControl {
             });
             return { overlay: newOverlay };
           });
-        } else if (`Proposed ${trailType.name}` === layer && onToggle === true) {
-          // console.log(`Visible layer: ${layer}`);
-          console.log("---ON TOGGLE---")
-          this.setState((prevState) => {
-            const newOverlay = prevState.overlay;
-            if (this.allValuesIn(newOverlay.facStat[layer], trailType.facStatValues)) {
-              console.log("all values in")
-              // console.log(newOverlay.facStat[layer]);
-            }
-            else {
-              const test = Object.keys(prevState.overlay.facStat)[1]
-              console.log("Key",typeof(test))
-              console.log("Overlay facStat:", prevState.overlay.facStat)
-              console.log("Implicit sup:", prevState.overlay.facStat[test])
-              console.log("Is the string equal to the variables? ", (layer === test))
-              // newOverlay.facStat[layer] = [];
-              // newOverlay.facType[layer] = [];
-            }
-            //console.log(newOverlay)
-            return { overlay: newOverlay }
-          })
         }
       });
     });
