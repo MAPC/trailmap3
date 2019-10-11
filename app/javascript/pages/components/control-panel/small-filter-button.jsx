@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 
 function SmallFilterButton({
   childTrailType,
-  parentTrailType,
   allValuesIn,
-  updateOverlayChild,
+  updateOverlay,
   visibleFacType,
 }) {
   let className = `small-filter-button small-filter-button-${childTrailType.name.replace(/\s+/g, '-').toLowerCase()}`;
-  if (allValuesIn(visibleFacType[parentTrailType.name], childTrailType.facTypeValues)) {
+  if (allValuesIn(visibleFacType[childTrailType.group], childTrailType.facTypeValues)) {
     className += ' small-filter-button--selected';
   }
   return (
@@ -18,7 +17,7 @@ function SmallFilterButton({
       key={childTrailType.name}
       className={className}
       type="button"
-      onClick={() => { updateOverlayChild(childTrailType.facStatValues, childTrailType.facTypeValues, parentTrailType); }}
+      onClick={() => { updateOverlay(childTrailType.facStatValues, childTrailType.facTypeValues, childTrailType); }}
       // onClick={() => { updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType); }}
       // updateOverlay(facStat, facType, trailType = 'proposed') {
     >
@@ -34,19 +33,7 @@ SmallFilterButton.propTypes = {
     facStatValues: PropTypes.arrayOf(PropTypes.number),
     facTypeValues: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
-  parentTrailType: PropTypes.shape({
-    name: PropTypes.string,
-    description: PropTypes.string,
-    source: PropTypes.string,
-    facStatValues: PropTypes.arrayOf(PropTypes.number),
-    facTypeValues: PropTypes.arrayOf(PropTypes.number),
-    children: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      ofacStatValues: PropTypes.arrayOf(PropTypes.number),
-      facTypeValues: PropTypes.arrayOf(PropTypes.number),
-    })),
-  }).isRequired,
-  updateOverlayChild: PropTypes.func.isRequired,
+  updateOverlay: PropTypes.func.isRequired,
   visibleFacType: PropTypes.shape({
     'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
     'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),

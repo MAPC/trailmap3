@@ -8,9 +8,9 @@ const colors = {
     // 1: '#214A2D', // Paved Paths
     // 2: '#214A2D', // Paved Paths
     // 3: '#4BAA40', // Unimproved Roads
-    1: 'red',
-    2: 'red',
-    3: 'red',
+    1: 'purple',
+    2: 'purple',
+    3: 'purple',
   },
   'Bicycle Lanes': {
     2: '#2166AC', // Protected bike lane
@@ -20,7 +20,7 @@ const colors = {
     // 2: '#2166AC', // Protected bike lane
     // 1: '#92C5DE', // Bike Lane
     2: 'deeppink',
-    1: 'deeppink'
+    1: 'deeppink',
   },
   Footpaths: {
     1: '#903366', // Paved Footway

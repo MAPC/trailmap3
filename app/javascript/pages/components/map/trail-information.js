@@ -5,11 +5,15 @@ const trailInformation = [{
   facStatValues: [1, 2],
   facTypeValues: [1, 2, 3],
   children: [{
+    group: 'Shared Use Paths',
     name: 'Paved Paths',
+    source: 'sup_path_overlay',
     facTypeValues: [1, 2],
     facStatValues: [1, 2],
   }, {
+    group: 'Shared Use Paths',
     name: 'Unimproved Paths',
+    source: 'sup_path_overlay',
     facTypeValues: [3],
     facStatValues: [1, 2],
   }],

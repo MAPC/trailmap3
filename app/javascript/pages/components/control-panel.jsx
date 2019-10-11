@@ -17,7 +17,7 @@ export default class ControlPanel extends BaseControl {
       overlay: {
         facStat: {
           'Shared Use Paths': [],
-          'Proposed Shared Use Paths': [],
+          // 'Proposed Shared Use Paths': [],
           'Bicycle Lanes': [],
           'Proposed Bicycle Lanes': [],
           Footpaths: [],
@@ -25,7 +25,7 @@ export default class ControlPanel extends BaseControl {
         },
         facType: {
           'Shared Use Paths': [],
-          'Proposed Shared Use Paths': [],
+          // 'Proposed Shared Use Paths': [],
           'Bicycle Lanes': [],
           'Proposed Bicycle Lanes': [],
           Footpaths: [],
@@ -43,9 +43,9 @@ export default class ControlPanel extends BaseControl {
           81, 82, 83,
           91, 92, 93, 94],
       },
+      isToggled: false,
     };
     this.updateOverlay = this.updateOverlay.bind(this);
-    this.updateOverlayChild = this.updateOverlayChild.bind(this);
     this.updateOverlayProposed = this.updateOverlayProposed.bind(this);
   }
 
@@ -56,56 +56,35 @@ export default class ControlPanel extends BaseControl {
     return b.map(value => a.includes(value)).includes(true);
   }
 
+  aIsSubsetOfB(a, b) {
+    return !a.map(aValue => b.includes(aValue)).includes(false);
+  }
+
   hideFilters() {
     const controlPanel = document.getElementsByClassName('control-panel')[0];
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
-  updateOverlayChild(facStat, facType, trailType) {
-    this.setState((prevState) => {
-      const newOverlay = prevState.overlay;
-      if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
-        facType.forEach(value => newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].filter(id => id !== value));
-      } else {
-        newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].concat(facType);
-      }
-      requestJson(this.requestUrl({
-        facStat,
-        facType: newOverlay.facType[trailType.name],
-        trailType,
-      })).then((map) => {
-        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
-      });
-      return { overlay: newOverlay };
-    });
-  }
-
   updateOverlay(facStat, facType, trailType) {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
-      if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
-        newOverlay.facType[trailType.name] = [];
-        newOverlay.facStat[trailType.name] = [];
+      if (this.aIsSubsetOfB(facType, newOverlay.facType[trailType.group])) {
+        facType.forEach(value => newOverlay.facType[trailType.group] = newOverlay.facType[trailType.group].filter(id => id !== value));
+      } else if (this.allValuesIn(newOverlay.facStat[trailType.group], facStat)) {
+        facType.forEach(value => newOverlay.facType[trailType.group].push(value));
       } else {
-        newOverlay.facType[trailType.name] = facType;
-        newOverlay.facStat[trailType.name] = facStat;
-      }
-      if (this.allValuesIn(newOverlay.facType[`Proposed ${trailType.name}`], facType)) {
-        newOverlay.facType[`Proposed ${trailType.name}`] = [];
-        newOverlay.facStat[`Proposed ${trailType.name}`] = [];
+        facType.forEach(value => newOverlay.facType[trailType.group].push(value));
+        facStat.forEach(value => newOverlay.facStat[trailType.group].push(value));
       }
       requestJson(this.requestUrl({
-        facStat: newOverlay.facStat[trailType.name],
-        facType: newOverlay.facType[trailType.name],
+        facStat,
+        facType: newOverlay.facType[trailType.group],
         trailType,
       })).then((map) => {
-        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+        this.addLayer(trailType.group, map, trailType.source, this.withoutPreviousLayer(trailType.source));
       });
       return { overlay: newOverlay };
     });
-    if (document.getElementsByClassName('toggle-switch__input')[0].checked) {
-      this.updateOverlayProposed(true);
-    }
   }
 
   updateOverlayProposed(onToggle = false) {
@@ -159,14 +138,9 @@ export default class ControlPanel extends BaseControl {
     const andConditions = [];
     let table = '';
 
-    // console.log(facStat)
-    // console.log(facType)
-    // console.log(surfaceType)
-    // console.log(trailType)
-
-    if (trailType.name.includes('Shared Use Paths')) {
+    if (trailType.group.includes('Shared Use Paths')) {
       table = 'mapc.trans_shared_use_paths';
-    } else if (trailType.name.includes('Bicycle Lanes')) {
+    } else if (trailType.group.includes('Bicycle Lanes')) {
       table = 'mapc.trans_bike_facilities';
     } else {
       table = 'mapc.trans_walking_trails';
@@ -194,7 +168,7 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
-    console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
+    // console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
@@ -243,7 +217,6 @@ export default class ControlPanel extends BaseControl {
           visibleFacStat={this.state.overlay.facStat}
           allValuesIn={this.allValuesIn}
           updateOverlay={this.updateOverlay}
-          updateOverlayChild={this.updateOverlayChild}
         />
       ));
     return (
