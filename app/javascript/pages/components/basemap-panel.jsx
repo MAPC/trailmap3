@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { fromJS } from 'immutable';
-import MAP_STYLE from './light.json';
-import SECOND_MAP_STYLE from './cali.json';
+import MAPBOX_LITE from './map/lite.json';
+import CALI_TERRAIN from './map/cali.json';
 
-const mapboxLite = fromJS(MAP_STYLE);
-const caliTerrain = fromJS(SECOND_MAP_STYLE);
+const mapboxLite = fromJS(MAPBOX_LITE);
+const caliTerrain = fromJS(CALI_TERRAIN);
 
 export default class BasemapPanel extends Component {
   constructor(props) {

@@ -11,10 +11,11 @@ import AboutButton from './about-button';
 import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
 import BasemapPanel from './basemap-panel';
-import MAP_STYLE from './light.json';
-import layers from './map-layers';
+import MAPBOX_LITE from './map/lite.json';
+import layers from './map/map-layers';
+import trailInformation from './map/trail-information';
 
-const defaultMapStyle = fromJS(MAP_STYLE);
+const defaultMapStyle = fromJS(MAPBOX_LITE);
 
 export default class Map extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class Map extends Component {
       },
     };
     this.mapRef = React.createRef();
-    this.updateStateWith = this.updateStateWith.bind(this);
+    this.updateMapLayers = this.updateMapLayers.bind(this);
     this.changeBasemap = this.changeBasemap.bind(this);
   }
 
@@ -40,12 +41,12 @@ export default class Map extends Component {
     }), 'bottom-right');
   }
 
-  updateStateWith(updatedMapStyle) {
+  updateMapLayers(updatedMapStyle) {
     this.setState({ mapStyle: updatedMapStyle });
   }
 
   changeBasemap(updatedMapStyle) {
-    const layerNames = ['sup_path_overlay', 'bl_path_overlay', 'f_path_overlay', 'proposed_overlay'];
+    const layerNames = Object.entries(trailInformation).map(item => item[1].source);
     let newMapStyle = updatedMapStyle;
     this.setState((prevState) => {
       layerNames.forEach((source) => {
@@ -93,7 +94,7 @@ export default class Map extends Component {
           <ControlPanel
             mapStyle={currentState.mapStyle}
             layers={currentState.mapStyle.get('layers')}
-            updateStateWith={this.updateStateWith}
+            updateMapLayers={this.updateMapLayers}
           />
           <Geocoder
             mapRef={this.mapRef}
