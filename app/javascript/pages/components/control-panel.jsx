@@ -110,11 +110,11 @@ export default class ControlPanel extends BaseControl {
   }
 
   updateOverlayProposed(onToggle=false) {
-    console.log(onToggle)
     const visibleLayers = Object.entries(this.state.overlay.facType)
       .filter(item => item[1].length > 0)
       .map(item => item[0])
       .filter(item => !item.includes('Proposed'));
+    console.log(visibleLayers)
     trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {
@@ -127,7 +127,6 @@ export default class ControlPanel extends BaseControl {
               newOverlay.facStat[trailType.name] = trailType.facStatValues;
               newOverlay.facType[trailType.name] = trailType.facTypeValues;
             }
-            console.log(onToggle)
             if (onToggle===true) {
               if (this.allValuesIn(newOverlay.facStat[`Proposed ${layer}`], trailType.facStatValues)) {
                 newOverlay.facStat[`Proposed ${layer}`] = [];
@@ -187,9 +186,9 @@ export default class ControlPanel extends BaseControl {
     // console.log(surfaceType)
     // console.log(trailType)
 
-    if (trailType.name === 'Shared Use Paths') {
+    if (trailType.name.includes('Shared Use Paths')) {
       table = 'mapc.trans_shared_use_paths';
-    } else if (trailType.name === 'Bicycle Lanes') {
+    } else if (trailType.name.includes('Bicycle Lanes')) {
       table = 'mapc.trans_bike_facilities';
     } else {
       table = 'mapc.trans_walking_trails';
@@ -217,7 +216,7 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
-    // console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
+    console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
