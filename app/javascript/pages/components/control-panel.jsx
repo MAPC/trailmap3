@@ -103,16 +103,21 @@ export default class ControlPanel extends BaseControl {
       });
       return { overlay: newOverlay };
     });
+    if (document.getElementsByClassName('toggle-switch__input')[0].checked) {
+      console.log("Proposed toggle is checked")
+      this.updateOverlayProposed(true);
+    }
   }
 
-  updateOverlayProposed() {
+  updateOverlayProposed(onToggle=false) {
+    console.log(onToggle)
     const visibleLayers = Object.entries(this.state.overlay.facType)
       .filter(item => item[1].length > 0)
-      .map(item => item[0]);
+      .map(item => item[0])
+      .filter(item => !item.includes('Proposed'));
     trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {
-          console.log(trailType.name)
           this.setState((prevState) => {
             const newOverlay = prevState.overlay;
             if (this.allValuesIn(newOverlay.facStat[trailType.name], trailType.facStatValues)) {
@@ -121,6 +126,17 @@ export default class ControlPanel extends BaseControl {
             } else {
               newOverlay.facStat[trailType.name] = trailType.facStatValues;
               newOverlay.facType[trailType.name] = trailType.facTypeValues;
+            }
+            console.log(onToggle)
+            if (onToggle===true) {
+              if (this.allValuesIn(newOverlay.facStat[`Proposed ${layer}`], trailType.facStatValues)) {
+                newOverlay.facStat[`Proposed ${layer}`] = [];
+                newOverlay.facType[`Proposed ${layer}`] = [];
+                document.getElementsByClassName('toggle-switch__input')[0].checked = false;
+              } else {
+                newOverlay.facStat[`Proposed ${layer}`] = trailType.facStatValues;
+                newOverlay.facType[`Proposed ${layer}`] = trailType.facTypeValues;
+              }
             }
             requestJson(this.requestUrl({
               facStat: newOverlay.facStat[trailType.name],
@@ -131,8 +147,27 @@ export default class ControlPanel extends BaseControl {
             });
             return { overlay: newOverlay };
           });
-        } else {
-          // console.log('Existing layer');
+        } else if (`Proposed ${trailType.name}` === layer && onToggle === true) {
+          // console.log(`Visible layer: ${layer}`);
+          console.log("---ON TOGGLE---")
+          this.setState((prevState) => {
+            const newOverlay = prevState.overlay;
+            if (this.allValuesIn(newOverlay.facStat[layer], trailType.facStatValues)) {
+              console.log("all values in")
+              // console.log(newOverlay.facStat[layer]);
+            }
+            else {
+              const test = Object.keys(prevState.overlay.facStat)[1]
+              console.log("Key",typeof(test))
+              console.log("Overlay facStat:", prevState.overlay.facStat)
+              console.log("Implicit sup:", prevState.overlay.facStat[test])
+              console.log("Is the string equal to the variables? ", (layer === test))
+              // newOverlay.facStat[layer] = [];
+              // newOverlay.facType[layer] = [];
+            }
+            //console.log(newOverlay)
+            return { overlay: newOverlay }
+          })
         }
       });
     });
@@ -182,7 +217,7 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
-    console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
+    // console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
