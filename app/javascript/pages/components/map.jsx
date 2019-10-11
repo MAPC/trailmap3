@@ -11,10 +11,10 @@ import AboutButton from './about-button';
 import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
 import BasemapPanel from './basemap-panel';
-import MAP_STYLE from './light.json';
-import layers from './map-layers';
+import MAPBOX_LITE from './map/lite.json';
+import layers from './map/map-layers';
 
-const defaultMapStyle = fromJS(MAP_STYLE);
+const defaultMapStyle = fromJS(MAPBOX_LITE);
 
 export default class Map extends Component {
   constructor(props) {

@@ -37,7 +37,7 @@ const trailInformation = [{
   name: 'Proposed Bicycle Lanes',
   source: 'bl_proposed_overlay',
   facStatValues: [3],
-  favTypeValues: [1, 2],
+  facTypeValues: [1, 2],
 }, {
   name: 'Footpaths',
   description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
@@ -50,13 +50,13 @@ const trailInformation = [{
     facTypeValues: [1],
   }, {
     name: 'Natural Surface Footway',
-    overlayType: 'facType',
-    overlayValues: [2, 3],
+    facStatTypes: [1, 2],
+    facTypeValues: [2, 3],
   }],
 }, {
   name: 'Proposed Footpaths',
   source: 'f_proposed_overlay',
   facStatValues: [3],
-  favTypeValues: [1, 2, 3],
+  facTypeValues: [1, 2, 3],
 }];
 export default trailInformation;

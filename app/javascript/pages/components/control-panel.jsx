@@ -6,8 +6,8 @@ import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
 import ProposedToggle from './control-panel/propsed-toggle';
-import layers from './map-layers';
-import trailInformation from './control-panel/trail-information';
+import layers from './map/map-layers';
+import trailInformation from './map/trail-information';
 import colors from './map/colors';
 
 export default class ControlPanel extends BaseControl {
@@ -112,6 +112,7 @@ export default class ControlPanel extends BaseControl {
     trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {
+          console.log(trailType.name)
           this.setState((prevState) => {
             const newOverlay = prevState.overlay;
             if (this.allValuesIn(newOverlay.facStat[trailType.name], trailType.facStatValues)) {
@@ -131,7 +132,7 @@ export default class ControlPanel extends BaseControl {
             return { overlay: newOverlay };
           });
         } else {
-          console.log('Existing layer');
+          // console.log('Existing layer');
         }
       });
     });
@@ -145,6 +146,11 @@ export default class ControlPanel extends BaseControl {
     const surfaceTypeEnums = surfaceType || this.state.overlay.surfaceType;
     const andConditions = [];
     let table = '';
+
+    // console.log(facStat)
+    // console.log(facType)
+    // console.log(surfaceType)
+    // console.log(trailType)
 
     if (trailType.name === 'Shared Use Paths') {
       table = 'mapc.trans_shared_use_paths';
