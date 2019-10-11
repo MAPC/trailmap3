@@ -7,36 +7,8 @@ import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
 import ProposedToggle from './control-panel/propsed-toggle';
 import layers from './map-layers';
-import existingTrailOptions from './control-panel/existing-trail-options';
-// import proposedTrailOptions from './control-panel/proposed-trail-options';
-
-const colors = {
-  'Shared Use Paths': {
-    1: '#214A2D', // Paved Paths
-    2: '#214A2D', // Paved Paths
-    3: '#4BAA40', // Unimproved Roads
-  },
-  'Proposed Shared Use Paths': {
-    1: 'red', // Paved Paths
-    2: 'red', // Paved Paths
-    3: 'red', // Unimproved Roads
-  },
-  // 'Bicycle Lanes': {
-  //   2: '#92C5DE', // Protected bike lane
-  //   1: '#2166AC', // Bike Lane
-  // },
-  // Footpaths: {
-  //   1: '#903366', // Paved Footway
-  //   2: '#A87196', // Natural Surface Footway
-  //   3: '#A87196', // Natural Surface Footway
-  // },
-};
-
-const opacity = {
-  1: 1,
-  2: 0,
-  3: 0,
-};
+import trailInformation from './control-panel/trail-information';
+import colors from './map/colors';
 
 export default class ControlPanel extends BaseControl {
   constructor(props) {
@@ -46,12 +18,18 @@ export default class ControlPanel extends BaseControl {
         facStat: {
           'Shared Use Paths': [],
           'Proposed Shared Use Paths': [],
+          'Bicycle Lanes': [],
+          'Proposed Bicycle Lanes': [],
+          Footpaths: [],
+          'Proposed Footpaths': [],
         },
         facType: {
           'Shared Use Paths': [],
           'Proposed Shared Use Paths': [],
-          // 'Bicycle Lanes': [],
-          // Footpaths: [],
+          'Bicycle Lanes': [],
+          'Proposed Bicycle Lanes': [],
+          Footpaths: [],
+          'Proposed Footpaths': [],
         },
         surfaceType: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
         facDetail: [
@@ -83,40 +61,38 @@ export default class ControlPanel extends BaseControl {
     controlPanel.className = 'control-panel control-panel--hidden';
   }
 
-  updateOverlayChild(facStat, facType, trailType = 'proposed') {
+  updateOverlayChild(facStat, facType, trailType) {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
-      if (trailType !== 'proposed') {
-        if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
-          facType.forEach(value => newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].filter(id => id !== value));
-        } else {
-          newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].concat(facType);
-        }
-        requestJson(this.requestUrl({
-          facStat,
-          facType: newOverlay.facType[trailType.name],
-          trailType,
-        })).then((map) => {
-          this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
-        });
+      if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
+        facType.forEach(value => newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].filter(id => id !== value));
       } else {
-        // console.log("!")
+        newOverlay.facType[trailType.name] = newOverlay.facType[trailType.name].concat(facType);
       }
+      requestJson(this.requestUrl({
+        facStat,
+        facType: newOverlay.facType[trailType.name],
+        trailType,
+      })).then((map) => {
+        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+      });
       return { overlay: newOverlay };
     });
   }
 
-  updateOverlay(facStat, facType, trailType = 'proposed') {
+  updateOverlay(facStat, facType, trailType) {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
-      if (trailType !== 'proposed') {
-        if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
-          newOverlay.facType[trailType.name] = [];
-          newOverlay.facStat[trailType.name] = [];
-        } else {
-          newOverlay.facType[trailType.name] = facType;
-          newOverlay.facStat[trailType.name] = facStat;
-        }
+      if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
+        newOverlay.facType[trailType.name] = [];
+        newOverlay.facStat[trailType.name] = [];
+      } else {
+        newOverlay.facType[trailType.name] = facType;
+        newOverlay.facStat[trailType.name] = facStat;
+      }
+      if (this.allValuesIn(newOverlay.facType[`Proposed ${trailType.name}`], facType)) {
+        newOverlay.facType[`Proposed ${trailType.name}`] = [];
+        newOverlay.facStat[`Proposed ${trailType.name}`] = [];
       }
       requestJson(this.requestUrl({
         facStat: newOverlay.facStat[trailType.name],
@@ -129,35 +105,11 @@ export default class ControlPanel extends BaseControl {
     });
   }
 
-  addLayerProposed(trailType, newData, source, mapStyle) {
-    console.log(newData)
-    let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
-    if (newData.rows !== null) {
-      const geoJson = newData.rows.map(row => ({
-        type: 'Feature',
-        geometry: JSON.parse(row.the_geom),
-        properties: {
-          fac_type: row.fac_type,
-          fac_stat: row.fac_stat,
-          color: colors[trailType][row.fac_type],
-          opacity: opacity[1],
-        },
-      }));
-      mapStyleWithNewSource = mapStyle
-        .setIn(['sources', source], { type: 'geojson' })
-        .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
-        .setIn(['sources', source, 'data', 'features'], geoJson)
-        .set('layers', mapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
-    }
-    this.props.updateStateWith(mapStyleWithNewSource);
-  }
-
   updateOverlayProposed() {
-    // Get current visible layers (this.state.facType where the array isn't empty)
     const visibleLayers = Object.entries(this.state.overlay.facType)
       .filter(item => item[1].length > 0)
       .map(item => item[0]);
-    existingTrailOptions.forEach((trailType) => {
+    trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {
           this.setState((prevState) => {
@@ -174,10 +126,12 @@ export default class ControlPanel extends BaseControl {
               facType: newOverlay.facType[trailType.name],
               trailType,
             })).then((map) => {
-              this.addLayerProposed(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
+              this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
             });
             return { overlay: newOverlay };
           });
+        } else {
+          console.log('Existing layer');
         }
       });
     });
@@ -185,10 +139,6 @@ export default class ControlPanel extends BaseControl {
 
   // eslint-disable-next-line object-curly-newline
   requestUrl({ facStat, facType, surfaceType, trailType }) {
-    // console.log(facStat)
-    // console.log(facType)
-    // console.log(surfaceType)
-    // console.log(trailType)
     const selectString = "SELECT fac_type, fac_stat, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
     const facStatEnums = facStat || this.state.overlay.facStat;
     const facTypeEnums = facType || this.state.overlay.facType;
@@ -233,7 +183,6 @@ export default class ControlPanel extends BaseControl {
   addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
     if (newData.rows !== null) {
-      console.log(newData)
       const geoJson = newData.rows.map(row => ({
         type: 'Feature',
         geometry: JSON.parse(row.the_geom),
@@ -241,7 +190,7 @@ export default class ControlPanel extends BaseControl {
           fac_type: row.fac_type,
           fac_stat: row.fac_stat,
           color: colors[trailType][row.fac_type],
-          opacity: opacity[row.fac_stat],
+          opacity: 1,
         },
       }));
       mapStyleWithNewSource = mapStyle
@@ -267,7 +216,7 @@ export default class ControlPanel extends BaseControl {
   }
 
   render() {
-    const filterButtons = existingTrailOptions.filter(trailType => !trailType.name.includes('Proposed'))
+    const filterButtons = trailInformation.filter(trailType => !trailType.name.includes('Proposed'))
       .map(trailType => (
         <FilterButtonContainer
           key={trailType.name}
@@ -278,7 +227,7 @@ export default class ControlPanel extends BaseControl {
           updateOverlay={this.updateOverlay}
           updateOverlayChild={this.updateOverlayChild}
         />
-    ));
+      ));
     return (
       <div id="control-panel" className="control-panel">
         <h2 className="control-panel__title">Trailmap Filters</h2>
