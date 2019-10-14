@@ -10,10 +10,12 @@ import ControlPanelToggleButton from './control-panel-toggle-button';
 import AboutButton from './about-button';
 import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
-import BasemapPanel from './basemap-panel'
-import MAP_STYLE from './light.json';
+import BasemapPanel from './basemap-panel';
+import MAPBOX_LITE from './map/lite.json';
+import layers from './map/map-layers';
+import trailInformation from './map/trail-information';
 
-const defaultMapStyle = fromJS(MAP_STYLE);
+const defaultMapStyle = fromJS(MAPBOX_LITE);
 
 export default class Map extends Component {
   constructor(props) {
@@ -27,7 +29,7 @@ export default class Map extends Component {
       },
     };
     this.mapRef = React.createRef();
-    this.updateStateWith = this.updateStateWith.bind(this);
+    this.updateMapLayers = this.updateMapLayers.bind(this);
     this.changeBasemap = this.changeBasemap.bind(this);
   }
 
@@ -39,53 +41,44 @@ export default class Map extends Component {
     }), 'bottom-right');
   }
 
-  updateStateWith(updatedMapStyle) {
+  updateMapLayers(updatedMapStyle) {
     this.setState({ mapStyle: updatedMapStyle });
   }
 
   changeBasemap(updatedMapStyle) {
+    const layerNames = Object.entries(trailInformation).map(item => item[1].source);
+    let newMapStyle = updatedMapStyle;
     this.setState((prevState) => {
-      const trailSource = prevState.mapStyle.get('sources').get('path_overlay');
-      const trailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === 'path_overlay');
-
-      const proposedTrailSource = prevState.mapStyle.get('sources').get('proposed_overlay');
-      const proposedTrailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === 'proposed_overlay');
-      let newMapStyle = updatedMapStyle;
-      
-      if (trailLayers !== undefined) {
-        newMapStyle = updatedMapStyle
-          .setIn(['sources', 'path_overlay'], { type: 'geojson' })
-          .setIn(['sources', 'path_overlay', 'data'], { type: 'FeatureCollection' })
-          .setIn(['sources', 'path_overlay', 'data', 'features'], trailSource.data.features)
-          .set('layers', updatedMapStyle.get('layers').push(trailLayers));
-
-        if (proposedTrailLayers !== undefined) {
+      layerNames.forEach((source) => {
+        const trailSource = prevState.mapStyle.get('sources').get(source);
+        const trailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === source);
+        if (trailLayers !== undefined) {
           newMapStyle = newMapStyle
-            .setIn(['sources', 'proposed_overlay'], { type: 'geojson' })
-            .setIn(['sources', 'proposed_overlay', 'data'], { type: 'FeatureCollection' })
-            .setIn(['sources', 'proposed_overlay', 'data', 'features'], proposedTrailSource.data.features)
-            .set('layers', newMapStyle.get('layers').push(proposedTrailLayers));
+            .setIn(['sources', source], { type: 'geojson' })
+            .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
+            .setIn(['sources', source, 'data', 'features'], trailSource.data.features)
+            .set('layers', newMapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
         }
-      }
+      });
       return { mapStyle: newMapStyle };
     });
   }
 
   render() {
-    const { mapStyle } = this.state;
+    const currentState = this.state;
     return (
       <div className="test">
         <ReactMapGL
           ref={this.mapRef}
           width="100vw"
           height="100vh"
-          {...this.state.viewport}
+          {...currentState.viewport}
           onViewportChange={(viewport) => {
             const { width, height, ...etc } = viewport;
             this.setState({ viewport: etc });
           }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
-          mapStyle={mapStyle}
+          mapStyle={currentState.mapStyle}
         >
 
           <div className="zoom-wrapper">
@@ -99,9 +92,9 @@ export default class Map extends Component {
           />
           <ControlPanelToggleButton />
           <ControlPanel
-            mapStyle={mapStyle}
-            layers={mapStyle.get('layers')}
-            updateStateWith={this.updateStateWith}
+            mapStyle={currentState.mapStyle}
+            layers={currentState.mapStyle.get('layers')}
+            updateMapLayers={this.updateMapLayers}
           />
           <Geocoder
             mapRef={this.mapRef}
@@ -114,7 +107,7 @@ export default class Map extends Component {
             placeholder="Search by city or address"
           />
           <BasemapButton />
-          <BasemapPanel 
+          <BasemapPanel
             changeBasemap={this.changeBasemap}
           />
           <AboutButton />

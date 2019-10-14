@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { fromJS } from 'immutable';
-import MAP_STYLE from './light.json';
-import SECOND_MAP_STYLE from './cali.json';
+import MAPBOX_LITE from './map/lite.json';
+import CALI_TERRAIN from './map/cali.json';
 
-const mapboxLite = fromJS(MAP_STYLE);
-const caliTerrain = fromJS(SECOND_MAP_STYLE);
+const mapboxLite = fromJS(MAPBOX_LITE);
+const caliTerrain = fromJS(CALI_TERRAIN);
 
 export default class BasemapPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        basemap: mapboxLite,
+      basemap: mapboxLite,
     };
     this.el = document.createElement('div');
     this.hideFilters = this.hideFilters.bind(this);
@@ -39,7 +39,8 @@ export default class BasemapPanel extends Component {
             className="basemap-panel__options-lite"
           />
           <button
-            onClick={this.props.changeBasemap.bind(this, caliTerrain)}
+            // onClick={this.props.changeBasemap.bind(this, caliTerrain)}
+            onClick={() => this.props.changeBasemap(caliTerrain)}
             type="button"
             className="basemap-panel__options-cali"
           />
