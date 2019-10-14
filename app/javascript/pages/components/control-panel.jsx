@@ -206,7 +206,6 @@ export default class ControlPanel extends BaseControl {
     });
   }
 
-  // eslint-disable-next-line object-curly-newline
   requestUrl({ facStat, facType, surfaceType, trailType }) {
     const selectString = "SELECT fac_type, fac_stat, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
     const facStatEnums = facStat || this.state.overlay.facStat;
