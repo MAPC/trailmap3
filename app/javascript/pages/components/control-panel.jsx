@@ -117,7 +117,6 @@ export default class ControlPanel extends BaseControl {
   updateOverlay(facStat, facType, trailType) {
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
-      const proposedTrailType = trailInformation.find(trail => trail.name === `Proposed ${trailType.name}`);
       if (!prevState.proposedChecked) {
         if (this.allValuesIn(newOverlay.facType[trailType.name], facType)) {
           newOverlay.facType[trailType.name] = [];
@@ -246,7 +245,6 @@ export default class ControlPanel extends BaseControl {
         andConditions.push('surf_type IN (null)');
       }
     }
-    // console.log(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
     return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
@@ -282,7 +280,11 @@ export default class ControlPanel extends BaseControl {
   }
 
   componentDidMount(event) {
+    const sharedUsePaths = trailInformation.find(trail => trail.name === 'Shared Use Paths');
+    const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lanes');
     document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
+    this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
+    this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
   }
 
   render() {
