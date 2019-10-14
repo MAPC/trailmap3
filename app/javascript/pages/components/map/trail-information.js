@@ -46,11 +46,11 @@ const trailInformation = [{
   facTypeValues: [1, 2],
   children: [{
     name: 'Paved Footway',
-    facStatTypes: [1, 2],
+    facStatValues: [1, 2],
     facTypeValues: [1],
   }, {
     name: 'Natural Surface Footway',
-    facStatTypes: [1, 2],
+    facStatValues: [1, 2],
     facTypeValues: [2, 3],
   }],
 }, {

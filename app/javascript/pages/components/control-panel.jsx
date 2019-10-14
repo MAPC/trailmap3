@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable class-methods-use-this */
 import React from 'react';
 import { json as requestJson } from 'd3-fetch';
 import { BaseControl } from 'react-map-gl';
@@ -28,17 +30,6 @@ export default class ControlPanel extends BaseControl {
           Footway: [],
           'Proposed Footway': [],
         },
-        surfaceType: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        facDetail: [
-          10, 11, 12, 13, 14,
-          20, 21, 22, 23,
-          31, 32,
-          41, 42,
-          51, 52, 53, 54,
-          61, 62, 63,
-          71, 72, 73, 74, 75, 76,
-          81, 82, 83,
-          91, 92, 93, 94],
       },
       proposedChecked: false,
     };
@@ -65,6 +56,33 @@ export default class ControlPanel extends BaseControl {
   hideFilters() {
     const controlPanel = document.getElementsByClassName('control-panel')[0];
     controlPanel.className = 'control-panel control-panel--hidden';
+  }
+
+  requestUrl({ facStat, facType, trailType }) {
+    const selectString = "SELECT fac_type, fac_stat, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
+    const andConditions = [];
+    let table = '';
+
+    if (trailType.name.includes('Shared Use Paths')) {
+      table = 'mapc.trans_shared_use_paths';
+    } else if (trailType.name.includes('Bicycle Lane')) {
+      table = 'mapc.trans_bike_facilities';
+    } else {
+      table = 'mapc.trans_walking_trails';
+    }
+
+    if (facStat.length !== 0) {
+      andConditions.push(`fac_stat IN (${facStat.join(',')})`);
+    } else {
+      andConditions.push('fac_stat IN (null)');
+    }
+
+    if (facType.length !== 0) {
+      andConditions.push(`fac_type IN (${facType.join(',')})`);
+    } else {
+      andConditions.push('fac_type IN (null)');
+    }
+    return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
   }
 
   updateOverlayChild(facStat, facType, trailType) {
@@ -164,13 +182,6 @@ export default class ControlPanel extends BaseControl {
           this.addLayer(proposedTrailType.name, map, proposedTrailType.source, this.withoutPreviousLayer(proposedTrailType.source));
         });
       }
-      requestJson(this.requestUrl({
-        facStat: newOverlay.facStat[trailType.name],
-        facType: newOverlay.facType[trailType.name],
-        trailType,
-      })).then((map) => {
-        this.addLayer(trailType.name, map, trailType.source, this.withoutPreviousLayer(trailType.source));
-      });
       return { overlay: newOverlay };
     });
   }
@@ -206,47 +217,6 @@ export default class ControlPanel extends BaseControl {
     });
   }
 
-  requestUrl({ facStat, facType, surfaceType, trailType }) {
-    const selectString = "SELECT fac_type, fac_stat, public.st_asgeojson(ST_Transform(public.st_GeomFromWKB(sde.ST_AsBinary(shape)),'+proj=lcc +lat_1=42.68333333333333 +lat_2=41.71666666666667 +lat_0=41 +lon_0=-71.5 +x_0=200000 +y_0=750000 +ellps=GRS80 +datum=NAD83 +units=m +no_defs ','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '),6) AS the_geom";
-    const facStatEnums = facStat || this.state.overlay.facStat;
-    const facTypeEnums = facType || this.state.overlay.facType;
-    const surfaceTypeEnums = surfaceType || this.state.overlay.surfaceType;
-    const andConditions = [];
-    let table = '';
-
-    if (trailType.name.includes('Shared Use Paths')) {
-      table = 'mapc.trans_shared_use_paths';
-    } else if (trailType.name.includes('Bicycle Lane')) {
-      table = 'mapc.trans_bike_facilities';
-    } else {
-      table = 'mapc.trans_walking_trails';
-    }
-
-    if (facStatEnums.length !== 0) {
-      andConditions.push(`fac_stat IN (${facStatEnums.join(',')})`);
-    } else {
-      andConditions.push('fac_stat IN (null)');
-    }
-
-    if (facTypeEnums.length !== 0) {
-      andConditions.push(`fac_type IN (${facTypeEnums.join(',')})`);
-    } else {
-      andConditions.push('fac_type IN (null)');
-    }
-    if (table === 'mapc.trans_bike_facilities') {
-      if (surfaceTypeEnums.length !== 0) {
-        if (!surfaceTypeEnums.includes(1)) {
-          andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
-        } else {
-          andConditions.push(`(surf_type IN (${surfaceTypeEnums.join(',')}) OR surf_type IS NULL)`);
-        }
-      } else {
-        andConditions.push('surf_type IN (null)');
-      }
-    }
-    return encodeURI(`https://prql.mapc.org/?query=${selectString} FROM ${table} WHERE ${andConditions.join(' AND ')} &token=e2e3101e16208f04f7415e36052ce59b`);
-  }
-
   addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
     if (newData.rows !== null) {
@@ -254,10 +224,7 @@ export default class ControlPanel extends BaseControl {
         type: 'Feature',
         geometry: JSON.parse(row.the_geom),
         properties: {
-          fac_type: row.fac_type,
-          fac_stat: row.fac_stat,
           color: colors[trailType][row.fac_type],
-          opacity: 1,
         },
       }));
       mapStyleWithNewSource = mapStyle
@@ -282,8 +249,8 @@ export default class ControlPanel extends BaseControl {
     const sharedUsePaths = trailInformation.find(trail => trail.name === 'Shared Use Paths');
     const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lane');
     document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
-    // this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
-    // this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
+    this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
+    this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
   }
 
   render() {
