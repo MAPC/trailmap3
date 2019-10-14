@@ -30,7 +30,7 @@ const layers = fromJS({
       'line-dasharray': [2, 2],
     },
   }, {
-    id: 'Bicycle Lanes',
+    id: 'Bicycle Lane',
     type: 'line',
     source: 'bl_path_overlay',
     layout: {
@@ -44,7 +44,7 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Proposed Bicycle Lanes',
+    id: 'Proposed Bicycle Lane',
     type: 'line',
     source: 'bl_proposed_overlay',
     layout: {
@@ -58,7 +58,7 @@ const layers = fromJS({
       'line-dasharray': [2, 2],
     },
   }, {
-    id: 'Footpaths',
+    id: 'Footway',
     type: 'line',
     source: 'f_path_overlay',
     layout: {
@@ -72,7 +72,7 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Proposed Footpaths',
+    id: 'Proposed Footway',
     type: 'line',
     source: 'f_proposed_overlay',
     layout: {

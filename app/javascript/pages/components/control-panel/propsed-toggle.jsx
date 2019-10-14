@@ -19,7 +19,7 @@ function ProposedToggle({ updateOverlayProposed, overlay, changeToggleState }) {
           }}
         />
       </label>
-      <span className="toggle-switch__label">Proposed Paths & Trails</span>
+      <span className="toggle-switch__label">Proposed Paths & Lanes</span>
     </div>
   );
 }
