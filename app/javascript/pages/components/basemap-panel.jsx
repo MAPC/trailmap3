@@ -30,7 +30,7 @@ export default class BasemapPanel extends Component {
           type="button"
           onClick={this.hideFilters}
         >
-          X
+           &#10005;
         </button>
         <div className="basemap-panel__options">
           <button
@@ -39,7 +39,6 @@ export default class BasemapPanel extends Component {
             className="basemap-panel__options-lite"
           />
           <button
-            // onClick={this.props.changeBasemap.bind(this, caliTerrain)}
             onClick={() => this.props.changeBasemap(caliTerrain)}
             type="button"
             className="basemap-panel__options-cali"

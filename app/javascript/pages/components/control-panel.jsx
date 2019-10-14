@@ -15,18 +15,18 @@ export default class ControlPanel extends BaseControl {
         facStat: {
           'Shared Use Paths': [],
           'Proposed Shared Use Paths': [],
-          'Bicycle Lanes': [],
-          'Proposed Bicycle Lanes': [],
-          Footpaths: [],
-          'Proposed Footpaths': [],
+          'Bicycle Lane': [],
+          'Proposed Bicycle Lane': [],
+          Footway: [],
+          'Proposed Footway': [],
         },
         facType: {
           'Shared Use Paths': [],
           'Proposed Shared Use Paths': [],
-          'Bicycle Lanes': [],
-          'Proposed Bicycle Lanes': [],
-          Footpaths: [],
-          'Proposed Footpaths': [],
+          'Bicycle Lane': [],
+          'Proposed Bicycle Lane': [],
+          Footway: [],
+          'Proposed Footway': [],
         },
         surfaceType: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
         facDetail: [
@@ -216,7 +216,7 @@ export default class ControlPanel extends BaseControl {
 
     if (trailType.name.includes('Shared Use Paths')) {
       table = 'mapc.trans_shared_use_paths';
-    } else if (trailType.name.includes('Bicycle Lanes')) {
+    } else if (trailType.name.includes('Bicycle Lane')) {
       table = 'mapc.trans_bike_facilities';
     } else {
       table = 'mapc.trans_walking_trails';
@@ -280,10 +280,10 @@ export default class ControlPanel extends BaseControl {
 
   componentDidMount(event) {
     const sharedUsePaths = trailInformation.find(trail => trail.name === 'Shared Use Paths');
-    const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lanes');
+    const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lane');
     document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
-    this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
-    this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
+    // this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
+    // this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
   }
 
   render() {
@@ -307,8 +307,9 @@ export default class ControlPanel extends BaseControl {
           onClick={this.hideFilters.bind(this)}
           type="button"
         >
-          X
+          &#10005;
         </button>
+        <hr className="control-panel__hr" />
         <ProposedToggle
           updateOverlayProposed={this.updateOverlayProposed}
           overlay={this.state.overlay}

@@ -90,6 +90,7 @@ body {
     @media only screen and (min-width: 375px) and (max-width: 812px) {
       width: 80%;
     }
+    color: #505050;
     display: inline-block;
     font-size: 20px;
     margin: .5rem auto;
@@ -110,8 +111,10 @@ body {
     float: right;
     font: inherit;
     line-height: normal;
-    margin: 1rem 0 .55rem;
     overflow: visible;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     width: auto;
   }
 
@@ -151,11 +154,13 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
   cursor: grab;
+  display: flex;
+  flex-direction: column;
   left: 0;
   line-height: 2;
   margin: 0 20px 0 15px;
   max-height: 80vh;
-  max-width: 35rem;
+  max-width: 36rem;
   outline: none;
   overflow-y: scroll;
   padding: 0 24px;
@@ -170,13 +175,20 @@ body {
 
   &__title {
     @media only screen and (min-width: 375px) and (max-width: 812px) {
-      width: 90%;
+      align-self: start;
     }
-    border-bottom: .5px solid #E0D9D9;
-    display: inline-block;
-    font-size: 20px;
-    margin: .5rem auto;
-    width: 96%;
+    align-self: center;
+    color: #505050;
+    display: flex;
+    font-size: 24px;
+    margin: .5rem 0 0 0;
+  }
+
+  &__hr {
+    border: none;
+    border-top: 1px solid #E0D9D9;
+    display: block;
+    width: 100%;
   }
 
   &__close {
@@ -197,6 +209,9 @@ body {
     overflow: visible;
     padding-bottom: .55rem;
     padding-left: 0;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     width: auto;
   }
 
@@ -248,14 +263,14 @@ body {
       background-size: cover;
     }
 
-    &-bicycle-lanes {
-      background: url('~images/bicycle-lanes@2x.png');
+    &-bicycle-lane {
+      background: url('~images/bicycle-lane@2x.png');
       background-position: center;
       background-size: cover;
     }
 
-    &-footpaths {
-      background: url('~images/footpaths@2x.png');
+    &-footway{
+      background: url('~images/footway@2x.png');
       background-position: center;
       background-size: cover;
     }
@@ -274,7 +289,7 @@ body {
     }
 
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 146px 1fr;
     text-align: center;
   }
 
@@ -282,16 +297,18 @@ body {
     @media only screen and (min-width: 375px) and (max-width: 812px) {
       grid-template-columns: 5.9375rem 1.5625rem;
       grid-template-rows: 5.625rem 3.0625rem;
+      width: 120px;
     }
 
     background: #F2EDEE;
     border-radius: 1.5rem;
     color: #636363;
     display: grid;
-    grid-template-columns: 96px 24px;
-    grid-template-rows: 100px 60px;
+    grid-template-columns: 122px 24px;
+    grid-template-rows: 122px 50px;
     margin-bottom: 1rem;
     text-align: center;
+    width: 146px;
 
     &--selected {
       background: #636363;
@@ -320,10 +337,10 @@ body {
     align-self: center;
     cursor: pointer;
     display: flex;
+    font-size: 14px;
     font-weight: 600;
     justify-self: center;
     line-height: normal;
-    padding: .5rem;
   }
 
   &__slider-container {
@@ -357,10 +374,7 @@ body {
     &--selected {
       background-color: #464646;
       &:before {
-        @media only screen and (min-width: 375px) and (max-width: 812px) {
-          bottom: 18px;
-        }
-        bottom: 24px;
+        bottom: 16px;
       }
     }
   }
@@ -449,6 +463,7 @@ body {
 
 .mapboxgl-ctrl-top-right {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   margin-top: $control-margin-top;
 }
@@ -476,7 +491,7 @@ body {
   border: .5px solid #0070CD;
   border-radius: 10px;
   height: 2.5rem;
-  margin: 0 .5rem 0 auto;
+  margin: 0 1rem 0 auto;
   padding: 0;
   pointer-events: auto;
   width: 2.5rem;
@@ -486,7 +501,7 @@ body {
   background: #0070CD;
   border-radius: 10px;
   font-size: 16px;
-  margin: 20px;
+  margin: 1rem;
   max-width: 19rem;
   outline: none;
   right: 0;
@@ -547,7 +562,7 @@ body {
   margin-bottom: 16px;
 
   &__label {
-    color: #464646;
+    color: #7B7B7B;
     display: inline-block;
     font-size: 18px;
     font-weight: 600;

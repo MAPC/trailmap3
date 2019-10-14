@@ -19,7 +19,7 @@ const trailInformation = [{
   facStatValues: [3],
   facTypeValues: [1, 2, 3],
 }, {
-  name: 'Bicycle Lanes',
+  name: 'Bicycle Lane',
   description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
   source: 'bl_path_overlay',
   facStatValues: [1, 2],
@@ -34,12 +34,12 @@ const trailInformation = [{
     facTypeValues: [1],
   }],
 }, {
-  name: 'Proposed Bicycle Lanes',
+  name: 'Proposed Bicycle Lane',
   source: 'bl_proposed_overlay',
   facStatValues: [3],
   facTypeValues: [1, 2],
 }, {
-  name: 'Footpaths',
+  name: 'Footway',
   description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
   source: 'f_path_overlay',
   facStatValues: [1, 2, 3],
