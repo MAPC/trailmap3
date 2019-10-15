@@ -7,6 +7,7 @@ function SmallFilterButton({
   allValuesIn,
   updateOverlayChild,
   visibleFacType,
+  startLoading,
 }) {
   let className = `small-filter-button small-filter-button-${childTrailType.name.replace(/\s+/g, '-').toLowerCase()}`;
   if (allValuesIn(visibleFacType[parentTrailType.name], childTrailType.facTypeValues)) {
@@ -20,6 +21,7 @@ function SmallFilterButton({
       type="button"
       onClick={() => {
         updateOverlayChild(childTrailType.facStatValues, childTrailType.facTypeValues, parentTrailType);
+        startLoading();
       }}
     >
       {childTrailType.name}
@@ -55,6 +57,7 @@ SmallFilterButton.propTypes = {
     Footpaths: PropTypes.arrayOf(PropTypes.number),
     'Proposed Footpaths': PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
+  startLoading: PropTypes.func.isRequired,
 };
 
 export default SmallFilterButton;

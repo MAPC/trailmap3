@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SmallFilterButton from './small-filter-button';
 
 function FilterButtonContainer({
-  trailType, visibleFacType, allValuesIn, updateOverlay, updateOverlayChild,
+  trailType, visibleFacType, allValuesIn, updateOverlay, updateOverlayChild, startLoading,
 }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
@@ -22,6 +22,7 @@ function FilterButtonContainer({
       visibleFacType={visibleFacType}
       updateOverlay={updateOverlay}
       updateOverlayChild={updateOverlayChild}
+      startLoading={startLoading}
     />
   ));
   return (
@@ -34,6 +35,7 @@ function FilterButtonContainer({
             type="button"
             onClick={() => {
               updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
+              startLoading();
             }}
           />
           <label
@@ -47,9 +49,11 @@ function FilterButtonContainer({
               className={filterButtonsSliderName}
               onClick={() => {
                 updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
+                startLoading();
               }}
               onKeyPress={() => {
                 updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
+                startLoading();
               }}
               role="button"
               tabIndex={0}
@@ -92,6 +96,7 @@ FilterButtonContainer.propTypes = {
   }).isRequired,
   updateOverlay: PropTypes.func.isRequired,
   updateOverlayChild: PropTypes.func.isRequired,
+  startLoading: PropTypes.func.isRequired,
 };
 
 export default FilterButtonContainer;

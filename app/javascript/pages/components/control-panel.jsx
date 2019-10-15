@@ -133,6 +133,7 @@ export default class ControlPanel extends BaseControl {
   }
 
   updateOverlay(facStat, facType, trailType) {
+    this.props.startLoading();
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
       if (!prevState.proposedChecked) {
@@ -182,7 +183,7 @@ export default class ControlPanel extends BaseControl {
           this.addLayer(proposedTrailType.name, map, proposedTrailType.source, this.withoutPreviousLayer(proposedTrailType.source));
         });
       }
-      return { overlay: newOverlay };
+      return { overlay: newOverlay, loading: true };
     });
   }
 
@@ -246,9 +247,9 @@ export default class ControlPanel extends BaseControl {
   }
 
   componentDidMount(event) {
+    document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
     const sharedUsePaths = trailInformation.find(trail => trail.name === 'Shared Use Paths');
     const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lane');
-    document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
     this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
     this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
   }
@@ -264,6 +265,7 @@ export default class ControlPanel extends BaseControl {
           allValuesIn={this.allValuesIn}
           updateOverlay={this.updateOverlay}
           updateOverlayChild={this.updateOverlayChild}
+          startLoading={this.props.startLoading}
         />
       ));
     return (
@@ -281,6 +283,7 @@ export default class ControlPanel extends BaseControl {
           updateOverlayProposed={this.updateOverlayProposed}
           overlay={this.state.overlay}
           changeToggleState={this.changeToggleState}
+          startLoading={this.props.startLoading}
         />
         <div className="filter-buttons">
           { filterButtons }

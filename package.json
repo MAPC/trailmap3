@@ -4,6 +4,7 @@
   "dependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "@emotion/core": "^10.0.21",
     "@rails/webpacker": "^4.0.7",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "d3-fetch": "^1.1.2",
@@ -18,6 +19,7 @@
     "react-portal": "^4.2.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
+    "react-spinners": "^0.6.1",
     "webpack-cli": "^3.3.9"
   },
   "devDependencies": {

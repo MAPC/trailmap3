@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ReactMapGL, { NavigationControl, GeolocateControl } from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import { fromJS } from 'immutable';
+import { css } from '@emotion/core';
+import ClipLoader from 'react-spinners/ClipLoader';
 import '../../styles/map.scss';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
@@ -16,6 +18,11 @@ import layers from './map/map-layers';
 import trailInformation from './map/trail-information';
 
 const defaultMapStyle = fromJS(MAPBOX_LITE);
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-width: 5px;
+`;
 
 export default class Map extends Component {
   constructor(props) {
@@ -27,10 +34,13 @@ export default class Map extends Component {
         longitude: -71.0589,
         zoom: 10,
       },
+      loading: true,
     };
     this.mapRef = React.createRef();
     this.updateMapLayers = this.updateMapLayers.bind(this);
     this.changeBasemap = this.changeBasemap.bind(this);
+    this.startLoading = this.startLoading.bind(this);
+    this.finishLoading = this.finishLoading.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +53,21 @@ export default class Map extends Component {
 
   updateMapLayers(updatedMapStyle) {
     this.setState({ mapStyle: updatedMapStyle });
+    this.finishLoading();
+  }
+
+  startLoading() {
+    if (document.getElementsByClassName('cliploader__wrapper-hidden')[0]) {
+      document.getElementsByClassName('cliploader__wrapper-hidden')[0].className = 'cliploader__wrapper';
+    }
+    this.setState({ loading: true });
+  }
+
+  finishLoading() {
+    if (document.getElementsByClassName('cliploader__wrapper')[0]) {
+      document.getElementsByClassName('cliploader__wrapper')[0].className = 'cliploader__wrapper-hidden';
+    }
+    this.setState({ loading: false });
   }
 
   changeBasemap(updatedMapStyle) {
@@ -68,6 +93,16 @@ export default class Map extends Component {
     const currentState = this.state;
     return (
       <div className="test">
+        <div className="cliploader__wrapper">
+          <ClipLoader
+            css={override}
+            sizeUnit={'px'}
+            size={100}
+            color={'rgb(0, 112, 205)'}
+            loading={currentState.loading}
+            className="cliploader__load"
+          />
+        </div>
         <ReactMapGL
           ref={this.mapRef}
           width="100vw"
@@ -95,6 +130,8 @@ export default class Map extends Component {
             mapStyle={currentState.mapStyle}
             layers={currentState.mapStyle.get('layers')}
             updateMapLayers={this.updateMapLayers}
+            updateLoading={this.updateLoading}
+            startLoading={this.startLoading}
           />
           <Geocoder
             mapRef={this.mapRef}
