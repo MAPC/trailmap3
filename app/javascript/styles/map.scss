@@ -50,7 +50,7 @@ body {
 }
 
 .basemap-panel {
-  @media screen and (max-width: 600px) {
+  @media only screen and (max-width: 600px) {
     position: unset;
   }
   background: #fff;
@@ -68,8 +68,8 @@ body {
   position: relative;
 
   &__filter-toggle-button {
-    @media (max-width: 410px) {
-      left: 270px;
+    @media only screen and (max-width: 426px) {
+      left: 220px;
     }
     background: center/contain no-repeat url('~images/layers.png') #fff;
     border: .5px solid #0070CD;
@@ -148,7 +148,6 @@ body {
   @media only screen and (max-width: 812px) {
     font-size: 12px;
     position: relative;
-    margin-top: 100px;
   }
 
   background: #fff;
@@ -452,9 +451,9 @@ body {
     width: 240px!important;
   }
 
-  @media (max-width: 410px) {
-    min-width: 200px!important;
-    width: 200px!important;
+  @media (max-width: 426px) {
+    min-width: 150px!important;
+    width: 150px!important;
   }
   border: .5px solid #0070CD;
   border-radius: 10px;
@@ -543,11 +542,6 @@ body {
     }
   }
 
-  // &__glossary-indent {
-  //   display: block;
-  //   margin-left: 1rem;
-  // }
-
   &__arrow {
     display: inline-block;
     height: 1rem;
@@ -579,13 +573,6 @@ body {
 
   &__input {
     transform: scale(2, 2);
-  }
-}
-
-
-.about-button {
-  @media only screen and (min-width: 375px) and (max-width: 812px) {
-    display: none;
   }
 }
 
