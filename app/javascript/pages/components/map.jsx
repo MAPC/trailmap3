@@ -132,6 +132,7 @@ export default class Map extends Component {
             updateMapLayers={this.updateMapLayers}
             updateLoading={this.updateLoading}
             startLoading={this.startLoading}
+            finishLoading={this.finishLoading}
           />
           <Geocoder
             mapRef={this.mapRef}

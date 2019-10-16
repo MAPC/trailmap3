@@ -133,7 +133,6 @@ export default class ControlPanel extends BaseControl {
   }
 
   updateOverlay(facStat, facType, trailType) {
-    this.props.startLoading();
     this.setState((prevState) => {
       const newOverlay = prevState.overlay;
       if (!prevState.proposedChecked) {
@@ -192,6 +191,9 @@ export default class ControlPanel extends BaseControl {
       .filter(item => item[1].length > 0)
       .map(item => item[0])
       .filter(item => !item.includes('Proposed'));
+    if (visibleLayers.length === 0) {
+      this.props.finishLoading();
+    }
     trailInformation.forEach((trailType) => {
       visibleLayers.forEach((layer) => {
         if (trailType.name === `Proposed ${layer}`) {

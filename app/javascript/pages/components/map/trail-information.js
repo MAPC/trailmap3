@@ -54,7 +54,7 @@ const trailInformation = [{
     facTypeValues: [2, 3],
   }],
 }, {
-  name: 'Proposed Footpaths',
+  name: 'Proposed Footway',
   source: 'f_proposed_overlay',
   facStatValues: [3],
   facTypeValues: [1, 2, 3],

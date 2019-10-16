@@ -15,8 +15,8 @@ function ProposedToggle({ updateOverlayProposed, overlay, changeToggleState, sta
           type="checkbox"
           onChange={() => {
             changeToggleState();
-            updateOverlayProposed(overlay);
             startLoading();
+            updateOverlayProposed(overlay);
           }}
         />
       </label>
