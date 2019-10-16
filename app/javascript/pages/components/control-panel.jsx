@@ -32,6 +32,7 @@ export default class ControlPanel extends BaseControl {
         },
       },
       proposedChecked: false,
+      origScreenWidth: 0,
     };
     this.updateOverlay = this.updateOverlay.bind(this);
     this.updateOverlayChild = this.updateOverlayChild.bind(this);
@@ -248,15 +249,21 @@ export default class ControlPanel extends BaseControl {
     return updatedMapStyle;
   }
 
-  componentDidMount(event) {
-    document.getElementsByClassName('control-panel')[0].addEventListener('wheel', () => { event.stopPropagation(); });
+  componentDidMount() {
     const sharedUsePaths = trailInformation.find(trail => trail.name === 'Shared Use Paths');
     const bicycleLanes = trailInformation.find(trail => trail.name === 'Bicycle Lane');
     this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
     this.updateOverlay(bicycleLanes.facStatValues, bicycleLanes.facTypeValues, bicycleLanes);
+    this.setState({ origScreenWidth: window.screen.availWidth });
   }
 
   render() {
+    let controlPanelClass;
+    if (this.state.origScreenWidth < 426) {
+      controlPanelClass = "control-panel--hidden";
+    } else {
+      controlPanelClass = "control-panel";
+    }
     const filterButtons = trailInformation.filter(trailType => !trailType.name.includes('Proposed'))
       .map(trailType => (
         <FilterButtonContainer
@@ -271,7 +278,7 @@ export default class ControlPanel extends BaseControl {
         />
       ));
     return (
-      <div id="control-panel" className="control-panel">
+      <div id="control-panel" className={controlPanelClass}>
         <h2 className="control-panel__title">Trailmap Filters</h2>
         <button
           className="control-panel__close"
