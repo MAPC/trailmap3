@@ -1,6 +1,6 @@
 const trailInformation = [{
   name: 'Shared Use Paths',
-  description: 'Corridors for walking and/or cycling that are off the road right-of-way physically separated from motor vehicle traffic',
+  description: 'Trails for walking and cycling, separated from roadways.',
   source: 'sup_path_overlay',
   facStatValues: [1, 2],
   facTypeValues: [1, 2, 3],
@@ -20,7 +20,7 @@ const trailInformation = [{
   facTypeValues: [1, 2, 3],
 }, {
   name: 'Bicycle Lane',
-  description: 'Corridors where cyclists or pedestrians have a designated lane in the roadway, which may be adjacent to motor vehicle travel lanes',
+  description: 'Designated exclusive lane for bicycles in the roadway right-of-way.',
   source: 'bl_path_overlay',
   facStatValues: [1, 2],
   facTypeValues: [1, 2],
@@ -40,7 +40,7 @@ const trailInformation = [{
   facTypeValues: [1, 2],
 }, {
   name: 'Footway',
-  description: 'Corridors where cyclists or pedestrians share the roadway space with other users',
+  description: 'Corridors designed for foot traffic as the primary user.  Other users may also be present.',
   source: 'f_path_overlay',
   facStatValues: [1, 2, 3],
   facTypeValues: [1, 2],

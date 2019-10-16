@@ -255,22 +255,21 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-    right: 1px;
 
     &-shared-use-paths {
-      background: url('~images/shared-use-paths@2x.png');
+      background: url('~images/shared-use-paths.png');
       background-position: center;
       background-size: cover;
     }
 
     &-bicycle-lane {
-      background: url('~images/bicycle-lane@2x.png');
+      background: url('~images/bicycle-lane.png');
       background-position: center;
       background-size: cover;
     }
 
     &-footway{
-      background: url('~images/footway@2x.png');
+      background: url('~images/footway.png');
       background-position: center;
       background-size: cover;
     }
@@ -305,7 +304,7 @@ body {
     color: #636363;
     display: grid;
     grid-template-columns: 122px 24px;
-    grid-template-rows: 122px 50px;
+    grid-template-rows: 100px 50px;
     margin-bottom: 1rem;
     text-align: center;
     width: 146px;
@@ -541,6 +540,11 @@ body {
       visibility: hidden;
     }
   }
+
+  // &__glossary-indent {
+  //   display: block;
+  //   margin-left: 1rem;
+  // }
 
   &__arrow {
     display: inline-block;
