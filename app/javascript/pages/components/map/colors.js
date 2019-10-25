@@ -1,17 +1,10 @@
 const colors = {
   'Paved Paths': {
-    1: '#214A2D', // Paved Paths
-    2: '#214A2D', // Paved Paths
+    1: '#214A2D',
+    2: '#214A2D',
   },
   'Unimproved Paths': {
-    3: '#4BAA40', // Unimproved Roads
-  },
-  'Proposed Paved Paths': {
-    1: '#214A2D', // Paved Paths
-    2: '#214A2D', // Paved Paths
-  },
-  'Proposed Unimproved Paths': {
-    3: '#4BAA40', // Unimproved Roads
+    3: '#4BAA40',
   },
   'Protected Bike Lane': {
     2: '#2166AC', // Protected bike lane

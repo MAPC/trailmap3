@@ -149,7 +149,7 @@ body {
     font-size: 12px;
     position: relative;
   }
-
+  align-items: center;
   background: #fff;
   border: 1px solid #B7B7B7;
   border-radius: 10px;
@@ -164,7 +164,6 @@ body {
   max-width: 36rem;
   outline: none;
   overflow-y: scroll;
-  padding: 0 24px;
   position: absolute;
 
   &__geolocate {
@@ -189,7 +188,8 @@ body {
     border: none;
     border-top: 1px solid #E0D9D9;
     display: block;
-    width: 100%;
+    margin: 0;
+    width: 80%;
   }
 
   &__close {
@@ -236,14 +236,23 @@ body {
   }
 }
 
-.filler {
-  height: 5rem;
-  width: 100%;
+.filter__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  margin: .5rem 1rem 1rem 1rem;
 }
 
-.filter-buttons {
+.filter {
+  background: #F2EDEE;
+  border-radius: 1.5rem;
+  color: #636363;
   display: grid;
-  width: 100%;
+  grid-template-columns: 110px 30px;
+  grid-template-rows: 100px 50px;
+  margin: .5rem 1rem;
+  text-align: center;
+  width: 140px;
 
   &__button {
     background-position: center;
@@ -256,102 +265,41 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-
+    
     &-paved-paths {
-      background: url('~images/shared-use-paths.png');
+      background: url('~images/paved-paths.png');
       background-position: center;
       background-size: cover;
     }
     &-unimproved-paths {
-      background: url('~images/shared-use-paths.png');
+      background: url('~images/unimproved-paths.png');
       background-position: center;
       background-size: cover;
     }
-
-    &-bicycle-lane {
-      background: url('~images/bicycle-lane.png');
+    &-protected-bike-lane {
+      background: url('~images/protected-bike-lane.png');
       background-position: center;
       background-size: cover;
     }
-
-    &-footway{
-      background: url('~images/footway.png');
+    &-bike-lane {
+      background: url('~images/bike-lane.png');
+      background-position: center;
+      background-size: cover;
+    }
+    &-paved-footway {
+      background: url('~images/paved-footway.png');
+      background-position: center;
+      background-size: cover;
+    }
+    &-natural-surface-footway {
+      background: url('~images/natural-surface-footway.png');
       background-position: center;
       background-size: cover;
     }
   }
-
-  &__children {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      margin-top: 0;
-    }
-    margin-top: 1rem;
-  }
-
-  &__container {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      grid-template-columns: 7.5rem 1fr;
-    }
-
-    display: grid;
-    grid-template-columns: 146px 1fr;
-    text-align: center;
-  }
-
-  &__button-container {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      grid-template-columns: 5.9375rem 1.5625rem;
-      grid-template-rows: 5.625rem 3.0625rem;
-      width: 120px;
-    }
-
-    background: #F2EDEE;
-    border-radius: 1.5rem;
-    color: #636363;
-    display: grid;
-    grid-template-columns: 122px 24px;
-    grid-template-rows: 100px 50px;
-    margin-bottom: 1rem;
-    text-align: center;
-    width: 146px;
-
-    &--selected {
-      background: #636363;
-      color: #F2EDEE;
-    }
-  }
-
-  &__child-container {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      margin: 0 .5rem 1rem 1rem;;
-    }
-    align-self: stretch;
-    color: #464646;
-    line-height: normal;
-    margin: 0 .5rem 1rem 1rem;
-    text-align: left;
-  }
-
-  &__description {
-    @media only screen and (max-width: 812px) {
-      display: none;
-    }
-  }
-
-  &__label {
-    align-self: center;
-    cursor: pointer;
-    display: flex;
-    font-size: 14px;
-    font-weight: 600;
-    justify-self: center;
-    line-height: normal;
-  }
-
   &__slider-container {
     position: relative;
   }
-
   &__slider {
     background-color: #e0d9d9;
     border-radius: $toggle-switch-height;
@@ -359,7 +307,7 @@ body {
     cursor: pointer;
     left: 0;
     position: absolute;
-    right: .7rem;
+    right: 1rem;
     top: .6rem;
     transition: .4s;
 
@@ -377,62 +325,74 @@ body {
     }
 
     &--selected {
-      background-color: #464646;
+      background-color: #6A6A6A;
       &:before {
         bottom: 16px;
       }
     }
   }
-}
-
-.small-filter-button {
-  @media only screen and (min-width: 375px) and (max-width: 812px) {
-    width: 100%;
+  &__label {
+    align-self: center;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 600;
+    justify-self: center;
+    line-height: normal;
   }
-
-  background-color: #FFFFFF;
-  border: 1px solid #707070;
-  border-radius: 2rem;
-  color: #FFF;
-  font-size: .875rem;
-  font-weight: 600;
-  margin: .28125rem;
-  padding: .5rem;
-  position: relative;
-  text-align: center;
-  text-shadow:
-		-1px -1px 0 #000,
-		1px -1px 0 #000,
-		-1px 1px 0 #000,
-		1px 1px 0 #000;
-  width: 185px;
-
-  &-paved-paths {
-    background: #214A2d;
+  &__paved-paths--selected {
+    background: #214A2D;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
-
-  &-unimproved-paths {
+  &__unimproved-paths--selected {
     background: #4BAA40;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
-
-  &-protected-bike-lane {
+  &__protected-bike-lane--selected {
     background: #2166AC;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
-
-  &-bike-lane {
+  &__bike-lane--selected {
     background: #92C5DE;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
-
-  &-paved-footway {
+  &__paved-footway--selected {
     background: #903366;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
-
-  &-natural-surface-footway {
+  &__natural-surface-footway--selected {
     background: #A87196;
-  }
-
-  &--selected {
-    box-shadow: 1px 3px 5px #888888;
+    color: #f2edee;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
   }
 }
 
@@ -563,8 +523,8 @@ body {
 }
 
 .toggle-switch {
-  line-height: 1.6;
-  margin-bottom: 16px;
+  line-height: 1.5;
+  margin-top: .5rem;
 
   &__label {
     color: #7B7B7B;

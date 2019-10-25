@@ -77,8 +77,7 @@ export default class ControlPanel extends BaseControl {
 
     if (trailType.name.includes('Path')) {
       table = 'mapc.trans_shared_use_paths';
-    } 
-    else if (trailType.name.includes('Bike')) {
+    } else if (trailType.name.includes('Bike')) {
       table = 'mapc.trans_bike_facilities';
     } else {
       table = 'mapc.trans_walking_trails';
@@ -188,12 +187,16 @@ export default class ControlPanel extends BaseControl {
 
   addLayer(trailType, newData, source, mapStyle) {
     let mapStyleWithNewSource = mapStyle.deleteIn(['sources', source]);
+    let trailColor = trailType;
+    if (trailColor.includes('Proposed')) {
+      trailColor = trailColor.slice(9);
+    }
     if (newData.rows !== null) {
       const geoJson = newData.rows.map(row => ({
         type: 'Feature',
         geometry: JSON.parse(row.the_geom),
         properties: {
-          color: colors[trailType][row.fac_type],
+          color: colors[trailColor][row.fac_type],
         },
       }));
       mapStyleWithNewSource = mapStyle
@@ -215,17 +218,21 @@ export default class ControlPanel extends BaseControl {
   }
 
   componentDidMount() {
-    const sharedUsePaths = trailInformation.find(trail => trail.name === 'Paved Paths');
-    this.updateOverlay(sharedUsePaths.facStatValues, sharedUsePaths.facTypeValues, sharedUsePaths);
+    const pavedPaths = trailInformation.find(trail => trail.name === 'Paved Paths');
+    const unimprovedPaths = trailInformation.find(trail => trail.name === 'Unimproved Paths');
+    const protectedBikeLane = trailInformation.find(trail => trail.name === 'Protected Bike Lane');
+    const bikeLane = trailInformation.find(trail => trail.name === 'Bike Lane');
+    const defaultLayers = [pavedPaths, unimprovedPaths, protectedBikeLane, bikeLane];
+    defaultLayers.forEach(layer => this.updateOverlay(layer.facStatValues, layer.facTypeValues, layer));
     this.setState({ origScreenWidth: window.screen.availWidth });
   }
 
   render() {
     let controlPanelClass;
     if (this.state.origScreenWidth < 426) {
-      controlPanelClass = "control-panel--hidden";
+      controlPanelClass = 'control-panel--hidden';
     } else {
-      controlPanelClass = "control-panel";
+      controlPanelClass = 'control-panel';
     }
     const filterButtons = trailInformation.filter(trailType => !trailType.name.includes('Proposed'))
       .map(trailType => (
@@ -256,7 +263,7 @@ export default class ControlPanel extends BaseControl {
           changeToggleState={this.changeToggleState}
           startLoading={this.props.startLoading}
         />
-        <div className="filter-buttons">
+        <div className="filter__container">
           { filterButtons }
         </div>
       </div>
