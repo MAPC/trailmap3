@@ -20,7 +20,7 @@ body {
 
   &__image {
     margin: 0 20px;
-    height: 4vh;
+    height: 40px;
   }
 
   &__title {
@@ -145,9 +145,15 @@ body {
 }
 
 .control-panel {
-  @media only screen and (max-width: 812px) {
+  @media only screen and (max-width: 500px) {
     font-size: 12px;
-    position: relative;
+    height: max-content;
+    left: 0;
+    margin: 0;
+    max-height: unset;
+    top: 0;
+    width: 100vw;
+    z-index: 2;
   }
   align-items: center;
   background: #fff;
@@ -174,12 +180,7 @@ body {
   }
 
   &__title {
-    @media only screen and (min-width: 375px) and (max-width: 812px) {
-      align-self: start;
-    }
-    align-self: center;
     color: #505050;
-    display: flex;
     font-size: 24px;
     margin: .5rem 0 0 0;
   }
@@ -435,7 +436,7 @@ body {
 
 .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-scale {
   @media (max-width: 640px) {
-    bottom: 60px;
+    bottom: 0;
   }
   bottom: 15px;
   position: absolute;
@@ -444,7 +445,7 @@ body {
 
 .zoom-wrapper {
   @media (max-width: 640px) {
-    bottom: 70px;
+    bottom: 40px;
   }
   bottom: 25px;
   position: absolute;
