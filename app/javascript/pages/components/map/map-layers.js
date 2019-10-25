@@ -2,9 +2,9 @@ import { fromJS } from 'immutable';
 
 const layers = fromJS({
   layers: [{
-    id: 'Shared Use Paths',
+    id: 'Paved Paths',
     type: 'line',
-    source: 'sup_path_overlay',
+    source: 'pp_path_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -16,9 +16,23 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Proposed Shared Use Paths',
+    id: 'Unimproved Paths',
     type: 'line',
-    source: 'sup_proposed_overlay',
+    source: 'up_path_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-opacity': ['get', 'opacity'],
+    },
+  }, {
+    id: 'Proposed Paved Paths',
+    type: 'line',
+    source: 'pp_proposed_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -30,7 +44,35 @@ const layers = fromJS({
       'line-dasharray': [2, 2],
     },
   }, {
-    id: 'Bicycle Lane',
+    id: 'Proposed Unimproved Paths',
+    type: 'line',
+    source: 'up_proposed_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-dasharray': [2, 2],
+    },
+  }, {
+    id: 'Protected Bike Lane',
+    type: 'line',
+    source: 'pbl_path_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-opacity': ['get', 'opacity'],
+    },
+  }, {
+    id: 'Bike Lane',
     type: 'line',
     source: 'bl_path_overlay',
     layout: {
@@ -44,7 +86,21 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Proposed Bicycle Lane',
+    id: 'Proposed Protected Bike Lane',
+    type: 'line',
+    source: 'pbl_proposed_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-dasharray': [2, 2],
+    },
+  }, {
+    id: 'Proposed Bike Lane',
     type: 'line',
     source: 'bl_proposed_overlay',
     layout: {
@@ -58,9 +114,9 @@ const layers = fromJS({
       'line-dasharray': [2, 2],
     },
   }, {
-    id: 'Footway',
+    id: 'Paved Footway',
     type: 'line',
-    source: 'f_path_overlay',
+    source: 'pf_path_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -72,9 +128,37 @@ const layers = fromJS({
       'line-opacity': ['get', 'opacity'],
     },
   }, {
-    id: 'Proposed Footway',
+    id: 'Natural Surface Footway',
     type: 'line',
-    source: 'f_proposed_overlay',
+    source: 'nsf_path_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-opacity': ['get', 'opacity'],
+    },
+  }, {
+    id: 'Proposed Paved Footway',
+    type: 'line',
+    source: 'pf_proposed_overlay',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+      visibility: 'visible',
+    },
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 2,
+      'line-dasharray': [2, 2],
+    },
+  }, {
+    id: 'Proposed Natural Surface Footway',
+    type: 'line',
+    source: 'nsf_proposed_overlay',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',

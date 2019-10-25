@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SmallFilterButton from './small-filter-button';
 
 function FilterButtonContainer({
-  trailType, visibleFacType, allValuesIn, updateOverlay, updateOverlayChild, startLoading,
+  trailType, visibleFacType, allValuesIn, updateOverlay, startLoading,
 }) {
   let buttonContainerName = 'filter-buttons__button-container';
   let filterButtonsSliderName = 'filter-buttons__slider';
@@ -13,18 +12,6 @@ function FilterButtonContainer({
   }
   const variableName = `filter-buttons__button filter-buttons__button-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
 
-  const smallFilterButtons = trailType.children.map(childType => (
-    <SmallFilterButton
-      key={childType.name}
-      parentTrailType={trailType}
-      childTrailType={childType}
-      allValuesIn={allValuesIn}
-      visibleFacType={visibleFacType}
-      updateOverlay={updateOverlay}
-      updateOverlayChild={updateOverlayChild}
-      startLoading={startLoading}
-    />
-  ));
   return (
     <div>
       <div className="filter-buttons__container" key={trailType.name}>
@@ -65,7 +52,6 @@ function FilterButtonContainer({
             {trailType.description}
           </div>
           <div className="filter-buttons__children">
-            { smallFilterButtons }
           </div>
         </div>
       </div>
@@ -95,7 +81,6 @@ FilterButtonContainer.propTypes = {
     })),
   }).isRequired,
   updateOverlay: PropTypes.func.isRequired,
-  updateOverlayChild: PropTypes.func.isRequired,
   startLoading: PropTypes.func.isRequired,
 };
 

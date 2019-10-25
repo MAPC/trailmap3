@@ -257,7 +257,12 @@ body {
     padding: 0;
     position: relative;
 
-    &-shared-use-paths {
+    &-paved-paths {
+      background: url('~images/shared-use-paths.png');
+      background-position: center;
+      background-size: cover;
+    }
+    &-unimproved-paths {
       background: url('~images/shared-use-paths.png');
       background-position: center;
       background-size: cover;
