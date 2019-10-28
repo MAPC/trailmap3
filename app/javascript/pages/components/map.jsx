@@ -41,14 +41,20 @@ export default class Map extends Component {
     this.changeBasemap = this.changeBasemap.bind(this);
     this.startLoading = this.startLoading.bind(this);
     this.finishLoading = this.finishLoading.bind(this);
+    this.handleViewportChange = this.handleViewportChange.bind(this);
   }
 
   componentDidMount() {
     const mapboxobj = this.mapRef.current.getMap();
+    console.log(mapboxobj)
     mapboxobj.addControl(new mapboxgl.ScaleControl({
       maxWidth: 100,
       unit: 'imperial',
     }), 'bottom-right');
+    console.log(mapboxobj)
+    // mapboxgl.addControl(new MapboxGeocoder({
+    //   region: 'ma',
+    // }));
   }
 
   updateMapLayers(updatedMapStyle) {
@@ -88,6 +94,12 @@ export default class Map extends Component {
       return { mapStyle: newMapStyle };
     });
   }
+
+  handleViewportChange(viewport) {
+    this.setState({
+      viewport: { ...this.state.viewport, ...viewport }
+    });
+  };
 
   render() {
     const currentState = this.state;
@@ -136,11 +148,8 @@ export default class Map extends Component {
           />
           <Geocoder
             mapRef={this.mapRef}
-            onViewportChange={(viewport) => {
-              const { width, height, ...etc } = viewport;
-              this.setState({ viewport: etc });
-            }}
             mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
+            onViewportChange={this.handleViewportChange}
             position="top-left"
             placeholder="Search by city or address"
           />
