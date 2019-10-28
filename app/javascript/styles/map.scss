@@ -24,21 +24,23 @@ body {
   }
 
   &__title {
-    @media only screen and (min-width: 791px) and (max-width: 990px) {
-      font-size: 20px;
-    }
-
     @media only screen and (max-width: 790px) {
-      font-size: 16px;
+      font-size: 22px;
     }
 
-    @media only screen and (max-width: 425px) {
-      font-size: 12px;
-      padding: 0 20px 0 0;
+    @media only screen and (max-width: 680px) {
+      font-size: 30px;
     }
 
-    &-bold {
+    &--bold {
       font-weight: 700;
+    }
+
+    &--mobile-remove {
+      @media only screen and (max-width: 680px) {
+        display: none;
+        padding: 0 20px 0 0;
+      }
     }
 
     color: #ffffff;
