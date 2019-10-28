@@ -6,17 +6,19 @@ function FilterButtonContainer({
 }) {
   let buttonContainerName = 'filter';
   let filterButtonsSliderName = 'filter__slider';
+  let labelClasses = 'filter__label';
   if (allValuesIn(visibleFacType[trailType.name], trailType.facTypeValues)) {
     filterButtonsSliderName += ' filter__slider--selected';
     buttonContainerName += ` filter__${trailType.name.replace(/\s+/g, '-').toLowerCase()}--selected`;
+    labelClasses += ` filter__label--selected`
   }
-  const variableName = `filter__button filter__button-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
+  const buttonClasses = `filter__button filter__button-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
 
   return (
     <div className={buttonContainerName} key={trailType.name}>
       <button
         id={trailType.name}
-        className={variableName}
+        className={buttonClasses}
         type="button"
         onClick={() => {
           updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
@@ -25,7 +27,7 @@ function FilterButtonContainer({
       />
       <label
         htmlFor={trailType.name}
-        className="filter__label"
+        className={labelClasses}
       >
         {trailType.name}
       </label>

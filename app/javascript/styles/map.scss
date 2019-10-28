@@ -71,7 +71,8 @@ body {
 
   &__filter-toggle-button {
     @media only screen and (max-width: 426px) {
-      left: 220px;
+      margin-right: .5rem;
+      position: unset;
     }
     background: center/contain no-repeat url('~images/layers.png') #fff;
     border: .5px solid #0070CD;
@@ -251,7 +252,7 @@ body {
   border-radius: 1.5rem;
   color: #636363;
   display: grid;
-  grid-template-columns: 110px 30px;
+  grid-template-columns: 115px 25px;
   grid-template-rows: 100px 50px;
   margin: .5rem 1rem;
   text-align: center;
@@ -308,9 +309,9 @@ body {
     border-radius: $toggle-switch-height;
     bottom: .7rem;
     cursor: pointer;
-    left: 0;
+    left: .1rem;
     position: absolute;
-    right: 1rem;
+    right: .6rem;
     top: .6rem;
     transition: .4s;
 
@@ -338,64 +339,33 @@ body {
     align-self: center;
     cursor: pointer;
     display: flex;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     justify-self: center;
     line-height: normal;
+
+    &--selected {
+      color: #f2edee;
+      text-shadow: 0 3px 6px #505050
+    }
   }
   &__paved-paths--selected {
     background: #214A2D;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
   &__unimproved-paths--selected {
     background: #4BAA40;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
   &__protected-bike-lane--selected {
     background: #2166AC;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
   &__bike-lane--selected {
     background: #92C5DE;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
   &__paved-footway--selected {
     background: #903366;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
   &__natural-surface-footway--selected {
     background: #A87196;
-    color: #f2edee;
-    text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
   }
 }
 
@@ -420,13 +390,24 @@ body {
   }
 
   @media (max-width: 426px) {
-    min-width: 150px!important;
-    width: 150px!important;
+    min-width: 130px!important;
+    width: 130px!important;
   }
   border: .5px solid #0070CD;
   border-radius: 10px;
   height: 2.5rem;
   width: 22.5rem;
+
+  &--icon-search {
+    left: 10px!important;
+    top: 10px!important;
+  }
+
+  &--input {
+    @media (max-width: 640px) {
+      height: inherit!important;
+    }
+  }
 }
 
 .mapboxgl-ctrl-top-right {
