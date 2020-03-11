@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap);
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap');
 $asset-path: '/assets/images';
 $toggle-switch-height: 20px;
 $control-margin-top: 70px;
@@ -410,13 +410,6 @@ body {
   }
 }
 
-.mapboxgl-ctrl-top-right {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  margin-top: $control-margin-top;
-}
-
 .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-scale {
   @media (max-width: 640px) {
     bottom: 0;
@@ -443,6 +436,9 @@ body {
   margin: 0 1rem 0 auto;
   padding: 0;
   pointer-events: auto;
+  position: absolute;
+  right: 0;
+  top: 70px;
   width: 2.5rem;
 }
 
@@ -453,7 +449,9 @@ body {
   margin: 1rem;
   max-width: 19rem;
   outline: none;
+  position: absolute;
   right: 0;
+  top: 108px;
   z-index: 9;
 
   &--hidden {
@@ -471,10 +469,10 @@ body {
     pointer-events: auto;
     text-align: left;
     width: 19rem;
+  }
 
-    &--first {
-      margin-top: .4rem;
-    }
+  &__heading:first-child {
+    margin-top: .4rem;
   }
 
   &__text {
