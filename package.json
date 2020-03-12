@@ -14,7 +14,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-map-gl": "^5.0.3",
+    "react-map-gl": "^5.2.3",
     "react-map-gl-geocoder": "^2.0.5",
     "react-portal": "^4.2.0",
     "react-router": "^5.0.1",
