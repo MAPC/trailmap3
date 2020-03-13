@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { fromJS } from 'immutable';
 import MAPBOX_LITE from './map/lite.json';
 import CALI_TERRAIN from './map/cali.json';
+import SATELLITE from './map/satellite.json';
+import OPENSTREETMAP from './map/openstreetmap.json';
 
 const mapboxLite = fromJS(MAPBOX_LITE);
 const caliTerrain = fromJS(CALI_TERRAIN);
+const satellite = fromJS(SATELLITE);
+const osm = fromJS(OPENSTREETMAP);
 
 export default class BasemapPanel extends Component {
   constructor(props) {
@@ -43,7 +47,16 @@ export default class BasemapPanel extends Component {
             type="button"
             className="basemap-panel__options-cali"
           />
-
+          <button
+            onClick={() => this.props.changeBasemap(satellite)}
+            type="button"
+            className="basemap-panel__options-satellite"
+          />
+          <button
+            onClick={() => this.props.changeBasemap(osm)}
+            type="button"
+            className="basemap-panel__options-openstreetmap"
+          />
         </div>
       </div>
     );

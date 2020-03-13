@@ -122,9 +122,10 @@ body {
   }
 
   &__options {
-    justify-content: space-between;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
     margin-bottom: 20px;
 
     &-cali {
@@ -138,6 +139,22 @@ body {
       background: center / contain no-repeat url('~images/lite.png');
       border-radius: 10px;
       height: 75px;
+      width: 75px;
+    }
+
+    &-satellite {
+      background: center / contain no-repeat url('~images/satellite.png');
+      border-radius: 10px;
+      height: 75px;
+      margin-top: 10px;
+      width: 75px;
+    }
+
+    &-openstreetmap {
+      background: center / contain no-repeat url('~images/osm.png');
+      border-radius: 10px;
+      height: 75px;
+      margin-top: 10px;
       width: 75px;
     }
   }
