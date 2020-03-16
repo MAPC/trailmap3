@@ -46,15 +46,10 @@ export default class Map extends Component {
 
   componentDidMount() {
     const mapboxobj = this.mapRef.current.getMap();
-    console.log(mapboxobj)
     mapboxobj.addControl(new mapboxgl.ScaleControl({
       maxWidth: 100,
       unit: 'imperial',
     }), 'bottom-right');
-    console.log(mapboxobj)
-    // mapboxgl.addControl(new MapboxGeocoder({
-    //   region: 'ma',
-    // }));
   }
 
   updateMapLayers(updatedMapStyle) {
@@ -96,21 +91,19 @@ export default class Map extends Component {
   }
 
   handleViewportChange(viewport) {
-    this.setState({
-      viewport: { ...this.state.viewport, ...viewport }
-    });
-  };
+    this.setState(prevState => ({ viewport: { ...prevState.viewport, ...viewport } }));
+  }
 
   render() {
     const currentState = this.state;
     return (
-      <div className="test">
+      <main>
         <div className="cliploader__wrapper">
           <ClipLoader
             css={override}
-            sizeUnit={'px'}
+            sizeUnit="px"
             size={100}
-            color={'rgb(0, 112, 205)'}
+            color="rgb(0, 112, 205)"
             loading={currentState.loading}
             className="cliploader__load"
           />
@@ -157,10 +150,10 @@ export default class Map extends Component {
           <BasemapPanel
             changeBasemap={this.changeBasemap}
           />
-          <AboutButton />
-          <AboutPanel />
         </ReactMapGL>
-      </div>
+        <AboutButton />
+        <AboutPanel />
+      </main>
     );
   }
 }
