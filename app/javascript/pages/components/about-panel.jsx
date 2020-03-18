@@ -109,6 +109,19 @@ const AboutPanel = () => {
           <a href="mailto:dloutzenheiser@mapc.org">dloutzenheiser@mapc.org</a>
         </p>
       </div>
+      <div className="about-panel__object">
+        <button
+          onClick={event => toggleText(event)}
+          className="about-panel__heading"
+          type="button"
+        >
+          <div className="about-panel__arrow about-panel__arrow--right" />
+          Download
+        </button>
+        <p className="about-panel__text about-panel__text--hidden">
+        To find the CSV and Shapefiles for these trails, visit <a href="https://datacommon.mapc.org/browser/Transportation/Bicycle%20and%20Pedestrian%20Facilities">MAPC's DataCommon</a>.
+        </p>
+      </div>
     </div>
   );
 };
