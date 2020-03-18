@@ -1,6 +1,6 @@
 {
     "version": 8,
-    "name": "TrailMap Cali Terrain",
+    "name": "Cali Terrain",
     "metadata": {
         "mapbox:autocomposite": true,
         "mapbox:type": "template",
@@ -1354,7 +1354,7 @@
     "created": "2019-09-25T14:00:07.988Z",
     "id": "ck0zc5g2v17c31cpd3c5jg1ye",
     "modified": "2019-09-25T14:23:47.170Z",
-    "owner": "ihill",
+    "owner": "Amy Lee Walton",
     "visibility": "private",
     "draft": false
 }
