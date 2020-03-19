@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ReactMapGL, { NavigationControl, GeolocateControl } from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
+import ReactMapGL, { NavigationControl, GeolocateControl, ScaleControl } from 'react-map-gl';
 import { fromJS } from 'immutable';
 import { css } from '@emotion/core';
 import ClipLoader from 'react-spinners/ClipLoader';
@@ -42,14 +41,6 @@ export default class Map extends Component {
     this.startLoading = this.startLoading.bind(this);
     this.finishLoading = this.finishLoading.bind(this);
     this.handleViewportChange = this.handleViewportChange.bind(this);
-  }
-
-  componentDidMount() {
-    const mapboxobj = this.mapRef.current.getMap();
-    mapboxobj.addControl(new mapboxgl.ScaleControl({
-      maxWidth: 100,
-      unit: 'imperial',
-    }), 'bottom-right');
   }
 
   updateMapLayers(updatedMapStyle) {
@@ -101,7 +92,6 @@ export default class Map extends Component {
         <div className="cliploader__wrapper">
           <ClipLoader
             css={override}
-            sizeUnit="px"
             size={100}
             color="rgb(0, 112, 205)"
             loading={currentState.loading}
@@ -150,6 +140,9 @@ export default class Map extends Component {
           <BasemapPanel
             changeBasemap={this.changeBasemap}
           />
+          <div className="mapboxgl-ctrl-bottom-right">
+            <ScaleControl maxWidth={100} unit="imperial" />
+          </div>
         </ReactMapGL>
         <AboutButton />
         <AboutPanel />
