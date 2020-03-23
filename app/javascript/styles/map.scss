@@ -53,7 +53,7 @@ body {
 
 .basemap-panel {
   @media only screen and (max-width: 600px) {
-    position: unset;
+    left: 0;
   }
   background: #fff;
   border: 1px solid #B7B7B7;
@@ -67,7 +67,8 @@ body {
   max-width: 10rem;
   outline: none;
   padding: 0 24px;
-  position: relative;
+  position: absolute;
+  top: 124px;
 
   &__filter-toggle-button {
     @media only screen and (max-width: 426px) {
@@ -191,6 +192,7 @@ body {
   outline: none;
   overflow-y: scroll;
   position: absolute;
+  top: 124px;
 
   &__geolocate {
     border: .5px solid #0070CD;
