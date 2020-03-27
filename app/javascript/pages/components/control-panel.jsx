@@ -4,7 +4,6 @@ import React from 'react';
 import { BaseControl } from 'react-map-gl';
 import FilterButtonContainer from './control-panel/filter-button-container';
 import ProposedToggle from './control-panel/propsed-toggle';
-import trailInformation from './map/trail-information';
 
 export default class ControlPanel extends BaseControl {
   constructor(props) {
@@ -43,14 +42,22 @@ export default class ControlPanel extends BaseControl {
     } else {
       controlPanelClass = 'control-panel';
     }
-    const filterButtons = trailInformation.filter(trailType => !trailType.name.includes('Proposed'))
-      .map(trailType => (
-        <FilterButtonContainer
-          key={trailType.name}
-          trailType={trailType}
-          toggleEsriLayer={this.props.toggleEsriLayer}
-        />
-      ));
+    const trailTypes = [
+      'Paved Paths',
+      'Unimproved Paths',
+      'Protected Bike Lane',
+      'Bike Lane',
+      'Paved Footway',
+      'Natural Surface Footway',
+    ];
+    const filterButtons = trailTypes.map(trailType => (
+      <FilterButtonContainer
+        key={trailType}
+        trailType={trailType}
+        toggleEsriLayer={this.props.toggleEsriLayer}
+      />
+    ));
+
     return (
       <div id="control-panel" className={controlPanelClass}>
         <h2 className="control-panel__title">Trailmap Filters</h2>
