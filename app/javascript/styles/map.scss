@@ -541,17 +541,3 @@ body {
     transform: scale(2, 2);
   }
 }
-
-.cliploader__wrapper {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  position: absolute;
-  width: 100vw;
-  z-index: 3;
-
-  &-hidden {
-    display: none;
-  }
-}

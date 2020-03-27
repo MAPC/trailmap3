@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function ProposedToggle({ updateOverlayProposed, overlay, changeToggleState, startLoading }) {
+function ProposedToggle({ changeToggleState, toggleEsriProposedLayer }) {
   return (
     <div className="toggle-switch">
       <label
@@ -15,8 +15,7 @@ function ProposedToggle({ updateOverlayProposed, overlay, changeToggleState, sta
           type="checkbox"
           onChange={() => {
             changeToggleState();
-            startLoading();
-            updateOverlayProposed(overlay);
+            toggleEsriProposedLayer();
           }}
         />
       </label>
@@ -26,8 +25,7 @@ function ProposedToggle({ updateOverlayProposed, overlay, changeToggleState, sta
 }
 
 ProposedToggle.propTypes = {
-  updateOverlayProposed: PropTypes.func.isRequired,
   changeToggleState: PropTypes.func.isRequired,
-  startLoading: PropTypes.func.isRequired,
+  toggleEsriProposedLayer: PropTypes.func.isRequired,
 };
 export default ProposedToggle;
