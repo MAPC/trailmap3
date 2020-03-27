@@ -252,8 +252,6 @@ export default class ControlPanel extends BaseControl {
         </button>
         <hr className="control-panel__hr" />
         <ProposedToggle
-          updateOverlayProposed={this.updateOverlayProposed}
-          overlay={this.state.overlay}
           changeToggleState={this.changeToggleState}
           toggleEsriProposedLayer={this.props.toggleEsriProposedLayer}
         />
