@@ -2,27 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function FilterButtonContainer({
-  trailType, visibleFacType, allValuesIn, updateOverlay, startLoading,
+  trailType, toggleEsriLayer,
 }) {
-  let buttonContainerName = 'filter';
   let filterButtonsSliderName = 'filter__slider';
   let labelClasses = 'filter__label';
-  if (allValuesIn(visibleFacType[trailType.name], trailType.facTypeValues)) {
-    filterButtonsSliderName += ' filter__slider--selected';
-    buttonContainerName += ` filter__${trailType.name.replace(/\s+/g, '-').toLowerCase()}--selected`;
-    labelClasses += ` filter__label--selected`
-  }
+  const toggleCSS = (trail) => {
+    const selectedTrail = document.querySelector(`.filter__${trail.replace(/\s+/g, '-').toLowerCase()}`);
+    selectedTrail.classList.toggle(`filter__${trail.replace(/\s+/g, '-').toLowerCase()}--selected`);
+    selectedTrail.querySelector('.filter__label').classList.toggle('filter__label--selected');
+    selectedTrail.querySelector('.filter__slider').classList.toggle('filter__slider--selected');
+    };
+    
   const buttonClasses = `filter__button filter__button-${trailType.name.replace(/\s+/g, '-').toLowerCase()}`;
 
   return (
-    <div className={buttonContainerName} key={trailType.name}>
+    <div className={`filter filter__${trailType.name.replace(/\s+/g, '-').toLowerCase()}`} key={trailType.name}>
       <button
         id={trailType.name}
         className={buttonClasses}
         type="button"
         onClick={() => {
-          updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
-          startLoading();
+          toggleEsriLayer(trailType.name);
+          toggleCSS(trailType.name);
         }}
       />
       <label
@@ -35,12 +36,12 @@ function FilterButtonContainer({
         <div
           className={filterButtonsSliderName}
           onClick={() => {
-            updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
-            startLoading();
+            toggleEsriLayer(trailType.name);
+            toggleCSS(trailType.name);
           }}
           onKeyPress={() => {
-            updateOverlay(trailType.facStatValues, trailType.facTypeValues, trailType);
-            startLoading();
+            toggleEsriLayer(trailType.name);
+            toggleCSS(trailType.name);
           }}
           role="button"
           tabIndex={0}
@@ -51,14 +52,6 @@ function FilterButtonContainer({
 }
 
 FilterButtonContainer.propTypes = {
-  allValuesIn: PropTypes.func.isRequired,
-  visibleFacType: PropTypes.shape({
-    'Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
-    'Proposed Shared Use Paths': PropTypes.arrayOf(PropTypes.number),
-    'Bicycle Lanes': PropTypes.arrayOf(PropTypes.number),
-    Footpaths: PropTypes.arrayOf(PropTypes.number),
-    'Proposed Footpaths': PropTypes.arrayOf(PropTypes.number),
-  }).isRequired,
   trailType: PropTypes.shape({
     name: PropTypes.string,
     description: PropTypes.string,
@@ -71,8 +64,7 @@ FilterButtonContainer.propTypes = {
       facTypeValues: PropTypes.arrayOf(PropTypes.number),
     })),
   }).isRequired,
-  updateOverlay: PropTypes.func.isRequired,
-  startLoading: PropTypes.func.isRequired,
+  toggleEsriLayer: PropTypes.func.isRequired,
 };
 
 export default FilterButtonContainer;

@@ -218,12 +218,10 @@ export default class ControlPanel extends BaseControl {
   }
 
   componentDidMount() {
-    const pavedPaths = trailInformation.find(trail => trail.name === 'Paved Paths');
-    const unimprovedPaths = trailInformation.find(trail => trail.name === 'Unimproved Paths');
-    const protectedBikeLane = trailInformation.find(trail => trail.name === 'Protected Bike Lane');
-    const bikeLane = trailInformation.find(trail => trail.name === 'Bike Lane');
-    const defaultLayers = [pavedPaths, unimprovedPaths, protectedBikeLane, bikeLane];
-    defaultLayers.forEach(layer => this.updateOverlay(layer.facStatValues, layer.facTypeValues, layer));
+    document.querySelector('.filter__button-paved-paths').click();
+    document.querySelector('.filter__button-unimproved-paths').click();
+    document.querySelector('.filter__button-protected-bike-lane').click();
+    document.querySelector('.filter__button-bike-lane').click();
     this.setState({ origScreenWidth: window.screen.availWidth });
   }
 
@@ -239,11 +237,7 @@ export default class ControlPanel extends BaseControl {
         <FilterButtonContainer
           key={trailType.name}
           trailType={trailType}
-          visibleFacType={this.state.overlay.facType}
-          visibleFacStat={this.state.overlay.facStat}
-          allValuesIn={this.allValuesIn}
-          updateOverlay={this.updateOverlay}
-          startLoading={this.props.startLoading}
+          toggleEsriLayer={this.props.toggleEsriLayer}
         />
       ));
     return (
@@ -262,6 +256,7 @@ export default class ControlPanel extends BaseControl {
           overlay={this.state.overlay}
           changeToggleState={this.changeToggleState}
           startLoading={this.props.startLoading}
+          toggleEsriProposedLayer={this.props.toggleEsriProposedLayer}
         />
         <div className="filter__container">
           { filterButtons }

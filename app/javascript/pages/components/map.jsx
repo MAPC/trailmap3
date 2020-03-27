@@ -12,6 +12,7 @@ import AboutButton from './about-button';
 import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
 import BasemapPanel from './basemap-panel';
+import MapLayers from './map-layers';
 import MAPBOX_LITE from './map/lite.json';
 import layers from './map/map-layers';
 import trailInformation from './map/trail-information';
@@ -33,7 +34,26 @@ export default class Map extends Component {
         longitude: -71.0589,
         zoom: 10,
       },
-      loading: true,
+      // loading: true,
+      opacity: {
+        existing: {
+          'Paved Paths': 0,
+          'Unimproved Paths': 0,
+          'Protected Bike Lane': 0,
+          'Bike Lane': 0,
+          'Paved Footway': 0,
+          'Natural Surface Footway': 0,
+        },
+        proposed: {
+          'Paved Paths': 0,
+          'Unimproved Paths': 0,
+          'Protected Bike Lane': 0,
+          'Bike Lane': 0,
+          'Paved Footway': 0,
+          'Natural Surface Footway': 0,
+        },
+      },
+
     };
     this.mapRef = React.createRef();
     this.updateMapLayers = this.updateMapLayers.bind(this);
@@ -41,7 +61,53 @@ export default class Map extends Component {
     this.startLoading = this.startLoading.bind(this);
     this.finishLoading = this.finishLoading.bind(this);
     this.handleViewportChange = this.handleViewportChange.bind(this);
+    this.toggleEsriLayer = this.toggleEsriLayer.bind(this);
+    this.toggleEsriProposedLayer = this.toggleEsriProposedLayer.bind(this);
+    this.toggleLayer = this.toggleLayer.bind(this);
   }
+
+  toggleEsriLayer(trailName) {
+    this.setState((prevState) => {
+      const updatedOpacity = prevState.opacity;
+      const proposedIsToggled = document.querySelector('.toggle-switch__input').checked;
+      if (proposedIsToggled) {
+        updatedOpacity.existing[trailName] = this.toggleLayer(prevState.opacity.existing[trailName]);
+        updatedOpacity.proposed[trailName] = this.toggleLayer(prevState.opacity.proposed[trailName]);
+      } else {
+        updatedOpacity.existing[trailName] = this.toggleLayer(prevState.opacity.existing[trailName]);
+      }
+      return { opacity: updatedOpacity };
+    });
+  }
+
+  toggleEsriProposedLayer() {
+    this.setState((prevState) => {
+      const updatedOpacities = prevState.opacity;
+      const proposedIsToggled = document.querySelector('.toggle-switch__input').checked;
+      if (proposedIsToggled) {
+        for (const [trail, opacity] of Object.entries(prevState.opacity.existing)) {
+          if (opacity === 1) {
+            updatedOpacities.proposed[trail] = 1;
+          }
+        }
+      } else {
+        for (const [trail, opacity] of Object.entries(prevState.opacity.proposed)) {
+          if (opacity === 1) {
+            updatedOpacities.proposed[trail] = 0;
+          }
+        }
+      }
+      return { opacity: updatedOpacities };
+    });
+  }
+
+  toggleLayer(prevValue) {
+    if (prevValue === 1) {
+      return 0;
+    }
+    return 1;
+  }
+
 
   updateMapLayers(updatedMapStyle) {
     this.setState({ mapStyle: updatedMapStyle });
@@ -89,7 +155,7 @@ export default class Map extends Component {
     const currentState = this.state;
     return (
       <main>
-        <div className="cliploader__wrapper">
+        {/* <div className="cliploader__wrapper">
           <ClipLoader
             css={override}
             size={100}
@@ -97,7 +163,7 @@ export default class Map extends Component {
             loading={currentState.loading}
             className="cliploader__load"
           />
-        </div>
+        </div> */}
         <ReactMapGL
           ref={this.mapRef}
           width="100vw"
@@ -128,6 +194,8 @@ export default class Map extends Component {
             updateLoading={this.updateLoading}
             startLoading={this.startLoading}
             finishLoading={this.finishLoading}
+            toggleEsriLayer={this.toggleEsriLayer}
+            toggleEsriProposedLayer={this.toggleEsriProposedLayer}
           />
           <Geocoder
             mapRef={this.mapRef}
@@ -140,6 +208,7 @@ export default class Map extends Component {
           <BasemapPanel
             changeBasemap={this.changeBasemap}
           />
+          <MapLayers opacity={currentState.opacity} />
           <div className="mapboxgl-ctrl-bottom-right">
             <ScaleControl maxWidth={100} unit="imperial" />
           </div>
