@@ -21,7 +21,7 @@ export default class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mapStyle: defaultMapStyle,
+      mapStyle: 'mapbox://styles/mapbox/light-v10',
       viewport: {
         latitude: 42.3601,
         longitude: -71.0589,
@@ -104,22 +104,7 @@ export default class Map extends Component {
   }
 
   changeBasemap(updatedMapStyle) {
-    const layerNames = Object.entries(trailInformation).map(item => item[1].source);
-    let newMapStyle = updatedMapStyle;
-    this.setState((prevState) => {
-      layerNames.forEach((source) => {
-        const trailSource = prevState.mapStyle.get('sources').get(source);
-        const trailLayers = prevState.mapStyle.get('layers').find(layer => layer.get('source') === source);
-        if (trailLayers !== undefined) {
-          newMapStyle = newMapStyle
-            .setIn(['sources', source], { type: 'geojson' })
-            .setIn(['sources', source, 'data'], { type: 'FeatureCollection' })
-            .setIn(['sources', source, 'data', 'features'], trailSource.data.features)
-            .set('layers', newMapStyle.get('layers').push(layers.get('layers').find(layer => layer.get('source') === source)));
-        }
-      });
-      return { mapStyle: newMapStyle };
-    });
+    this.setState({ mapStyle: updatedMapStyle });
   }
 
   handleViewportChange(viewport) {
@@ -155,7 +140,6 @@ export default class Map extends Component {
           <ControlPanelToggleButton />
           <ControlPanel
             mapStyle={currentState.mapStyle}
-            layers={currentState.mapStyle.get('layers')}
             updateMapLayers={this.updateMapLayers}
             updateLoading={this.updateLoading}
             toggleEsriLayer={this.toggleEsriLayer}
