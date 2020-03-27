@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactMapGL, { NavigationControl, GeolocateControl, ScaleControl } from 'react-map-gl';
-import { fromJS } from 'immutable';
 import '../../styles/map.scss';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
@@ -11,11 +10,6 @@ import AboutPanel from './about-panel';
 import BasemapButton from './basemap-button';
 import BasemapPanel from './basemap-panel';
 import MapLayers from './map-layers';
-import MAPBOX_LITE from './map/lite.json';
-import layers from './map/map-layers';
-import trailInformation from './map/trail-information';
-
-const defaultMapStyle = fromJS(MAPBOX_LITE);
 
 export default class Map extends Component {
   constructor(props) {

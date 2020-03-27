@@ -5,6 +5,7 @@ const mapboxLite = 'mapbox://styles/mapbox/light-v10';
 const caliTerrain = 'mapbox://styles/ihill/ck0zc5g2v17c31cpd3c5jg1ye';
 const satellite = 'mapbox://sprites/mapbox/satellite-v9';
 const osm = 'mapbox://styles/mapbox/streets-v11';
+
 const hideFilters = () => {
   const basemapPanel = document.getElementsByClassName('basemap-panel')[0];
   basemapPanel.className = 'basemap-panel basemap-panel--hidden';
