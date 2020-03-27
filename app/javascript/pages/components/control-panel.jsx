@@ -255,7 +255,6 @@ export default class ControlPanel extends BaseControl {
           updateOverlayProposed={this.updateOverlayProposed}
           overlay={this.state.overlay}
           changeToggleState={this.changeToggleState}
-          startLoading={this.props.startLoading}
           toggleEsriProposedLayer={this.props.toggleEsriProposedLayer}
         />
         <div className="filter__container">
