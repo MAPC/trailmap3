@@ -28,10 +28,6 @@ export default class ControlPanel extends BaseControl {
   }
 
   componentDidMount() {
-    document.querySelector('.filter__button-paved-paths').click();
-    document.querySelector('.filter__button-unimproved-paths').click();
-    document.querySelector('.filter__button-protected-bike-lane').click();
-    document.querySelector('.filter__button-bike-lane').click();
     this.setState({ origScreenWidth: window.screen.availWidth });
   }
 
