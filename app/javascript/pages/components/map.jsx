@@ -23,12 +23,12 @@ export default class Map extends Component {
       },
       opacity: {
         existing: {
-          'Paved Paths': 0,
-          'Unimproved Paths': 0,
-          'Protected Bike Lane': 0,
-          'Bike Lane': 0,
-          'Paved Footway': 0,
-          'Natural Surface Footway': 0,
+          'Paved Paths': 1,
+          'Unimproved Paths': 1,
+          'Protected Bike Lane': 1,
+          'Bike Lane': 1,
+          'Paved Footway': 1,
+          'Natural Surface Footway': 1,
         },
         proposed: {
           'Paved Paths': 0,

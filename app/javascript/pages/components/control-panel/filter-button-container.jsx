@@ -14,32 +14,31 @@ function FilterButtonContainer({
   const buttonClasses = `filter__button filter__button-${trailType.replace(/\s+/g, '-').toLowerCase()}`;
 
   return (
-    <div className={`filter filter__${trailType.replace(/\s+/g, '-').toLowerCase()}`} key={trailType}>
+    <div
+      className={`filter filter__${trailType.replace(/\s+/g, '-').toLowerCase()} filter__${trailType.replace(/\s+/g, '-').toLowerCase()}--selected`}
+      key={trailType}
+      role="button"
+      tabIndex={0}
+      onClick={() => {
+        toggleEsriLayer(trailType);
+        toggleCSS(trailType);
+      }}
+      onKeyPress={() => {
+        toggleEsriLayer(trailType);
+        toggleCSS(trailType);
+      }}
+    >
       <button
         id={trailType}
         className={buttonClasses}
         type="button"
-        onClick={() => {
-          toggleEsriLayer(trailType);
-          toggleCSS(trailType);
-        }}
       />
-      <span className="filter__label">
+      <span className="filter__label filter__label--selected">
         {trailType}
       </span>
       <div className="filter__slider-container">
         <div
-          className="filter__slider"
-          onClick={() => {
-            toggleEsriLayer(trailType);
-            toggleCSS(trailType);
-          }}
-          onKeyPress={() => {
-            toggleEsriLayer(trailType);
-            toggleCSS(trailType);
-          }}
-          role="button"
-          tabIndex={0}
+          className="filter__slider filter__slider--selected"
         />
       </div>
     </div>
