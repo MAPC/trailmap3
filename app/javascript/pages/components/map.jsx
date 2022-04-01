@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactMapGL, { NavigationControl, GeolocateControl, ScaleControl } from 'react-map-gl';
+import ReactMapGL, { NavigationControl, GeolocateControl, ScaleControl, Popup } from 'react-map-gl';
 import '../../styles/map.scss';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
@@ -12,6 +12,7 @@ import BasemapPanel from './basemap-panel';
 import MapLayers from './map-layers';
 
 export default class Map extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +22,7 @@ export default class Map extends Component {
         longitude: -71.0589,
         zoom: 10,
       },
+      popupLngLat: null,
       opacity: {
         existing: {
           'Paved Paths': 1,
@@ -41,6 +43,10 @@ export default class Map extends Component {
       },
 
     };
+    this.showPopup = false;
+    this.identifyLayer = '';
+    this.identifyTrailName = '';
+    this.identifyAttributes = null;
     this.mapRef = React.createRef();
     this.updateMapLayers = this.updateMapLayers.bind(this);
     this.changeBasemap = this.changeBasemap.bind(this);
@@ -118,10 +124,39 @@ export default class Map extends Component {
             const { width, height, ...etc } = viewport;
             this.setState({ viewport: etc });
           }}
+          onClick={(e) => {
+            const currentMap = this.mapRef.current.getMap();
+            const currentMapBounds = currentMap.getBounds();
+          fetch(`https://geo.mapc.org:6443/arcgis/rest/services/transportation/AllTrails/MapServer/identify?geometry=${e.lngLat[0]},${e.lngLat[1]}&geometryType=esriGeometryPoint&sr=4326&layers=all&layerDefs=&time=&layerTimeOptions=&tolerance=3&mapExtent=${currentMapBounds._sw.lng},${currentMapBounds._sw.lat},${currentMapBounds._ne.lng},${currentMapBounds._ne.lat}&imageDisplay=600%2C550%2C96&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnUnformattedValues=false&returnFieldName=false&datumTransformations=&layerParameterValues=&mapRangeValues=&layerRangeValues=&f=pjson`)
+              .then(res => res.json())
+              .then((result) => {
+                const identifyLayer = result['results'][0].layerName;
+                const identifyTrailName = isNaN(result['results'][0].value) ? result['results'][0].value : result['results'][0].attributes['Property Name'];
+                const identifyAttributes = result['results'][0].attributes;
+                this.setState({ 
+                  popupLngLat: e.lngLat, 
+                  identifyLayer: result['results'][0].layerName, 
+                  identifyTrailName: identifyTrailName,
+                  identifyAttributes: identifyAttributes, 
+                  showPopup: true});
+              })
+          }}
           mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
           mapStyle={currentState.mapStyle}
         >
 
+          {this.state.showPopup && (
+          <Popup longitude={this.state.popupLngLat[0]} latitude={this.state.popupLngLat[1]}
+            anchor="bottom"
+            onClose={() => this.setState({ showPopup: false})}>
+            You are here: <br/>
+            Lat: {this.state.popupLngLat[1].toFixed(4)}<br/>
+            Lon: {this.state.popupLngLat[0].toFixed(4)}<br/>
+            Layer: {this.state.identifyLayer}<br/>
+            Propety Name: {this.state.identifyTrailName}<br/>
+            Steward: {this.state.identifyAttributes['Steward']}<br/>
+            {/* Attributes: {this.state.identifyAttributes} */}
+          </Popup>)}
           <div className="zoom-wrapper">
             <NavigationControl />
           </div>
